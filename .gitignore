@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+electron-app/out/
+electron-app/dist/
+electron-app-clean/out/
+electron-app-clean/dist/
+*.log
+npm-debug.log*
+.DS_Store
+*.local
+
+# Java / Maven
+backend/target/
+backend/data/
+backend/.mvn/wrapper/maven-wrapper.jar
+!backend/.mvn/wrapper/maven-wrapper.properties
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+
+# Env
+.env
+.env.local
