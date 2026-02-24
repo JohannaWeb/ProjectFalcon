@@ -46,7 +46,7 @@ function ThreadPost({ node, onOpenThread, onReply, onRefresh }: {
           )}
         </div>
         <strong style={{ fontSize: 14 }}>{author.displayName ?? author.handle}</strong>
-        <span style={{ fontSize: 12, color: 'var(--text-muted)' }}@{author.handle}</span>
+        <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>@{author.handle}</span>
       </div>
       <p style={{ whiteSpace: 'pre-wrap', fontSize: 14, marginBottom: 8 }}>{text}</p>
       <div style={{ display: 'flex', gap: 12, fontSize: 12 }}>

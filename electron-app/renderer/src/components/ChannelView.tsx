@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { backendApi, type MessageSummary } from '../lib/backendApi'
+import { backendApi, getRealtimeWsUrl, type MessageSummary } from '../lib/backendApi'
 import type { AtpSession } from '../lib/atp'
 
 type Props = {
@@ -12,7 +12,7 @@ export function ChannelView({ channelId, channelName, session }: Props) {
   const [messages, setMessages] = useState<MessageSummary[]>([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(true)
-  const sess = { did: session.did, handle: session.handle }
+  const sess = { accessJwt: session.accessJwt, did: session.did, handle: session.handle }
 
   const load = () => {
     setLoading(true)
@@ -21,12 +21,52 @@ export function ChannelView({ channelId, channelName, session }: Props) {
 
   useEffect(() => load(), [channelId])
 
+  useEffect(() => {
+    let ws: WebSocket | null = null
+
+    try {
+      ws = new WebSocket(getRealtimeWsUrl(sess))
+    } catch {
+      return
+    }
+
+    ws.onopen = () => {
+      ws?.send(JSON.stringify({ type: 'subscribe', channelId }))
+    }
+
+    ws.onmessage = (event) => {
+      try {
+        const envelope = JSON.parse(event.data) as {
+          type?: string
+          channelId?: number
+          payload?: MessageSummary
+        }
+        if (envelope.type !== 'message.created' || envelope.channelId !== channelId || !envelope.payload) {
+          return
+        }
+        const incoming = envelope.payload
+        setMessages((prev) => (prev.some((m) => m.id === incoming.id) ? prev : [incoming, ...prev]))
+      } catch {
+        // Ignore malformed events.
+      }
+    }
+
+    return () => {
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({ type: 'unsubscribe', channelId }))
+      }
+      ws?.close()
+    }
+  }, [channelId, session.accessJwt, session.did, session.handle])
+
   const handleSend = (e: React.FormEvent) => {
     e.preventDefault()
     const text = input.trim()
     if (!text) return
     setInput('')
-    backendApi.postMessage(channelId, sess, text).then(() => load())
+    backendApi.postMessage(channelId, sess, text).then((created) => {
+      setMessages((prev) => (prev.some((m) => m.id === created.id) ? prev : [created, ...prev]))
+    })
   }
 
   return (
@@ -79,3 +119,4 @@ export function ChannelView({ channelId, channelName, session }: Props) {
     </div>
   )
 }
+

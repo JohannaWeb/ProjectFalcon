@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.x, 22.x]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Install deps
+      working-directory: electron-app
+      run: npm install
+
+    - name: Build frontend/electron renderer
+      working-directory: electron-app
+      run: npm run build
+
+  backend:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: "temurin"
+        java-version: "25"
+        cache: "maven"
+
+    - name: Build backend
+      working-directory: backend
+      run: |
+        mvn -B -DskipTests package

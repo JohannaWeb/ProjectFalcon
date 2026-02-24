@@ -84,7 +84,7 @@ export function PostCard({ fp, onOpenThread, onReply, onRefresh }: Props) {
           </div>
           <div>
             <strong style={{ display: 'block' }}>{author.displayName ?? author.handle}</strong>
-            <span style={{ fontSize: 12, color: 'var(--text-muted)' }}@{author.handle}</span>
+              <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>@{author.handle}</span>
           </div>
         </a>
       </div>

@@ -1,0 +1,62 @@
+{
+  "lexicon": 1,
+  "id": "app.falcon.defs",
+  "description": "Shared type definitions for Falcon (Discord-style servers/channels).",
+  "defs": {
+    "serverView": {
+      "type": "object",
+      "description": "Server with embedded channel list.",
+      "required": ["id", "name", "ownerDid", "channels"],
+      "properties": {
+        "id": { "type": "integer", "description": "Server id." },
+        "name": { "type": "string", "description": "Server display name." },
+        "ownerDid": { "type": "string", "format": "did", "description": "DID of the server owner." },
+        "channels": {
+          "type": "array",
+          "items": { "type": "ref", "ref": "#channelRef" },
+          "description": "Channels in this server."
+        }
+      }
+    },
+    "channelRef": {
+      "type": "object",
+      "description": "Channel reference (id and name).",
+      "required": ["id", "name"],
+      "properties": {
+        "id": { "type": "integer", "description": "Channel id." },
+        "name": { "type": "string", "description": "Channel name." }
+      }
+    },
+    "channelView": {
+      "type": "object",
+      "description": "Channel with optional serverId.",
+      "required": ["id", "name"],
+      "properties": {
+        "id": { "type": "integer", "description": "Channel id." },
+        "name": { "type": "string", "description": "Channel name." },
+        "serverId": { "type": "integer", "description": "Server this channel belongs to." }
+      }
+    },
+    "messageView": {
+      "type": "object",
+      "description": "A message in a channel.",
+      "required": ["id", "content", "authorDid", "createdAt"],
+      "properties": {
+        "id": { "type": "integer", "description": "Message id." },
+        "content": { "type": "string", "maxLength": 4000, "description": "Message text." },
+        "authorDid": { "type": "string", "format": "did", "description": "DID of the author." },
+        "authorHandle": { "type": "string", "description": "Handle of the author (optional)." },
+        "createdAt": { "type": "string", "format": "datetime", "description": "When the message was created." }
+      }
+    },
+    "inviteResult": {
+      "type": "object",
+      "description": "Result of inviting a user by handle.",
+      "required": ["did", "handle"],
+      "properties": {
+        "did": { "type": "string", "format": "did" },
+        "handle": { "type": "string", "format": "handle" }
+      }
+    }
+  }
+}

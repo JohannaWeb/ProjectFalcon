@@ -1,42 +1,93 @@
-const BACKEND_URL = 'http://localhost:8080'
+/**
+ * Falcon backend API via AT Protocol XRPC (app.falcon.* lexicons).
+ * All methods require a Session (AT access JWT + did + handle).
+ */
+export const BACKEND_URL = 'http://localhost:8080'
 
-export type Session = { did: string; handle: string }
+export type Session = { accessJwt: string; did: string; handle: string }
 
-async function request<T>(
-  path: string,
-  opts: { method?: string; body?: unknown; session?: Session } = {}
+/** Lexicon-shaped types (app.falcon.defs) */
+export type ServerSummary = { id: number; name: string; ownerDid: string; channels: { id: number; name: string }[] }
+export type ChannelSummary = { id: number; name: string; serverId?: number }
+export type MessageSummary = { id: number; content: string; authorDid: string; authorHandle: string; createdAt: string }
+
+async function xrpcQuery<T>(
+  nsid: string,
+  params: Record<string, string | number> | undefined,
+  session: Session
 ): Promise<T> {
-  const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-  if (opts.session) {
-    headers['X-User-Did'] = opts.session.did
-    headers['X-User-Handle'] = opts.session.handle ?? ''
+  const url = new URL(`${BACKEND_URL}/xrpc/${nsid}`)
+  if (params) {
+    Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, String(v)))
   }
-  const res = await fetch(`${BACKEND_URL}${path}`, {
-    method: opts.method ?? 'GET',
-    headers,
-    body: opts.body ? JSON.stringify(opts.body) : undefined,
+  const res = await fetch(url.toString(), {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${session.accessJwt}`,
+    },
   })
   if (!res.ok) throw new Error(await res.text().catch(() => res.statusText))
   return res.json()
 }
 
-export type ServerSummary = { id: number; name: string; ownerDid: string; channels: { id: number; name: string }[] }
-export type ChannelSummary = { id: number; name: string; serverId: number }
-export type MessageSummary = { id: number; content: string; authorDid: string; authorHandle: string; createdAt: string }
+async function xrpcProcedure<T>(
+  nsid: string,
+  params: Record<string, string | number> | undefined,
+  body: unknown,
+  session: Session
+): Promise<T> {
+  const url = new URL(`${BACKEND_URL}/xrpc/${nsid}`)
+  if (params) {
+    Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, String(v)))
+  }
+  const res = await fetch(url.toString(), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${session.accessJwt}`,
+    },
+    body: body != null ? JSON.stringify(body) : undefined,
+  })
+  if (!res.ok) throw new Error(await res.text().catch(() => res.statusText))
+  return res.json()
+}
+
+export function getRealtimeWsUrl(session: Session): string {
+  const wsUrl = new URL(BACKEND_URL)
+  wsUrl.protocol = wsUrl.protocol === 'https:' ? 'wss:' : 'ws:'
+  wsUrl.pathname = '/ws'
+  wsUrl.search = ''
+  wsUrl.searchParams.set('token', session.accessJwt)
+  return wsUrl.toString()
+}
 
 export const backendApi = {
-  listServers: (session: Session) => request<ServerSummary[]>('/api/servers', { session }),
-  getServer: (serverId: number, session: Session) => request<ServerSummary>(`/api/servers/${serverId}`, { session }),
+  listServers: (session: Session) =>
+    xrpcQuery<ServerSummary[]>('app.falcon.server.list', undefined, session),
+
+  getServer: (serverId: number, session: Session) =>
+    xrpcQuery<ServerSummary>('app.falcon.server.get', { serverId }, session),
+
   createServer: (session: Session, name: string) =>
-    request<{ id: number; name: string; channelId: number }>('/api/servers', { method: 'POST', session, body: { name } }),
+    xrpcProcedure<{ id: number; name: string; ownerDid: string; channelId: number }>(
+      'app.falcon.server.create',
+      undefined,
+      { name },
+      session
+    ),
+
   listChannels: (serverId: number, session: Session) =>
-    request<ChannelSummary[]>(`/api/channels/server/${serverId}`, { session }),
+    xrpcQuery<ChannelSummary[]>('app.falcon.channel.list', { serverId }, session),
+
   createChannel: (serverId: number, session: Session, name: string) =>
-    request<{ id: number; name: string }>(`/api/channels/server/${serverId}`, { method: 'POST', session, body: { name } }),
+    xrpcProcedure<ChannelSummary>('app.falcon.channel.create', { serverId }, { name }, session),
+
   getMessages: (channelId: number, session: Session, limit = 50) =>
-    request<MessageSummary[]>(`/api/channels/${channelId}/messages?limit=${limit}`, { session }),
+    xrpcQuery<MessageSummary[]>('app.falcon.channel.getMessages', { channelId, limit }, session),
+
   postMessage: (channelId: number, session: Session, content: string) =>
-    request<MessageSummary>(`/api/channels/${channelId}/messages`, { method: 'POST', session, body: { content } }),
+    xrpcProcedure<MessageSummary>('app.falcon.channel.postMessage', { channelId }, { content }, session),
+
   inviteToServer: (serverId: number, session: Session, handle: string) =>
-    request<{ did: string; handle: string }>(`/api/servers/${serverId}/invite`, { method: 'POST', session, body: { handle } }),
+    xrpcProcedure<{ did: string; handle: string }>('app.falcon.server.invite', { serverId }, { handle }, session),
 }

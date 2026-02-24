@@ -79,10 +79,11 @@ export function SearchView() {
           <div>
             <strong>{actor.displayName ?? actor.handle}</strong>
             <br />
-            <span style={{ fontSize: 12, color: 'var(--text-muted)' }}@{actor.handle}</span>
+            <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>@{actor.handle}</span>
           </div>
         </a>
       ))}
     </div>
   )
 }
+

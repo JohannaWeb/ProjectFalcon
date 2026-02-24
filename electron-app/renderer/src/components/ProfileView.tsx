@@ -73,7 +73,7 @@ export function ProfileView({ actor, meDid }: Props) {
         </div>
         <div>
           <h1 style={{ fontSize: 24, marginBottom: 4 }}>{profile.displayName ?? profile.handle}</h1>
-          <p style={{ color: 'var(--text-muted)', marginBottom: 8 }}@{profile.handle}</p>
+          <p style={{ color: 'var(--text-muted)', marginBottom: 8 }}>@{profile.handle}</p>
           {profile.description && (
             <p style={{ maxWidth: 480, lineHeight: 1.5, marginBottom: 12 }}>{profile.description}</p>
           )}

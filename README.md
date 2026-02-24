@@ -1,61 +1,96 @@
-# Project Falcon
+## Project Falcon
 
-Project Falcon is a **Discord-like** desktop app built on the **Bluesky AT Protocol**. Same client stack as Discord: **Electron + TypeScript**. Backend: **Java (Spring Boot)**.
+**Project Falcon** is a **Discord‑style desktop client** that runs on the **Bluesky AT Protocol** instead of Discord’s closed platform.
 
-## What it does
+- **Desktop app**: Electron + TypeScript + React + Vite  
+- **Backend**: Java 25 + Spring Boot 4 + WebSockets + H2  
+- **Protocol**: Bluesky / AT Protocol, with custom **AT Lexicons** for Falcon’s servers and channels (`app.falcon.*`)
 
-### AT Protocol (Bluesky)
-- **Sign in** with your Bluesky handle and app password.
+Falcon gives you Discord‑like servers, channels, and live chat, but identity and social graph come from your Bluesky account.
+
+---
+
+## What you get
+
+### AT Protocol features (Bluesky)
+- **Sign in with Bluesky**: handle + app password (no separate account system).
 - **Home feed**: timeline with like, repost, reply, and thread view.
-- **Compose & post**: create posts (text + optional image) and replies.
-- **Profile**: view profiles, follow/unfollow.
-- **Notifications**: list and mark as read.
-- **Search**: search users by handle or name.
+- **Compose & post**: text posts (+ optional image) and replies.
+- **Profiles**: view profiles, follow / unfollow.
+- **Notifications**: list, inspect, and mark as read.
+- **Search**: search users by handle or display name.
 - **Explore**: suggested feeds and custom feed generators.
 
-### Discord-style Servers (Java backend)
-- **Left sidebar**: Home icon + your servers (from backend) + “+” to create a server.
-- **Server view**: Click a server → middle column shows its text channels (# general, etc.) and “Create Channel”.
-- **Channel view**: Click a channel → main area shows messages and a message input (like Discord).
-- **Invite**: When viewing a server, use the “Invite” button in the header; enter a Bluesky handle to add them (backend resolves handle → DID via AT Protocol).
+### Discord‑style servers (Falcon backend)
+- **Servers sidebar**: Home + your servers from the backend + “+” to create a new server.
+- **Channels per server**: click a server → middle column shows its text channels (`#general`, etc.) and **Create Channel**.
+- **Channel view**: click a channel → message list + input area, behaves like a minimal Discord text channel.
+- **Invite by handle**: in a server header, click **Invite**, type a Bluesky handle, backend resolves handle → DID via AT Protocol and adds them as a member.
 
-### UX
-- **Dark / light theme** with toggle in header; shortcut **Ctrl+Shift+L**.
-- **System tray** (when `electron-app/assets/tray-icon.png` is present): Show / Quit.
+### UX niceties
+- **Dark / light theme** with header toggle; keyboard shortcut **Ctrl+Shift+L**.
+- **System tray** (when `electron-app/assets/tray-icon.png` is present): quick Show / Quit from the OS tray.
 
-## Stack
+---
 
-| Layer   | Tech |
-|--------|------|
-| Desktop app | **Electron** + **TypeScript** + **React** + **Vite** |
-| AT Protocol client | **@atproto/api** (Bluesky official TS SDK) |
-| Backend | **Java 21** + **Spring Boot 3** + **WebFlux** + **JPA** + **H2** |
-| AT Protocol from Java | **XRPC over HTTP** (no official Java SDK) |
+## Architecture at a glance
+
+- **Electron renderer ↔ Bluesky (PDS)** using `@atproto/api` for all standard Bluesky features.
+- **Electron renderer ↔ Falcon backend** using **AT Lexicon‑defined XRPC** (`/xrpc/app.falcon.*`) for servers, channels, and messages.
+- **Falcon backend** (Spring Boot):
+  - Authenticates requests by validating the AT access JWT with `com.atproto.server.getSession`.
+  - Persists servers / channels / messages / members in an H2 file DB.
+  - Pushes realtime channel messages over WebSockets to the Electron client.
+
+---
+
+## Tech stack
+
+| **Layer** | **Tech** |
+|----------|----------|
+| Desktop app | Electron + TypeScript + React + Vite |
+| AT Protocol client (frontend) | `@atproto/api` (official Bluesky TS SDK) |
+| Backend | Java 25 + Spring Boot 4 + Spring MVC + JPA + H2 |
+| AT Protocol from Java | Raw XRPC over HTTP via `XrpcClient` (no official Java SDK) |
+| Falcon API surface | AT Lexicons (`app.falcon.*`) + XRPC (`/xrpc/app.falcon.…`) |
+
+---
 
 ## Quick start
 
-### 1. Backend (Java)
+### 1. Start the backend (Java)
 
 ```bash
 cd backend
 mvn spring-boot:run
 ```
 
-API: `http://localhost:8080`
+- Base URL: `http://localhost:8080`
+
+**Health / auth (REST):**
 - `GET /api/health` — health check
 - `GET /api/atproto/validate` — validate access JWT
-- `GET /api/servers` — list servers (header: `X-User-Did`)
-- `GET /api/servers/{id}` — get one server with channels
-- `POST /api/servers` — create server (body: `{ "name": "..." }`)
-- `POST /api/servers/{id}/invite` — invite by Bluesky handle (body: `{ "handle": "user.bsky.social" }`; backend resolves handle to DID via AT Protocol)
-- `GET /api/channels/server/{id}` — list channels
-- `POST /api/channels/server/{id}` — create channel
-- `GET /api/channels/{id}/messages` — get messages
-- `POST /api/channels/{id}/messages` — post message (body: `{ "content": "..." }`)
 
-All channel/server endpoints require `X-User-Did` (and optionally `X-User-Handle`).
+**Falcon servers & channels (XRPC, AT Lexicons):**  
+All require `Authorization: Bearer <AT access JWT>`.
 
-### 2. Electron app
+| **Method** | **NSID**                         | **Params / body**                                              |
+|-----------|-----------------------------------|-----------------------------------------------------------------|
+| GET       | `app.falcon.server.list`         | —                                                               |
+| GET       | `app.falcon.server.get`          | `serverId` (query)                                             |
+| POST      | `app.falcon.server.create`       | body: `{ "name": "..." }`                                      |
+| POST      | `app.falcon.server.invite`       | `serverId` (query), body: `{ "handle": "user.bsky.social" }`  |
+| GET       | `app.falcon.channel.list`        | `serverId` (query)                                             |
+| POST      | `app.falcon.channel.create`      | `serverId` (query), body: `{ "name": "..." }`                  |
+| GET       | `app.falcon.channel.getMessages` | `channelId`, `limit` (query)                                   |
+| POST      | `app.falcon.channel.postMessage` | `channelId` (query), body: `{ "content": "..." }`              |
+
+Example:  
+`GET /xrpc/app.falcon.server.list` with a valid Bearer token returns a JSON array of servers (see `lexicons/app.falcon.defs.json` for shapes).
+
+Legacy REST under `/api/servers` and `/api/channels` still exists, but the Electron app now talks to the backend via **XRPC + Lexicons**.
+
+### 2. Run the Electron app
 
 ```bash
 cd electron-app
@@ -70,46 +105,99 @@ For a packaged build:
 npm run electron:build
 ```
 
-### 3. Sign in
+### 3. Sign in with Bluesky
 
-Use your **Bluesky handle** and an **app password** from **Bluesky → Settings → App passwords**.
+- Go to **Bluesky → Settings → App passwords** and generate an app password.
+- In Falcon’s login screen, use:
+  - **Handle**: your Bluesky handle (for example `alice.bsky.social`)
+  - **Password**: the **app password** (not your main account password)
 
-The app talks to **bsky.social** via the AT Protocol. For **Servers** (Discord-style channels), the Java backend must be running; the app sends your DID and handle in headers.
+The Electron app talks directly to **`bsky.social`** via AT Protocol for feeds, profiles, etc.  
+For **servers / channels / messages**, it calls the Falcon backend with your AT access JWT as a Bearer token.
+
+---
 
 ## Project layout
 
-```
+```text
 ATDISCORD/
 ├── README.md
+├── lexicons/              # AT Lexicons (app.falcon.*) — queries, procedures, shared defs
 ├── electron-app/
-│   ├── main/               # Electron main process (tray optional)
+│   ├── main/              # Electron main process (window, tray)
 │   ├── preload/
 │   ├── renderer/src/
-│   │   ├── components/     # Login, Layout, FeedView, PostCard, ThreadView,
-│   │   │                   # PostComposer, ProfileView, NotificationsView,
-│   │   │                   # SearchView, ExploreView, ServersView, …
-│   │   ├── contexts/       # ThemeContext
-│   │   ├── hooks/          # useAtpSession
-│   │   └── lib/            # atp.ts, backendApi.ts
-│   ├── assets/             # optional: tray-icon.png for system tray
+│   │   ├── components/    # Login, Layout, FeedView, PostCard, ThreadView,
+│   │   │                  # PostComposer, ProfileView, NotificationsView,
+│   │   │                  # SearchView, ExploreView, ServersView, …
+│   │   ├── contexts/      # ThemeContext
+│   │   ├── hooks/         # useAtpSession
+│   │   └── lib/           # atp.ts (AT client), backendApi.ts (Falcon XRPC client)
+│   ├── assets/            # optional: tray-icon.png for system tray
 │   └── package.json
 └── backend/
-    ├── src/main/java/app/atdiscord/
-    │   ├── api/            # AuthController, ServerController, ChannelController
-    │   ├── atproto/        # XrpcClient
-    │   ├── domain/         # Server, Channel, Message, Member
+    ├── src/main/java/app/falcon/
+    │   ├── api/           # AuthController, ServerController, ChannelController, XrpcFalconController
+    │   ├── atproto/       # XrpcClient (raw XRPC HTTP client)
+    │   ├── domain/        # Server, Channel, Message, Member
     │   ├── repository/
     │   └── BackendApplication.java
     └── src/main/resources/application.yml  # H2 DB, atproto.service
 ```
 
-## Config
+---
 
-- **Electron**: AT Protocol service in `renderer/src/lib/atp.ts`; backend URL in `renderer/src/lib/backendApi.ts` (default `http://localhost:8080`).
-- **Backend**: `application.yml` — `server.port`, `atproto.service`, H2 file DB at `./data/atdiscord`.
+## Config & environment
+
+- **Electron renderer**
+  - AT service base URL: `renderer/src/lib/atp.ts`
+  - Falcon backend base URL: `renderer/src/lib/backendApi.ts` (default `http://localhost:8080`)
+- **Backend (`application.yml`)**
+  - `server.port` — HTTP port for the Spring app (default `8080`)
+  - `atproto.service` — AT Protocol service, defaults to `https://bsky.social`
+  - H2 DB file at `./data/falcon`
+
+---
+
+## Lexicons (app.falcon.*)
+
+Falcon’s servers and channels are modeled as **AT Lexicons** in the `app.falcon` namespace. Lexicon JSON lives in `lexicons/`:
+
+- **`app.falcon.defs.json`** — shared types:
+  - `serverView`, `channelRef`, `channelView`, `messageView`, `inviteResult`
+- **Server API:**
+  - `app.falcon.server.list`, `app.falcon.server.get`
+  - `app.falcon.server.create`, `app.falcon.server.invite`
+- **Channel & message API:**
+  - `app.falcon.channel.list`, `app.falcon.channel.create`
+  - `app.falcon.channel.getMessages`, `app.falcon.channel.postMessage`
+
+The backend exposes these via standard AT XRPC:
+
+- `GET /xrpc/app.falcon.server.list`
+- `POST /xrpc/app.falcon.channel.postMessage`
+- …etc.
+
+For production deployments, you should publish these lexicons under a domain you control and wire up DNS `_lexicon` TXT records so other services can resolve them (see the official Lexicon spec).
+
+---
+
+## Development notes
+
+- **Backend**: standard Spring Boot app — you can run it from your IDE or via `mvn spring-boot:run`.
+- **DB**: H2 file DB by default; safe to delete `./data/falcon` during local development.
+- **Auth**: every Falcon XRPC call is guarded by `AtprotoAuthFilter`, which:
+  - Extracts `Authorization: Bearer <token>`
+  - Calls `com.atproto.server.getSession` via `XrpcClient`
+  - Injects `auth.userDid` and `auth.userHandle` into the request
+- **Realtime**: `RealtimeBroker` + `/ws` WebSocket endpoint; `ChannelView` subscribes to new messages per‑channel.
+
+---
 
 ## References
 
 - [AT Protocol](https://atproto.com/)
+- [Lexicon](https://atproto.com/specs/lexicon) — schema language for records & XRPC
 - [Bluesky API (XRPC)](https://docs.bsky.app/docs/api/at-protocol-xrpc-api)
 - [@atproto/api (npm)](https://www.npmjs.com/package/@atproto/api)
+

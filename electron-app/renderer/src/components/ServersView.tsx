@@ -13,7 +13,7 @@ export function ServersView({ session }: Props) {
   const [loading, setLoading] = useState(true)
   const [err, setErr] = useState<string | null>(null)
   const [createServerName, setCreateServerName] = useState('')
-  const sess = { did: session.did, handle: session.handle }
+  const sess = { accessJwt: session.accessJwt, did: session.did, handle: session.handle }
 
   const loadServers = () => {
     backendApi.listServers(sess).then(setServers, (e) => setErr(e?.message ?? 'Failed')).finally(() => setLoading(false))
@@ -113,3 +113,4 @@ export function ServersView({ session }: Props) {
     </div>
   )
 }
+

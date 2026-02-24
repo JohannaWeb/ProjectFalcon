@@ -10,6 +10,7 @@ import { ExploreView } from './ExploreView'
 import { ChannelView } from './ChannelView'
 import { CreateServerModal } from './CreateServerModal'
 import { CreateChannelModal } from './CreateChannelModal'
+import { InviteModal } from './InviteModal'
 import type { AtpSession } from '../lib/atp'
 import type { View } from './ChannelList'
 import { backendApi, type ServerSummary } from '../lib/backendApi'
@@ -38,7 +39,7 @@ export function Layout({ session, onLogout }: Props) {
   const [showCreateChannel, setShowCreateChannel] = useState(false)
   const [showInvite, setShowInvite] = useState(false)
 
-  const sess = { did: session.did, handle: session.handle }
+  const sess = { accessJwt: session.accessJwt, did: session.did, handle: session.handle }
 
   const loadServers = useCallback(() => {
     backendApi.listServers(sess).then(setServers, () => setServers([]))
@@ -243,3 +244,4 @@ export function Layout({ session, onLogout }: Props) {
     </div>
   )
 }
+

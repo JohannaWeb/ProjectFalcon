@@ -5,6 +5,10 @@ server:
 atproto:
   service: https://bsky.social
 
+app:
+  cors:
+    allowed-origins: http://localhost:5173
+
 spring:
   application:
     name: falcon-backend

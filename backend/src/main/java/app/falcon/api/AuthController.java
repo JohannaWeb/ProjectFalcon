@@ -3,8 +3,11 @@ package app.falcon.api;
 import app.falcon.atproto.AtprotoException;
 import app.falcon.atproto.XrpcClient;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Mono;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
@@ -14,7 +17,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "*") // restrict in production
+@CrossOrigin(origins = "${app.cors.allowed-origins:http://localhost:5173}")
 public class AuthController {
 
     private final XrpcClient xrpc;
@@ -29,17 +32,19 @@ public class AuthController {
     }
 
     /**
-     * Validate an access JWT by calling getProfile (authenticated).
+     * Validate an access JWT by calling getSession (authenticated).
      * Returns 200 with profile if valid, 401 otherwise.
      */
     @GetMapping("/atproto/validate")
-    public Mono<ResponseEntity<Map<String, Object>>> validate(@RequestHeader(value = "Authorization", required = false) String authorization) {
+    public ResponseEntity<Map<String, Object>> validate(@RequestHeader(value = "Authorization", required = false) String authorization) {
         String token = authorization != null && authorization.startsWith("Bearer ") ? authorization.substring(7) : null;
         if (token == null || token.isBlank()) {
-            return Mono.just(ResponseEntity.status(401).build());
+            return ResponseEntity.status(401).build();
         }
-        return xrpc.get("com.atproto.server.getSession", Map.of(), token)
-                .map(ResponseEntity::ok)
-                .onErrorResume(AtprotoException.class, e -> Mono.just(ResponseEntity.status(e.getStatusCode()).build()));
+        try {
+            return ResponseEntity.ok(xrpc.get("com.atproto.server.getSession", Map.of(), token));
+        } catch (AtprotoException e) {
+            return ResponseEntity.status(e.getStatusCode()).build();
+        }
     }
 }

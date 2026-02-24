@@ -1,0 +1,32 @@
+{
+  "lexicon": 1,
+  "id": "app.falcon.channel.create",
+  "description": "Create a channel in a server. Caller must be a member.",
+  "defs": {
+    "main": {
+      "type": "procedure",
+      "description": "Create channel.",
+      "parameters": {
+        "type": "params",
+        "required": ["serverId"],
+        "properties": {
+          "serverId": { "type": "integer", "description": "Server id." }
+        }
+      },
+      "input": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string", "maxLength": 256, "description": "Channel name. Defaults to 'general'." }
+          }
+        }
+      },
+      "output": {
+        "encoding": "application/json",
+        "schema": { "type": "ref", "ref": "app.falcon.defs#channelView" }
+      },
+      "errors": [{ "name": "NotFound" }, { "name": "Forbidden" }]
+    }
+  }
+}

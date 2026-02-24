@@ -1,0 +1,23 @@
+{
+  "lexicon": 1,
+  "id": "app.falcon.server.get",
+  "description": "Get a single server by id (must be a member).",
+  "defs": {
+    "main": {
+      "type": "query",
+      "description": "Returns one server with channels.",
+      "parameters": {
+        "type": "params",
+        "required": ["serverId"],
+        "properties": {
+          "serverId": { "type": "integer", "description": "Server id." }
+        }
+      },
+      "output": {
+        "encoding": "application/json",
+        "schema": { "type": "ref", "ref": "app.falcon.defs#serverView" }
+      },
+      "errors": [{ "name": "NotFound" }, { "name": "Forbidden" }]
+    }
+  }
+}

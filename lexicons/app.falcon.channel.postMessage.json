@@ -1,0 +1,33 @@
+{
+  "lexicon": 1,
+  "id": "app.falcon.channel.postMessage",
+  "description": "Post a message to a channel. Caller must be a member.",
+  "defs": {
+    "main": {
+      "type": "procedure",
+      "description": "Post message.",
+      "parameters": {
+        "type": "params",
+        "required": ["channelId"],
+        "properties": {
+          "channelId": { "type": "integer", "description": "Channel id." }
+        }
+      },
+      "input": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": ["content"],
+          "properties": {
+            "content": { "type": "string", "maxLength": 4000, "description": "Message text." }
+          }
+        }
+      },
+      "output": {
+        "encoding": "application/json",
+        "schema": { "type": "ref", "ref": "app.falcon.defs#messageView" }
+      },
+      "errors": [{ "name": "InvalidRequest" }, { "name": "NotFound" }, { "name": "Forbidden" }]
+    }
+  }
+}

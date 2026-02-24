@@ -1,0 +1,33 @@
+{
+  "lexicon": 1,
+  "id": "app.falcon.server.invite",
+  "description": "Invite a user to a server by Bluesky handle. Resolves handle to DID via AT Protocol.",
+  "defs": {
+    "main": {
+      "type": "procedure",
+      "description": "Invite by handle.",
+      "parameters": {
+        "type": "params",
+        "required": ["serverId"],
+        "properties": {
+          "serverId": { "type": "integer", "description": "Server id." }
+        }
+      },
+      "input": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": ["handle"],
+          "properties": {
+            "handle": { "type": "string", "format": "handle", "description": "Bluesky handle to invite." }
+          }
+        }
+      },
+      "output": {
+        "encoding": "application/json",
+        "schema": { "type": "ref", "ref": "app.falcon.defs#inviteResult" }
+      },
+      "errors": [{ "name": "InvalidRequest" }, { "name": "NotFound" }, { "name": "Forbidden" }, { "name": "CouldNotResolveHandle" }, { "name": "AlreadyMember" }]
+    }
+  }
+}
