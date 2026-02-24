@@ -6,7 +6,7 @@ Instead of relying on a closed platform, Falcon runs on decentralized identity a
 
 ---
 
-## ✨ Vision
+## Vision
 
 Modern chat platforms are powerful but centralized.
 
@@ -21,7 +21,7 @@ This project is an early step toward **open, community-owned communication infra
 
 ---
 
-## 🧠 What Falcon does
+## What Falcon does
 
 - Discord-like desktop experience
 - Servers and channels
@@ -31,7 +31,7 @@ This project is an early step toward **open, community-owned communication infra
 
 ---
 
-## 🏗 Architecture
+## Architecture
 
 ### Desktop client
 - Electron
@@ -54,7 +54,7 @@ This project is an early step toward **open, community-owned communication infra
 
 ---
 
-## 🚀 Current status
+## Current status
 
 Early prototype / architecture phase.
 
@@ -67,7 +67,7 @@ Working on:
 
 ---
 
-## 🗺 Roadmap
+## Roadmap
 
 ### Phase 1 — Core foundations
 - [ ] AT lexicon definitions for servers/channels/messages
@@ -95,7 +95,7 @@ Working on:
 
 ---
 
-## 💡 Why this exists
+## Why this exists
 
 Falcon is not just another chat clone.
 
@@ -107,7 +107,7 @@ It explores:
 
 ---
 
-## 🧪 Project goals
+## Project goals
 
 - Learn and experiment with AT Protocol capabilities
 - Build a reference implementation for community apps on Bluesky infra
@@ -116,7 +116,7 @@ It explores:
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 This project is in early development.
 
