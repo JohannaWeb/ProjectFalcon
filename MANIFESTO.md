@@ -12,4 +12,4 @@ As a founder from a marginalized background, I know that "free speech" without s
 We aren't just building a chat app; we are building the Communication Layer for the decentralized social era. We leverage the existing momentum of the ATmosphere to give users immediate value while paving the way for a world where "logging in" means bringing your own soul with you.
 
 5. Iteration Over Perfection
-We ship while we’re scared. We code through the "nothing" phase. We listen to the skeptics on Hacker News and use their fire to forge better architecture. We are building a million-dollar reality, one commit at a time.
+We ship while we’re scared. We code through the "nothing" phase.We are building a million-dollar reality, one commit at a time.
