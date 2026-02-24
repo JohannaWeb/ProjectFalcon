@@ -132,7 +132,7 @@ Areas especially useful:
 
 ---
 
-## 📌 Long-term direction
+##  Long-term direction
 
 Falcon could evolve toward:
 
