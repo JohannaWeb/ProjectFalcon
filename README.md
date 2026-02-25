@@ -1,163 +1,168 @@
-# Project Falcon
+# Falcon
 
-**Project Falcon** is a Discord-style desktop client built on the **Bluesky AT Protocol**, designed for real communities, real identity, and open infrastructure.
+**The community platform for developer ecosystems.**
 
-Instead of relying on a closed platform, Falcon runs on decentralized identity and open protocols — enabling communities that users truly own.
+Falcon is building a Discord-class platform designed specifically for technical teams, open-source projects, and developer communities — starting as a structured collaboration layer and expanding into a full-stack alternative to Slack and Discord.
 
----
-
-## Vision
-
-Modern chat platforms are powerful but centralized.
-
-Falcon explores a different path:
-
-- Identity comes from **AT Protocol**
-- Communities are not locked to a single vendor
-- Servers and channels are modeled through open lexicons
-- The client remains familiar (Discord-like UX), but the foundation is decentralized
-
-This project is an early step toward **open, community-owned communication infrastructure**.
+This is not another chat app.
+It’s a wedge into the rapidly growing market for developer collaboration and community infrastructure.
 
 ---
 
-## What Falcon does
+## The Opportunity
 
-- Discord-like desktop experience
-- Servers and channels
-- Message-first community interaction
-- AT Protocol identity integration
-- Custom AT lexicons for Falcon entities (`app.falcon.*`)
+Online communities have become core infrastructure for modern software companies and open-source ecosystems.
 
----
+* Discord generates hundreds of millions in annual revenue
+* Slack exited for $27B
+* Developer tools and communities are converging
+* AI, infra, and OSS ecosystems are forming communities earlier than ever
 
-## Architecture
+Yet the platforms powering them are not built for technical collaboration:
 
-### Desktop client
-- Electron
-- React
-- TypeScript
-- Vite
+* Discord is chaotic for structured development
+* Slack is expensive and closed
+* No portable identity across communities
+* Weak integration between chat, contribution, and roles
+* Limited extensibility for developer workflows
 
-### Backend
-- Java 25
-- Spring Boot
-- REST APIs (WebSockets planned)
-- H2 (dev) → future production DB
-
-### Protocol layer
-- Bluesky AT Protocol
-- Falcon lexicons for:
-  - servers
-  - channels
-  - message structures
+Developer communities are large, growing, and underserved.
 
 ---
 
-## Current status
+## What Falcon Does
 
-Early prototype / architecture phase.
+Falcon is a community platform designed for:
 
-Working on:
+* Open-source projects
+* API and infra companies
+* AI tool ecosystems
+* Developer startups
+* Protocol communities
 
-- exposing Falcon APIs via AT lexicons
-- modeling server + channel structures
-- identity flow
-- messaging foundations
+It combines:
 
----
+* real-time communication
+* structured collaboration spaces
+* contributor identity
+* extensible tooling
+* community management infrastructure
 
-## Roadmap
-
-### Phase 1 — Core foundations
-- [x] AT lexicon definitions for servers/channels/messages
-- [x] Authentication flow
-- [x] Basic server & channel management
-- [x] Desktop client navigation
-
-### Phase 2 — Real-time messaging
-- [x] WebSocket layer
-- [ ] Presence system
-- [ ] Message streaming
-- [ ] Notifications
-
-### Phase 3 — Community layer
-- [ ] Roles & permissions
-- [ ] Moderation tools
-- [ ] Attachments/media
-- [ ] Search
-
-### Phase 4 — Scale & infra
-- [ ] Horizontal backend scaling
-- [ ] Redis/pub-sub for fanout
-- [ ] Event streaming
-- [ ] Production deployment model
+The goal is to become the default platform where developer ecosystems live and grow.
 
 ---
 
-## Why this exists
+## Why This Wins
 
-Falcon is not just another chat clone.
+Falcon competes on platform economics, not chat features.
 
-It explores:
+**1. Developer-first**
+Built around technical workflows, not general social use.
 
-- what a **Discord-like UX** looks like on open identity
-- how **AT Protocol** can support communities, not just social feeds
-- how decentralized identity + structured messaging can coexist
+**2. Structured communities**
+Signal over noise — roles, contributions, and knowledge tied together.
 
----
+**3. Extensible platform**
+Tooling, integrations, and automation built into the foundation.
 
-## Project goals
+**4. Identity and contribution layer**
+Communities organized around participation, not just messages.
 
-- Learn and experiment with AT Protocol capabilities
-- Build a reference implementation for community apps on Bluesky infra
-- Explore scalable real-time messaging architecture
-- Prototype an open alternative to centralized chat ecosystems
-
----
-
-## Contributing
-
-This project is in early development.
-
-Contributions, feedback, and architectural discussions are welcome.
-
-Areas especially useful:
-
-- AT Protocol modeling
-- messaging architecture
-- Electron performance
-- Spring real-time infra
-- UI/UX
+**5. Long-term defensibility**
+Infrastructure, data, and ecosystem leverage — not just UI.
 
 ---
 
-##  Long-term direction
+## Monetization Strategy
 
-Falcon could evolve toward:
+Falcon enters the market through developer communities and expands outward.
 
-- community-owned chat networks
-- federated servers
-- protocol-level messaging standards
-- open developer ecosystem around Falcon lexicons
+### Phase 1 — Paid developer communities
+
+* subscription per community
+* collaboration + moderation + structure
+* tooling for OSS and technical teams
+
+### Phase 2 — Developer tooling layer
+
+* analytics
+* contributor insights
+* moderation tooling
+* automation
+* integrations
+
+### Phase 3 — Platform expansion
+
+* creator communities
+* startups
+* education
+* enterprise internal communities
+
+This follows the proven path used by Slack and other developer-first platforms.
 
 ---
 
-## Author
+## Market Direction
 
-**Johanna**  
-Building open infrastructure experiments around identity, messaging, and community systems.
+Developer communities are becoming core infrastructure:
 
-## Manifesto
+* OSS adoption accelerating
+* API companies building ecosystems
+* AI tooling communities forming rapidly
+* startups building in public
+* protocol and infra ecosystems expanding
 
-The Falcon Manifesto: Sovereign Connection
+The next major community platform will emerge from the developer layer first.
 
-We Believe in Data Sovereignty Communication is a human right, not a corporate asset. By building on the AT Protocol, ProjectFalcon ensures that users—not platforms—own their identities, their relationships, and their data. We aren't building a walled garden; we are building a gate to the open web.
+Falcon is positioned to capture that shift.
 
-UX is the Ultimate Feature Decentralization has failed in the past because it was too difficult to use. ProjectFalcon exists to prove that "Sovereign" can also be "Seamless". We prioritize high-fidelity, real-time UX (Electron/Spring Boot) because beauty and speed are what make a platform feel like home.
+---
 
-Safety by Design, Not as an Afterthought As a founder from a marginalized background, I know that "free speech" without safety is just a vacuum for harassment. Falcon is built with the lived experience that moderation tools must be as robust as the protocol itself. We are building the first decentralized "safe space".
+## Product Direction
 
-The Bridge to the Future We aren't just building a chat app; we are building the Communication Layer for the decentralized social era. We leverage the existing momentum of the ATmosphere to give users immediate value while paving the way for a world where "logging in" means bringing your own soul with you.
+Falcon is being developed as:
 
-Iteration Over Perfection We ship while we’re scared. We code through the "nothing" phase. We are building a million-dollar reality, one commit at a time.
+* a desktop client
+* a backend community infrastructure layer
+* an extensible collaboration platform
+
+Early work includes:
+
+* messaging architecture
+* community structure model
+* identity and roles
+* extensibility foundation
+
+The long-term vision is to define the collaboration layer for developer ecosystems.
+
+---
+
+## Founder Thesis
+
+Software is increasingly built in public, in communities, and across ecosystems.
+
+The tools powering those communities have not evolved to match how developers actually collaborate today.
+
+The next generation of community platforms will not just host conversations — they will structure contribution, identity, and coordination.
+
+Falcon is being built to become that platform.
+
+---
+
+## Repo Status
+
+Early-stage build and architecture exploration.
+
+Current focus:
+
+* platform foundations
+* developer community workflows
+* extensibility
+* infrastructure direction
+
+---
+
+## Contact
+
+Johanna
+https://github.com/JohannaWeb
