@@ -70,13 +70,13 @@ Working on:
 ## Roadmap
 
 ### Phase 1 — Core foundations
-- [ ] AT lexicon definitions for servers/channels/messages
-- [ ] Authentication flow
-- [ ] Basic server & channel management
-- [ ] Desktop client navigation
+- [x] AT lexicon definitions for servers/channels/messages
+- [x] Authentication flow
+- [x] Basic server & channel management
+- [x] Desktop client navigation
 
 ### Phase 2 — Real-time messaging
-- [ ] WebSocket layer
+- [x] WebSocket layer
 - [ ] Presence system
 - [ ] Message streaming
 - [ ] Notifications
