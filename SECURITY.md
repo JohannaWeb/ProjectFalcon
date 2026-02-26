@@ -3,12 +3,6 @@
 ## Overview
 Project Falcon is built on the principle that "Communication is a human right." Security is not a feature but the foundation of our Sovereign Seamless mantra.
 
-## Supported Versions
-| Version | Supported          |
-| ------- | ------------------ |
-| 4.x     | :white_check_mark: |
-| < 4.0   | :x:                |
-
 ## Our Security Philosophy
 1. **Identity Sovereignty**: We leverage DID/PLC for identity. We never hold your private keys.
 2. **Transport Security**: All real-time communication via WebSockets is encrypted using industry-standard TLS 1.3.
