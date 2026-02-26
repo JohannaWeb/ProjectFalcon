@@ -1,6 +1,6 @@
 # Project Falcon: The Sovereign Successor to Slack and Discord
 
-> **"Communication is a human right, not a corporate asset."**
+> **"Communication is a human right; Intelligence is its sovereign multiplier."**
 
 ---
 
@@ -11,35 +11,23 @@
 
 ---
 
-## 1. The Vision: Break the Walled Gardens
-Modern collaboration lives in **"digital prisons"** (Slack, Discord). Our identities and our communities are locked in corporate silos, existing only by the grace of a host. If they deplatform us, our history is erased and our people are scattered.
+## 1. The Vision: Intelligence Without Enclosure
+Modern collaboration lives in digital prisons like Slack and Discord where our identities and histories are locked in corporate silos. Project Falcon is the breakout tool built on the AT Protocol (Bluesky) that provides a high-fidelity, real-time communication layer where the user remains sovereign. We are building a home that no one can take away.
 
-**Project Falcon** is the breakout tool. Built on the **AT Protocol (Bluesky)**, it provides a high-fidelity, real-time communication layer where the **User remains Sovereign**. We are building a home that no one can take away.
+## 2. The Core: The AI SIV (Sovereign Integration Vessel)
+We have moved beyond simple chatbots to the AI SIV which is an autonomous, protocol-native intelligence layer that lives within your sovereign space. Every insight, summary, or moderation action taken by the AI is stamped with a unique DID:PLC to ensure that AI actions are as auditable and transparent as human ones. The AI SIV processes the global Jetstream firehose in real-time using Java 25 and Project Loom to provide community-specific intelligence without ever exporting raw data to a central silo. These vessels maintain rolling conversation context locally to ensure the collective brain of your community is owned by the community itself.
 
-## 2. The Thesis: Sovereign & Seamless
-We are betting on the idea that community resilience is the most important technology of the next decade.
-* **Sovereignty:** Your social graph belongs to you, not a CEO.
-* **Resilience:** We reject the idea that "Decentralized" means "Clunky". 
-* **Moat:** **UX as the Ultimate Feature**.
-
-## 3. The "Moat" (Safety & Sovereignty)
-* **Portable Identity:** Users own their handles and relationships via DID:PLC.
-* **Safety by Design:** Protocol-level moderation tools that empower communities to define their own boundaries without central gatekeepers.
-* **Protocol-First:** A gate to the open web, not a wall around a garden.
+## 3. The Thesis: Sovereign & Seamless
+We are betting on the idea that community resilience is the most important technology of the next decade. Your social graph and your AI insights belong to you rather than a CEO. We reject the idea that decentralized must mean clunky and instead treat Intelligence as a Native Protocol Feature.
 
 ## 4. Market Strategy: Developer-First
-* **Phase 1 — Elite Tech Networks:** Paid access to high-signal developer hubs.
-* **Phase 2 — The Shippers' Layer:** SaaS integration suite (SIV for the open web).
-* **Phase 3 — Platform Expansion:** Scaling to creators and global enterprise.
+In Phase 1 we focus on elite tech networks by offering paid access to high-signal developer hubs powered by AI-driven signal extraction. Phase 2 introduces the shippers' layer which is a suite of AI SIVs for the open web that allows any project to deploy a sovereign and intelligent HQ. Finally, Phase 3 involves platform expansion to creators and global enterprise as the gold standard for identity-plus-intelligence coordination.
 
 ## 5. Technical Maturity
-* **Engine:** Java Spring Boot 4.x + **Project Loom** (Virtual Threads) for high-concurrency performance.
-* **Founders:** **Joana Almeida** (Senior Architect, 9yr experience)
-* **Fidelity:** React + Electron for a low-latency, premium experience.
-* **Security:** Verified identity mapping and anti-spoofing via AT Protocol.
+The engine is built on Java Spring Boot 4.x with Project Loom virtual threads for high-concurrency AI orchestration. Intelligence is managed through multi-provider support for Ollama and Gemini integrated via the Falcon AI Gateway. The project is led by Senior Architect Joana Almeida with nine years of experience. The user interface uses React and Electron for a low-latency and premium experience while security is maintained through verified identity mapping via the AT Protocol.
 
 ---
 
-**"Sovereign can also be Seamless. Join the flight."**
+**"Sovereign can also be Intelligent. Join the flight."**
 
 [**View the Repository**](https://github.com/JohannaWeb/ProjectFalcon)
