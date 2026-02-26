@@ -2,6 +2,7 @@ package app.falcon.api;
 
 import app.falcon.domain.UserSivConfig;
 import app.falcon.repository.UserSivConfigRepository;
+import app.falcon.siv.SivIntelligenceService;
 import app.falcon.siv.SivVessel;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -19,11 +20,18 @@ public class SivController {
 
     private final UserSivConfigRepository repository;
     private final List<SivVessel> vessels;
+    private final SivIntelligenceService intelligenceService;
 
     @GetMapping("/configs")
     public ResponseEntity<List<UserSivConfig>> getConfigs(HttpServletRequest request) {
         String userDid = (String) request.getAttribute(AtprotoAuthFilter.ATTR_USER_DID);
         return ResponseEntity.ok(repository.findByUserDid(userDid));
+    }
+
+    @GetMapping("/intelligence")
+    public ResponseEntity<Map<String, Object>> getIntelligence(HttpServletRequest request) {
+        String userDid = (String) request.getAttribute(AtprotoAuthFilter.ATTR_USER_DID);
+        return ResponseEntity.ok(intelligenceService.fetchAllActivity(userDid));
     }
 
     @PostMapping("/configs")

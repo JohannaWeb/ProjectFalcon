@@ -5,23 +5,33 @@ import { JiraSiv } from './JiraSiv';
 import { VercelSiv } from './VercelSiv';
 
 export const IntelligencePanel: React.FC = () => {
-    const [activeConfigs, setActiveConfigs] = useState<any[]>([]);
+    const [intelligence, setIntelligence] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchConfigs = async () => {
-            const res = await fetch('/api/siv/configs', {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+        const fetchIntelligence = async () => {
+            try {
+                const res = await fetch('/api/siv/intelligence', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                if (res.ok) {
+                    setIntelligence(await res.json());
                 }
-            });
-            if (res.ok) {
-                setActiveConfigs(await res.json());
+            } catch (e) {
+                console.error('Failed to fetch intelligence', e);
+            } finally {
+                setLoading(false);
             }
         };
-        fetchConfigs();
+        fetchIntelligence();
+        const interval = setInterval(fetchIntelligence, 30000); // Faster refresh for real-time feel
+        return () => clearInterval(interval);
     }, []);
 
-    if (activeConfigs.length === 0) return null;
+    if (loading && !intelligence) return <div className="p-4 text-gray-500 animate-pulse">Syncing Sovereignty...</div>;
+    if (!intelligence || !intelligence.activities || Object.keys(intelligence.activities).length === 0) return null;
 
     return (
         <div className="siv-panel bg-gray-900/50 border-l border-gray-800 h-full overflow-y-auto w-80">
@@ -30,12 +40,13 @@ export const IntelligencePanel: React.FC = () => {
                 <span className="text-[10px] bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-full border border-blue-500/30">Active Sovereignty</span>
             </div>
             <div className="flex flex-col">
-                {activeConfigs.map(config => {
-                    switch (config.vesselType) {
-                        case 'github': return <GitHubSiv key="github" vesselType="github" />;
-                        case 'linear': return <LinearSiv key="linear" vesselType="linear" />;
-                        case 'jira': return <JiraSiv key="jira" vesselType="jira" />;
-                        case 'vercel': return <VercelSiv key="vercel" vesselType="vercel" />;
+                {intelligence && intelligence.activities && Object.keys(intelligence.activities).map(type => {
+                    const data = intelligence.activities[type];
+                    switch (type) {
+                        case 'github': return <GitHubSiv key="github" events={data} />;
+                        case 'linear': return <LinearSiv key="linear" issues={data} />;
+                        case 'jira': return <JiraSiv key="jira" issues={data} />;
+                        case 'vercel': return <VercelSiv key="vercel" deployments={data} />;
                         default: return null;
                     }
                 })}

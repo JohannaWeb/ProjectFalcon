@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 interface GitHubEvent {
     id: string;
@@ -9,33 +9,11 @@ interface GitHubEvent {
     payload: any;
 }
 
-export const GitHubSiv: React.FC<{ vesselType: string }> = ({ vesselType }) => {
-    const [events, setEvents] = useState<GitHubEvent[]>([]);
-    const [loading, setLoading] = useState(true);
+export const GitHubSiv: React.FC<{ events: GitHubEvent[] }> = ({ events }) => {
+    // Internal loading is no longer needed as we fetch aggregate data
+    const loading = false;
 
-    useEffect(() => {
-        const fetchActivity = async () => {
-            try {
-                const response = await fetch(`/api/siv/activity/${vesselType}`, {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    }
-                });
-                if (response.ok) {
-                    const data = await response.json();
-                    setEvents(data);
-                }
-            } catch (error) {
-                console.error('Failed to fetch SIV activity', error);
-            } finally {
-                setLoading(loading => false);
-            }
-        };
-
-        fetchActivity();
-        const interval = setInterval(fetchActivity, 60000); // Refresh every minute
-        return () => clearInterval(interval);
-    }, [vesselType]);
+    // Data is now passed from parent
 
     if (loading) return <div className="p-4 text-gray-500 animate-pulse">Sovereign Link initializing...</div>;
     if (events.length === 0) return <div className="p-4 text-gray-500 italic">No recent sovereign activity detected.</div>;

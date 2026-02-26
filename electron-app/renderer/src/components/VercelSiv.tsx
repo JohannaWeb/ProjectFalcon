@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 interface VercelDeployment {
     uid: string;
@@ -9,33 +9,11 @@ interface VercelDeployment {
     creator: { username: string };
 }
 
-export const VercelSiv: React.FC<{ vesselType: string }> = ({ vesselType }) => {
-    const [deployments, setDeployments] = useState<VercelDeployment[]>([]);
-    const [loading, setLoading] = useState(true);
+export const VercelSiv: React.FC<{ deployments: VercelDeployment[] }> = ({ deployments }) => {
+    // Data is now passed from parent
+    const loading = false;
 
-    useEffect(() => {
-        const fetchActivity = async () => {
-            try {
-                const response = await fetch(`/api/siv/activity/${vesselType}`, {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    }
-                });
-                if (response.ok) {
-                    const data = await response.json();
-                    setDeployments(data);
-                }
-            } catch (error) {
-                console.error('Failed to fetch Vercel SIV activity', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchActivity();
-        const interval = setInterval(fetchActivity, 60000);
-        return () => clearInterval(interval);
-    }, [vesselType]);
+    // Internal fetching removed
 
     if (loading) return <div className="p-4 text-gray-500 animate-pulse">Checking Vercel deployments...</div>;
     if (deployments.length === 0) return <div className="p-4 text-gray-500 italic">No Vercel activity detected.</div>;

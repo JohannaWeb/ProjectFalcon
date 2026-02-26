@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 interface LinearIssue {
     id: string;
@@ -7,33 +7,11 @@ interface LinearIssue {
     state: { name: string };
 }
 
-export const LinearSiv: React.FC<{ vesselType: string }> = ({ vesselType }) => {
-    const [issues, setIssues] = useState<LinearIssue[]>([]);
-    const [loading, setLoading] = useState(true);
+export const LinearSiv: React.FC<{ issues: LinearIssue[] }> = ({ issues }) => {
+    // Data is now passed from parent
+    const loading = false;
 
-    useEffect(() => {
-        const fetchActivity = async () => {
-            try {
-                const response = await fetch(`/api/siv/activity/${vesselType}`, {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    }
-                });
-                if (response.ok) {
-                    const data = await response.json();
-                    setIssues(data);
-                }
-            } catch (error) {
-                console.error('Failed to fetch Linear SIV activity', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchActivity();
-        const interval = setInterval(fetchActivity, 60000);
-        return () => clearInterval(interval);
-    }, [vesselType]);
+    // Data fetching logic removed
 
     if (loading) return <div className="p-4 text-gray-500 animate-pulse">Connecting to Linear...</div>;
     if (issues.length === 0) return <div className="p-4 text-gray-500 italic">No Linear issues detected.</div>;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 interface JiraIssue {
     key: string;
@@ -9,33 +9,11 @@ interface JiraIssue {
     };
 }
 
-export const JiraSiv: React.FC<{ vesselType: string }> = ({ vesselType }) => {
-    const [issues, setIssues] = useState<JiraIssue[]>([]);
-    const [loading, setLoading] = useState(true);
+export const JiraSiv: React.FC<{ issues: JiraIssue[] }> = ({ issues }) => {
+    // Data is now passed from parent
+    const loading = false;
 
-    useEffect(() => {
-        const fetchActivity = async () => {
-            try {
-                const response = await fetch(`/api/siv/activity/${vesselType}`, {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    }
-                });
-                if (response.ok) {
-                    const data = await response.json();
-                    setIssues(data);
-                }
-            } catch (error) {
-                console.error('Failed to fetch Jira SIV activity', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchActivity();
-        const interval = setInterval(fetchActivity, 60000);
-        return () => clearInterval(interval);
-    }, [vesselType]);
+    // Internal fetching removed
 
     if (loading) return <div className="p-4 text-gray-500 animate-pulse">Syncing with Jira...</div>;
     if (issues.length === 0) return <div className="p-4 text-gray-500 italic">No Jira activity found.</div>;
