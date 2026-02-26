@@ -1,4 +1,6 @@
+app\falcon\siv\ai\ChannelMemory.class
 app\falcon\siv\vessels\JiraVessel$1.class
+app\falcon\siv\ai\SovereignAgentService.class
 app\falcon\siv\vessels\JiraVessel.class
 app\falcon\siv\api\dto\IntelligenceResponse.class
 app\falcon\siv\vessels\LinearVessel.class
@@ -6,11 +8,16 @@ app\falcon\siv\vessels\GitHubVessel$1.class
 app\falcon\siv\vessels\VercelVessel.class
 app\falcon\siv\vessels\SivVessel.class
 app\falcon\siv\service\JetstreamHandler.class
+app\falcon\siv\ai\AiContextService.class
 app\falcon\siv\api\SivController.class
 app\falcon\siv\SivServiceApplication.class
+app\falcon\siv\ai\FalconAiClient.class
 app\falcon\siv\service\JetstreamService.class
 app\falcon\siv\service\SivIntelligenceService.class
+app\falcon\siv\vessels\AiVessel$AiFactView.class
+app\falcon\siv\vessels\AiVessel.class
 app\falcon\siv\vessels\GitHubVessel.class
 app\falcon\siv\vessels\VercelVessel$1.class
+app\falcon\siv\repository\AiFactRepository.class
 app\falcon\siv\repository\UserSivConfigRepository.class
 app\falcon\siv\vessels\LinearVessel$1.class

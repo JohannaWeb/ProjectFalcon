@@ -1,9 +1,12 @@
 app\falcon\core\domain\UserSivConfig.class
 app\falcon\core\domain\Server$ServerBuilder.class
+app\falcon\core\domain\AiFact$FactType.class
 app\falcon\core\util\TokenEncryptionService.class
 app\falcon\core\domain\Message$MessageBuilder.class
 app\falcon\core\domain\Member$MemberRole.class
 app\falcon\core\domain\TrustRelation$TrustRelationBuilder.class
+app\falcon\core\domain\AiFact$AiFactBuilder.class
+app\falcon\core\domain\AiFact.class
 app\falcon\core\domain\TrustRelation.class
 app\falcon\core\util\JsonMapConverter$1.class
 app\falcon\core\domain\Channel.class

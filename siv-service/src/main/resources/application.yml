@@ -18,3 +18,29 @@ falcon:
     # IMPORTANT: Replace with a securely-generated 32-byte Base64 key in production
     # Generate: openssl rand -base64 32
     token-encryption-key: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+  ai:
+    enabled: false  # Set to true once Ollama/Gemini/OpenAI is configured
+
+    # ─── Ollama (local/sovereign — default) ─────────────────────────────────────
+    base-url: http://localhost:11434/v1
+    api-key: local
+    model: llama3.2
+
+    # ─── Gemini (uncomment to use) ───────────────────────────────────────────────
+    # base-url: https://generativelanguage.googleapis.com/v1beta/openai/
+    # api-key: YOUR_GEMINI_API_KEY
+    # model: gemini-2.0-flash
+
+    # ─── OpenAI (uncomment to use) ───────────────────────────────────────────────
+    # base-url: https://api.openai.com/v1
+    # api-key: YOUR_OPENAI_API_KEY
+    # model: gpt-4o-mini
+
+    # ─── Agent identity ──────────────────────────────────────────────────────────
+    agent-did: "did:plc:falcon-ai-agent"
+    agent-name: "Falcon Sovereign AI"
+
+    # ─── Tuning ──────────────────────────────────────────────────────────────────
+    context-window-size: 50      # messages kept in rolling memory per DID
+    rate-limit-seconds: 60       # min seconds between AI calls per DID
+    max-tracked-dids: 5000       # max DIDs held in memory at once
