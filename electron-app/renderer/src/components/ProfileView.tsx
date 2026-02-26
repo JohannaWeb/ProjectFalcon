@@ -99,5 +99,56 @@ export function ProfileView({ actor, meDid }: Props) {
         </div>
       </div>
     </div>
+
+      {
+    isMe && (
+      <div style={{ marginTop: 40, borderTop: '1px solid var(--border)', paddingTop: 24 }}>
+        <h2 style={{ fontSize: 20, marginBottom: 16 }}>Sovereign Integration Vessels (SIV)</h2>
+        <div style={{ background: 'var(--bg-elevated)', padding: 20, borderRadius: 12, maxWidth: 600 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+            <span style={{ color: 'var(--accent)', fontWeight: 'bold' }}>SIV-01</span>
+            <span style={{ fontWeight: 600 }}>GitHub Integration</span>
+          </div>
+
+          <form onSubmit={async (e) => {
+            e.preventDefault()
+            const target = e.target as any
+            const token = target.token.value
+            const repo = target.repo.value
+
+            const res = await fetch('/api/siv/configs', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+              },
+              body: JSON.stringify({
+                vesselType: 'github',
+                token,
+                config: { repo }
+              })
+            })
+
+            if (res.ok) {
+              alert('Sovereign Link Established.')
+            }
+          }}>
+            <div style={{ marginBottom: 12 }}>
+              <label style={{ display: 'block', fontSize: 12, color: 'var(--text-muted)', marginBottom: 4 }}>Access Token</label>
+              <input name="token" type="password" style={{ width: '100%', padding: 8, background: 'var(--bg-tertiary)', border: '1px solid var(--border)', borderRadius: 4, color: 'var(--text-primary)' }} />
+            </div>
+            <div style={{ marginBottom: 16 }}>
+              <label style={{ display: 'block', fontSize: 12, color: 'var(--text-muted)', marginBottom: 4 }}>Repository (owner/repo)</label>
+              <input name="repo" placeholder="e.g. facebook/react" style={{ width: '100%', padding: 8, background: 'var(--bg-tertiary)', border: '1px solid var(--border)', borderRadius: 4, color: 'var(--text-primary)' }} />
+            </div>
+            <button type="submit" style={{ padding: '8px 16px', background: 'var(--accent)', color: 'white', fontWeight: 600, borderRadius: 4 }}>
+              Save Configuration
+            </button>
+          </form>
+        </div>
+      </div>
+    )
+  }
+    </div >
   )
 }

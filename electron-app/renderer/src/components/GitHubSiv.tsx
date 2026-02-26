@@ -1,0 +1,66 @@
+import React, { useEffect, useState } from 'react';
+
+interface GitHubEvent {
+    id: string;
+    type: string;
+    actor: { login: string };
+    repo: { name: string };
+    created_at: string;
+    payload: any;
+}
+
+export const GitHubSiv: React.FC<{ vesselType: string }> = ({ vesselType }) => {
+    const [events, setEvents] = useState<GitHubEvent[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchActivity = async () => {
+            try {
+                const response = await fetch(`/api/siv/activity/${vesselType}`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    setEvents(data);
+                }
+            } catch (error) {
+                console.error('Failed to fetch SIV activity', error);
+            } finally {
+                setLoading(loading => false);
+            }
+        };
+
+        fetchActivity();
+        const interval = setInterval(fetchActivity, 60000); // Refresh every minute
+        return () => clearInterval(interval);
+    }, [vesselType]);
+
+    if (loading) return <div className="p-4 text-gray-500 animate-pulse">Sovereign Link initializing...</div>;
+    if (events.length === 0) return <div className="p-4 text-gray-500 italic">No recent sovereign activity detected.</div>;
+
+    return (
+        <div className="siv-panel bg-gray-900/50 border-l border-gray-800 h-full overflow-y-auto w-80">
+            <div className="p-4 border-b border-gray-800 flex items-center gap-2">
+                <span className="text-blue-400 font-bold">SIV-01</span>
+                <span className="text-xs text-gray-400 uppercase tracking-widest">GitHub Intelligence</span>
+            </div>
+            <div className="flex flex-col gap-2 p-2">
+                {events.map(event => (
+                    <div key={event.id} className="p-3 bg-gray-800/30 rounded-lg hover:bg-gray-800/50 transition-colors border border-transparent hover:border-blue-500/30 group">
+                        <div className="flex items-center justify-between mb-1">
+                            <span className="text-xs font-medium text-blue-300">{event.type.replace('Event', '')}</span>
+                            <span className="text-[10px] text-gray-500">{new Date(event.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                        </div>
+                        <div className="text-sm text-gray-200">
+                            <span className="font-semibold text-white group-hover:text-blue-200">{event.actor.login}</span>
+                            <span className="mx-1 text-gray-400">at</span>
+                            <span className="text-xs text-gray-300">{event.repo.name.split('/')[1]}</span>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+};
