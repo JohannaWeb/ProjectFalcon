@@ -1,7 +1,7 @@
 package app.falcon.realtime;
 
 import app.falcon.domain.Message;
-import org.springframework.boot.json.JsonWriter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -18,6 +18,7 @@ public class RealtimeBroker {
 
     private final ConcurrentHashMap<String, SessionState> sessions = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Long, Set<String>> subscribersByChannel = new ConcurrentHashMap<>();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public RealtimeBroker() {
     }
@@ -86,9 +87,7 @@ public class RealtimeBroker {
                         "content", msg.getContent(),
                         "authorDid", msg.getAuthorDid(),
                         "authorHandle", msg.getAuthorHandle() != null ? msg.getAuthorHandle() : "",
-                        "createdAt", msg.getCreatedAt().toString()
-                )
-        );
+                        "createdAt", msg.getCreatedAt().toString()));
         String json = toJson(event);
         if (json == null) {
             return;
@@ -108,8 +107,7 @@ public class RealtimeBroker {
                 "eventId", "evt_" + UUID.randomUUID(),
                 "ts", Instant.now().toString(),
                 "type", type,
-                "payload", data
-        );
+                "payload", data);
         String json = toJson(event);
         if (json != null) {
             send(session, json);
@@ -121,7 +119,11 @@ public class RealtimeBroker {
     }
 
     private String toJson(Map<String, Object> payload) {
-        return JsonWriter.compact().write(payload);
+        try {
+            return objectMapper.writeValueAsString(payload);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private void send(WebSocketSession session, String json) {

@@ -69,13 +69,15 @@ public class XrpcFalconController {
             HttpServletRequest request) {
         String userDid = userDid(request);
         String userHandle = userHandle(request).orElse(null);
-        if (body == null) body = Map.of();
+        if (body == null)
+            body = Map.of();
 
         return switch (nsid) {
             case "app.falcon.server.create" -> createServer(userDid, userHandle, body);
             case "app.falcon.server.invite" -> inviteToServer(paramLong(params, "serverId"), userDid, body);
             case "app.falcon.channel.create" -> createChannel(paramLong(params, "serverId"), userDid, body);
-            case "app.falcon.channel.postMessage" -> postMessage(paramLong(params, "channelId"), userDid, userHandle, body);
+            case "app.falcon.channel.postMessage" ->
+                postMessage(paramLong(params, "channelId"), userDid, userHandle, body);
             default -> ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("error", "UnknownMethod", "message", "Unknown XRPC: " + nsid));
         };
@@ -89,7 +91,8 @@ public class XrpcFalconController {
     }
 
     private ResponseEntity<?> getServer(Long serverId, String userDid) {
-        if (serverId == null) return err(HttpStatus.BAD_REQUEST, "InvalidRequest", "serverId required");
+        if (serverId == null)
+            return err(HttpStatus.BAD_REQUEST, "InvalidRequest", "serverId required");
         if (!memberRepository.existsByServerIdAndDid(serverId, userDid)) {
             return err(HttpStatus.FORBIDDEN, "Forbidden", "Not a member");
         }
@@ -102,7 +105,8 @@ public class XrpcFalconController {
         String name = body.containsKey("name") && body.get("name") != null
                 ? body.get("name").toString()
                 : "New Server";
-        if (name.isBlank()) name = "New Server";
+        if (name.isBlank())
+            name = "New Server";
 
         Server server = Server.builder()
                 .name(name)
@@ -132,20 +136,24 @@ public class XrpcFalconController {
     }
 
     private ResponseEntity<?> inviteToServer(Long serverId, String inviterDid, Map<String, Object> body) {
-        if (serverId == null) return err(HttpStatus.BAD_REQUEST, "InvalidRequest", "serverId required");
+        if (serverId == null)
+            return err(HttpStatus.BAD_REQUEST, "InvalidRequest", "serverId required");
         Object h = body.get("handle");
-        if (h == null || h.toString().isBlank()) return err(HttpStatus.BAD_REQUEST, "InvalidRequest", "handle required");
+        if (h == null || h.toString().isBlank())
+            return err(HttpStatus.BAD_REQUEST, "InvalidRequest", "handle required");
         String handle = h.toString().trim();
 
         Optional<Server> serverOpt = serverRepository.findById(serverId);
-        if (serverOpt.isEmpty()) return err(HttpStatus.NOT_FOUND, "NotFound", "Server not found");
+        if (serverOpt.isEmpty())
+            return err(HttpStatus.NOT_FOUND, "NotFound", "Server not found");
         Server server = serverOpt.get();
 
         boolean canInvite = server.getOwnerDid().equals(inviterDid)
                 || memberRepository.findByServerIdAndDid(serverId, inviterDid)
                         .map(m -> m.getRole() == Member.MemberRole.MODERATOR || m.getRole() == Member.MemberRole.OWNER)
                         .orElse(false);
-        if (!canInvite) return err(HttpStatus.FORBIDDEN, "Forbidden", "Cannot invite");
+        if (!canInvite)
+            return err(HttpStatus.FORBIDDEN, "Forbidden", "Cannot invite");
 
         String did;
         try {
@@ -153,7 +161,8 @@ public class XrpcFalconController {
         } catch (AtprotoException e) {
             did = null;
         }
-        if (did == null) return err(HttpStatus.UNPROCESSABLE_ENTITY, "CouldNotResolveHandle", "Could not resolve handle to DID");
+        if (did == null)
+            return err(HttpStatus.UNPROCESSABLE_ENTITY, "CouldNotResolveHandle", "Could not resolve handle to DID");
         if (memberRepository.existsByServerIdAndDid(serverId, did)) {
             return err(HttpStatus.CONFLICT, "AlreadyMember", "Already a member");
         }
@@ -169,7 +178,8 @@ public class XrpcFalconController {
     }
 
     private ResponseEntity<?> listChannels(Long serverId, String userDid) {
-        if (serverId == null) return err(HttpStatus.BAD_REQUEST, "InvalidRequest", "serverId required");
+        if (serverId == null)
+            return err(HttpStatus.BAD_REQUEST, "InvalidRequest", "serverId required");
         if (!memberRepository.existsByServerIdAndDid(serverId, userDid)) {
             return err(HttpStatus.FORBIDDEN, "Forbidden", "Not a member");
         }
@@ -180,18 +190,19 @@ public class XrpcFalconController {
     }
 
     private ResponseEntity<?> createChannel(Long serverId, String userDid, Map<String, Object> body) {
-        if (serverId == null) return err(HttpStatus.BAD_REQUEST, "InvalidRequest", "serverId required");
+        if (serverId == null)
+            return err(HttpStatus.BAD_REQUEST, "InvalidRequest", "serverId required");
         if (memberRepository.findByServerIdAndDid(serverId, userDid).isEmpty()) {
             return err(HttpStatus.NOT_FOUND, "NotFound", "Server not found or not a member");
         }
-        String name = body.containsKey("name") && body.get("name") != null
+        String rawName = body.containsKey("name") && body.get("name") != null
                 ? body.get("name").toString()
                 : "general";
-        if (name.isBlank()) name = "general";
+        final String channelName = rawName.isBlank() ? "general" : rawName;
 
         return serverRepository.findById(serverId)
                 .map(server -> {
-                    Channel ch = Channel.builder().name(name).server(server).build();
+                    Channel ch = Channel.builder().name(channelName).server(server).build();
                     ch = channelRepository.save(ch);
                     return ResponseEntity.status(HttpStatus.CREATED)
                             .body(Map.<String, Object>of("id", ch.getId(), "name", ch.getName(), "serverId", serverId));
@@ -200,7 +211,8 @@ public class XrpcFalconController {
     }
 
     private ResponseEntity<?> getMessages(Long channelId, int limit, String userDid) {
-        if (channelId == null) return err(HttpStatus.BAD_REQUEST, "InvalidRequest", "channelId required");
+        if (channelId == null)
+            return err(HttpStatus.BAD_REQUEST, "InvalidRequest", "channelId required");
         int safeLimit = Math.min(Math.max(1, limit), 100);
 
         return channelRepository.findById(channelId)
@@ -217,9 +229,11 @@ public class XrpcFalconController {
     }
 
     private ResponseEntity<?> postMessage(Long channelId, String userDid, String userHandle, Map<String, Object> body) {
-        if (channelId == null) return err(HttpStatus.BAD_REQUEST, "InvalidRequest", "channelId required");
+        if (channelId == null)
+            return err(HttpStatus.BAD_REQUEST, "InvalidRequest", "channelId required");
         Object c = body.get("content");
-        if (c == null || c.toString().isBlank()) return err(HttpStatus.BAD_REQUEST, "InvalidRequest", "content required");
+        if (c == null || c.toString().isBlank())
+            return err(HttpStatus.BAD_REQUEST, "InvalidRequest", "content required");
         String content = c.toString();
 
         return channelRepository.findById(channelId)
@@ -258,13 +272,14 @@ public class XrpcFalconController {
                 "createdAt", m.getCreatedAt().toString());
     }
 
-    private ResponseEntity<?> err(HttpStatus status, String errorCode, String message) {
-        return ResponseEntity.status(status).body(Map.of("error", errorCode, "message", message));
+    private <T> ResponseEntity<T> err(HttpStatus status, String errorCode, String message) {
+        return (ResponseEntity<T>) ResponseEntity.status(status).body(Map.of("error", errorCode, "message", message));
     }
 
     private static Long paramLong(Map<String, String> params, String key) {
         String v = params.get(key);
-        if (v == null || v.isBlank()) return null;
+        if (v == null || v.isBlank())
+            return null;
         try {
             return Long.parseLong(v);
         } catch (NumberFormatException e) {
@@ -274,7 +289,8 @@ public class XrpcFalconController {
 
     private static int paramInt(Map<String, String> params, String key, int defaultValue) {
         String v = params.get(key);
-        if (v == null || v.isBlank()) return defaultValue;
+        if (v == null || v.isBlank())
+            return defaultValue;
         try {
             return Integer.parseInt(v);
         } catch (NumberFormatException e) {
@@ -284,13 +300,15 @@ public class XrpcFalconController {
 
     private String userDid(HttpServletRequest request) {
         Object did = request.getAttribute(AtprotoAuthFilter.ATTR_USER_DID);
-        if (did instanceof String didValue && !didValue.isBlank()) return didValue;
+        if (did instanceof String didValue && !didValue.isBlank())
+            return didValue;
         throw new IllegalStateException("Missing authenticated DID");
     }
 
     private Optional<String> userHandle(HttpServletRequest request) {
         Object handle = request.getAttribute(AtprotoAuthFilter.ATTR_USER_HANDLE);
-        if (handle instanceof String handleValue && !handleValue.isBlank()) return Optional.of(handleValue);
+        if (handle instanceof String handleValue && !handleValue.isBlank())
+            return Optional.of(handleValue);
         return Optional.empty();
     }
 }

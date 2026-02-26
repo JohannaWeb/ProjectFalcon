@@ -8,13 +8,13 @@ type Props = {
   session: AtpSession
 }
 
-import { GitHubSiv } from './GitHubSiv'
+import { IntelligencePanel } from './IntelligencePanel'
 
 export function ChannelView({ channelId, channelName, session }: Props) {
   const [messages, setMessages] = useState<MessageSummary[]>([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(true)
-  const [showSiv, setShowSiv] = useState(true) // We can make this toggleable
+  const [showIntelligence, setShowIntelligence] = useState(true)
   const sess = { accessJwt: session.accessJwt, did: session.did, handle: session.handle }
 
   const load = () => {
@@ -122,7 +122,7 @@ export function ChannelView({ channelId, channelName, session }: Props) {
         </form>
       </div>
 
-      {showSiv && <GitHubSiv vesselType="github" />}
+      {showIntelligence && <IntelligencePanel />}
     </div>
   )
 }

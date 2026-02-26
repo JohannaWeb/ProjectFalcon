@@ -12,6 +12,9 @@ app:
 spring:
   application:
     name: falcon-backend
+  threads:
+    virtual:
+      enabled: true
   datasource:
     url: jdbc:h2:file:./data/falcon;DB_CLOSE_DELAY=-1
     driver-class-name: org.h2.Driver
