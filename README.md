@@ -34,7 +34,7 @@ We are betting on the idea that community resilience is the most important techn
 
 ## 5. Technical Maturity
 * **Engine:** Java Spring Boot 4.x + **Project Loom** (Virtual Threads) for high-concurrency performance.
-* **Founders:** **Joana Almeida** (Senior Architect, 9yr experience) and **JD**.
+* **Founders:** **Joana Almeida** (Senior Architect, 9yr experience)
 * **Fidelity:** React + Electron for a low-latency, premium experience.
 * **Security:** Verified identity mapping and anti-spoofing via AT Protocol.
 
