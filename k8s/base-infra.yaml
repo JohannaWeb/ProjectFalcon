@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: falcon
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: falcon-config
+  namespace: falcon
+data:
+  TRUST_SERVICE_URL: "http://trust-service:8081"
+  SIV_SERVICE_URL: "http://siv-service:8082"
+  SPRING_PROFILES_ACTIVE: "kubernetes"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: falcon-secrets
+  namespace: falcon
+type: Opaque
+data:
+  # Base64 encoded placeholders. 
+  # ENC_KEY = openssl rand -base64 32
+  TOKEN_ENCRYPTION_KEY: "Y2hhbmdlbWU=" # "changeme" placeholder

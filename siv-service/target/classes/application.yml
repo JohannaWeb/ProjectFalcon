@@ -13,6 +13,26 @@ spring:
 server:
   port: 8082
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    tags:
+      application: ${spring.application.name}
+      service: siv-service
+
+logging:
+  file:
+    path: logs/siv
+  pattern:
+    file: "%d{yyyy-MM-dd'T'HH:mm:ss.SSSZ} %5p %PID --- [%t] %-40.40logger{39} : %m%n"
+
+
 falcon:
   security:
     # IMPORTANT: Replace with a securely-generated 32-byte Base64 key in production

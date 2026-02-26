@@ -1,0 +1,39 @@
+global:
+  scrape_interval: 15s       # pull metrics every 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: falcon-local
+    environment: development
+
+scrape_configs:
+
+  # ─── Prometheus self-monitoring ───────────────────────────────────────────────
+  - job_name: prometheus
+    static_configs:
+      - targets: [localhost:9090]
+        labels:
+          service: prometheus
+
+  # ─── Falcon Gateway (port 8080) ───────────────────────────────────────────────
+  - job_name: falcon-gateway
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [falcon-gateway:8080, host.docker.internal:8080]
+        labels:
+          service: falcon-gateway
+
+  # ─── Trust Service (port 8081) ────────────────────────────────────────────────
+  - job_name: trust-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [trust-service:8081, host.docker.internal:8081]
+        labels:
+          service: trust-service
+
+  # ─── SIV Service (port 8082) ──────────────────────────────────────────────────
+  - job_name: siv-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [siv-service:8082, host.docker.internal:8082]
+        labels:
+          service: siv-service

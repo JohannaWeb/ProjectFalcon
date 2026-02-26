@@ -1,0 +1,26 @@
+{
+  "name": "projectfalcon",
+  "version": "1.0.0",
+  "description": "> **\"Communication is a human right, not a corporate asset.\"**",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JohannaWeb/ProjectFalcon.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/JohannaWeb/ProjectFalcon/issues"
+  },
+  "homepage": "https://github.com/JohannaWeb/ProjectFalcon#readme",
+  "dependencies": {
+    "docx": "^9.6.0",
+    "puppeteer": "^24.37.5",
+    "puppeteer-core": "^24.37.5"
+  }
+}

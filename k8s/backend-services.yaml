@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trust-service
+  namespace: falcon
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: trust-service
+  template:
+    metadata:
+      labels:
+        app: trust-service
+    spec:
+      containers:
+      - name: trust-service
+        image: falcon-trust-service:latest
+        ports:
+        - containerPort: 8081
+        envFrom:
+        - configMapRef:
+            name: falcon-config
+        - secretRef:
+            name: falcon-secrets
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: trust-service
+  namespace: falcon
+spec:
+  selector:
+    app: trust-service
+  ports:
+  - protocol: TCP
+    port: 8081
+    targetPort: 8081
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: siv-service
+  namespace: falcon
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: siv-service
+  template:
+    metadata:
+      labels:
+        app: siv-service
+    spec:
+      containers:
+      - name: siv-service
+        image: falcon-siv-service:latest
+        ports:
+        - containerPort: 8082
+        envFrom:
+        - configMapRef:
+            name: falcon-config
+        - secretRef:
+            name: falcon-secrets
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: siv-service
+  namespace: falcon
+spec:
+  selector:
+    app: siv-service
+  ports:
+  - protocol: TCP
+    port: 8082
+    targetPort: 8082

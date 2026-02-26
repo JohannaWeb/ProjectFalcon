@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: falcon-gateway
+  namespace: falcon
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: falcon-gateway
+  template:
+    metadata:
+      labels:
+        app: falcon-gateway
+    spec:
+      containers:
+      - name: falcon-gateway
+        image: falcon-gateway:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: FALCON_SERVICES_TRUST_URL
+          valueFrom:
+            configMapKeyRef:
+              name: falcon-config
+              key: TRUST_SERVICE_URL
+        - name: FALCON_SERVICES_SIV_URL
+          valueFrom:
+            configMapKeyRef:
+              name: falcon-config
+              key: SIV_SERVICE_URL
+        envFrom:
+        - configMapRef:
+            name: falcon-config
+        - secretRef:
+            name: falcon-secrets
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: falcon-gateway
+  namespace: falcon
+spec:
+  type: LoadBalancer
+  selector:
+    app: falcon-gateway
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080

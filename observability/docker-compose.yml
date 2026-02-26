@@ -1,0 +1,90 @@
+# Falcon Observability Stack
+#
+# Services:
+#   prometheus  :9090  — metrics collection & storage
+#   grafana     :3001  — dashboards (avoids conflict with Electron's :3000)
+#   loki        :3100  — log aggregation backend
+#   promtail    -      — log shipper → Loki
+#
+# Usage:
+#   docker-compose -f observability/docker-compose.yml up -d
+#
+# After startup:
+#   Grafana:    http://localhost:3001  (admin / falcon)
+#   Prometheus: http://localhost:9090
+
+version: "3.9"
+
+networks:
+  falcon-obs:
+    driver: bridge
+
+volumes:
+  prometheus-data:
+  grafana-data:
+  loki-data:
+
+services:
+
+  # ─── Prometheus ────────────────────────────────────────────────────────────────
+  prometheus:
+    image: prom/prometheus:v2.51.2
+    container_name: falcon-prometheus
+    restart: unless-stopped
+    networks: [falcon-obs]
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--storage.tsdb.retention.time=30d"
+      - "--web.enable-lifecycle"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  # reach services on host
+
+  # ─── Grafana ───────────────────────────────────────────────────────────────────
+  grafana:
+    image: grafana/grafana:10.4.2
+    container_name: falcon-grafana
+    restart: unless-stopped
+    networks: [falcon-obs]
+    ports:
+      - "3001:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: falcon
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_SERVER_ROOT_URL: "http://localhost:3001"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+
+  # ─── Loki ──────────────────────────────────────────────────────────────────────
+  loki:
+    image: grafana/loki:2.9.7
+    container_name: falcon-loki
+    restart: unless-stopped
+    networks: [falcon-obs]
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./loki/loki-config.yml:/etc/loki/config.yml:ro
+      - loki-data:/loki
+    command: -config.file=/etc/loki/config.yml
+
+  # ─── Promtail ──────────────────────────────────────────────────────────────────
+  promtail:
+    image: grafana/promtail:2.9.7
+    container_name: falcon-promtail
+    restart: unless-stopped
+    networks: [falcon-obs]
+    volumes:
+      - ./promtail/promtail-config.yml:/etc/promtail/config.yml:ro
+      # Mount the host log directory — services write here when file logging is configured
+      - ../logs:/var/log/falcon:ro
+    command: -config.file=/etc/promtail/config.yml
+    depends_on: [loki]

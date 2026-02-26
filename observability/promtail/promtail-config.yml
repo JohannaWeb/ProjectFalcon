@@ -1,0 +1,53 @@
+server:
+  http_listen_port: 9080
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+
+scrape_configs:
+
+  # ─── Falcon Gateway logs ──────────────────────────────────────────────────────
+  - job_name: falcon-gateway
+    static_configs:
+      - targets: [localhost]
+        labels:
+          job: falcon-gateway
+          service: falcon-gateway
+          environment: development
+          __path__: /var/log/falcon/gateway/*.log
+
+  # ─── Trust Service logs ───────────────────────────────────────────────────────
+  - job_name: trust-service
+    static_configs:
+      - targets: [localhost]
+        labels:
+          job: trust-service
+          service: trust-service
+          environment: development
+          __path__: /var/log/falcon/trust/*.log
+
+  # ─── SIV Service logs ─────────────────────────────────────────────────────────
+  - job_name: siv-service
+    static_configs:
+      - targets: [localhost]
+        labels:
+          job: siv-service
+          service: siv-service
+          environment: development
+          __path__: /var/log/falcon/siv/*.log
+
+  # ─── Pipeline to parse Spring Boot log format ─────────────────────────────────
+  #     Extracts level, thread, logger from Spring's default pattern
+  pipeline_stages:
+    - regex:
+        expression: '(?P<timestamp>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+Z?)\s+(?P<level>\w+)\s+(?P<pid>\d+)\s+---\s+\[(?P<thread>[^\]]+)\]\s+(?P<logger>\S+)\s+:\s+(?P<message>.*)'
+    - labels:
+        level:
+        thread:
+        logger:
+    - timestamp:
+        source: timestamp
+        format: "2006-01-02T15:04:05.000Z"

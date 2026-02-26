@@ -1,0 +1,120 @@
+version: "3.9"
+
+networks:
+  falcon-net:
+    driver: bridge
+
+volumes:
+  prometheus-data:
+  grafana-data:
+  loki-data:
+
+services:
+  # ─── Core Microservices ───────────────────────────────────────────────────────
+  falcon-gateway:
+    build:
+      context: .
+      target: gateway
+    container_name: falcon-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - FALCON_SERVICES_TRUST_URL=http://trust-service:8081
+      - FALCON_SERVICES_SIV_URL=http://siv-service:8082
+    networks:
+      - falcon-net
+    depends_on:
+      - trust-service
+      - siv-service
+
+  trust-service:
+    build:
+      context: .
+      target: trust-service
+    container_name: trust-service
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - falcon-net
+
+  siv-service:
+    build:
+      context: .
+      target: siv-service
+    container_name: siv-service
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - falcon-net
+
+  # ─── Web Frontend ─────────────────────────────────────────────────────────────
+  falcon-web:
+    build:
+      context: ./falcon-web
+    container_name: falcon-web
+    ports:
+      - "3000:80"
+    networks:
+      - falcon-net
+
+  # ─── Observability (Integrated) ─────────────────────────────────────────────
+  prometheus:
+    image: prom/prometheus:v2.51.2
+    container_name: falcon-prometheus
+    networks:
+      - falcon-net
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./observability/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--storage.tsdb.retention.time=30d"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  grafana:
+    image: grafana/grafana:10.4.2
+    container_name: falcon-grafana
+    networks:
+      - falcon-net
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=falcon
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./observability/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./observability/grafana/dashboards:/var/lib/grafana/dashboards:ro
+
+  loki:
+    image: grafana/loki:2.9.7
+    container_name: falcon-loki
+    networks:
+      - falcon-net
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./observability/loki/loki-config.yml:/etc/loki/config.yml:ro
+      - loki-data:/loki
+    command: -config.file=/etc/loki/config.yml
+
+  promtail:
+    image: grafana/promtail:2.9.7
+    container_name: falcon-promtail
+    networks:
+      - falcon-net
+    volumes:
+      - ./observability/promtail/promtail-config.yml:/etc/promtail/config.yml:ro
+      - ./logs:/var/log/falcon:ro
+    command: -config.file=/etc/promtail/config.yml
+    depends_on:
+      - loki
