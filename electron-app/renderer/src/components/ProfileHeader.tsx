@@ -1,5 +1,6 @@
 import React from 'react'
 import type { AppBskyActorDefs } from '@atproto/api'
+import { TrustIndicator } from './TrustIndicator'
 
 type Props = {
     profile: AppBskyActorDefs.ProfileViewDetailed
@@ -30,7 +31,10 @@ export function ProfileHeader({ profile, isMe, following, handleFollow }: Props)
                 )}
             </div>
             <div>
-                <h1 style={{ fontSize: 24, marginBottom: 4 }}>{profile.displayName ?? profile.handle}</h1>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 4 }}>
+                    <h1 style={{ fontSize: 24, margin: 0 }}>{profile.displayName ?? profile.handle}</h1>
+                    <TrustIndicator targetDid={profile.did} />
+                </div>
                 <p style={{ color: 'var(--text-muted)', marginBottom: 8 }}>@{profile.handle}</p>
                 {profile.description && (
                     <p style={{ maxWidth: 480, lineHeight: 1.5, marginBottom: 12 }}>{profile.description}</p>
