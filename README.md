@@ -4,40 +4,39 @@
 
 ---
 
-### Dedicatory
-**To JD:** For the spark that ignited the engine. This is the 1% vision realized.
+### Dedications
+**JD:** For the spark that ignited the engine. You saw the 1% vision when no one else did. This is our flight.
+
+**Matt:** My anchor. Thank you for holding the line while I was building the sky. I wouldn't be here without you.
 
 ---
 
 ## 1. The Vision: Break the Walled Gardens
-Modern collaboration lives in **"digital prisons"** (Slack, Discord). Your identity, your data, and your community are locked inside corporate silos. If the platform dies or deplatforms you, your "digital soul" is lost.
+Modern collaboration lives in **"digital prisons"** (Slack, Discord). Our identities and our communities are locked in corporate silos, existing only by the grace of a host. If they deplatform us, our history is erased and our people are scattered.
 
-**Project Falcon** is the breakout tool. Built on the **AT Protocol (Bluesky)**, it provides a high-fidelity, real-time communication layer where the **User remains Sovereign**.
+**Project Falcon** is the breakout tool. Built on the **AT Protocol (Bluesky)**, it provides a high-fidelity, real-time communication layer where the **User remains Sovereign**. We are building a home that no one can take away.
 
-## 2. The Thesis: Why Falcon Wins
-We are betting on the **"Sovereign Seamless"** mantra. 
-* **Discord** is built for gamers.
-* **Slack** is built for legacy enterprise.
-* **Falcon** is built for the **Decentralized Social Era**.
-
-We reject the idea that "Decentralized" means "Clunky". Our moat is **UX as the Ultimate Feature**.
+## 2. The Thesis: Sovereign & Seamless
+We are betting on the idea that community resilience is the most important technology of the next decade.
+* **Sovereignty:** Your social graph belongs to you, not a CEO.
+* **Resilience:** We reject the idea that "Decentralized" means "Clunky". 
+* **Moat:** **UX as the Ultimate Feature**.
 
 ## 3. The "Moat" (Safety & Sovereignty)
-* **Portable Identity:** Users own their handles and relationships via DID/PLC.
-* **Safety by Design:** Architecture-level moderation tools that prevent the "decentralized chaos" of early-gen protocols.
-* **Protocol-First:** We are building a **gate** to the open web, not a **wall** around a garden.
+* **Portable Identity:** Users own their handles and relationships via DID:PLC.
+* **Safety by Design:** Protocol-level moderation tools that empower communities to define their own boundaries without central gatekeepers.
+* **Protocol-First:** A gate to the open web, not a wall around a garden.
 
-## 4. The Market Opportunity: Developer-First
-We are starting with the highest-value early adopters: **Developers**.
-* **Phase 1 — Elite Tech Networks:** Paid access to "high-signal" developer hubs.
-* **Phase 2 — The Shippers' Layer:** A SaaS integration suite (SIV for the open web, context-aware AI tools).
-* **Phase 3 — Platform Expansion:** Scaling the "Sovereign Seamless" experience to creators and global enterprise.
+## 4. Market Strategy: Developer-First
+* **Phase 1 — Elite Tech Networks:** Paid access to high-signal developer hubs.
+* **Phase 2 — The Shippers' Layer:** SaaS integration suite (SIV for the open web).
+* **Phase 3 — Platform Expansion:** Scaling to creators and global enterprise.
 
-## 5. Technical Maturity & The Founders
-* **High-Performance Engine:** Java Spring Boot 4.x + **Project Loom** (Virtual Threads) for Discord-class performance at scale.
-* **Core Team:** **Joana Almeida** (Senior Architect, 9 years enterprise experience) and **JD** (Strategic Catalyst). 
-* **Desktop Fidelity:** React + Electron for a premium, low-latency experience.
-* **Deep Security:** Verified identity mapping and anti-spoofing at the protocol layer.
+## 5. Technical Maturity
+* **Engine:** Java Spring Boot 4.x + **Project Loom** (Virtual Threads) for high-concurrency performance.
+* **Founders:** **Joana Almeida** (Senior Architect, 9yr experience) and **JD**.
+* **Fidelity:** React + Electron for a low-latency, premium experience.
+* **Security:** Verified identity mapping and anti-spoofing via AT Protocol.
 
 ---
 
