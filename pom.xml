@@ -16,6 +16,13 @@
     <version>0.1.0</version>
     <packaging>pom</packaging>
     <name>Falcon Project Parent</name>
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
     <modules>
         <module>falcon-core</module>
