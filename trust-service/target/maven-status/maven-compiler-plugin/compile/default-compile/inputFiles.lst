@@ -1,4 +1,10 @@
+E:\Juntos\ProjectFalcon\trust-service\src\main\java\app\falcon\trust\api\MembershipController.java
 E:\Juntos\ProjectFalcon\trust-service\src\main\java\app\falcon\trust\api\TrustController.java
 E:\Juntos\ProjectFalcon\trust-service\src\main\java\app\falcon\trust\TrustServiceApplication.java
+E:\Juntos\ProjectFalcon\trust-service\src\main\java\app\falcon\trust\repository\ChannelRepository.java
+E:\Juntos\ProjectFalcon\trust-service\src\main\java\app\falcon\trust\api\dto\TrustScoreResponse.java
+E:\Juntos\ProjectFalcon\trust-service\src\main\java\app\falcon\trust\service\MembershipService.java
 E:\Juntos\ProjectFalcon\trust-service\src\main\java\app\falcon\trust\service\TrustGraphService.java
+E:\Juntos\ProjectFalcon\trust-service\src\main\java\app\falcon\trust\repository\MemberRepository.java
+E:\Juntos\ProjectFalcon\trust-service\src\main\java\app\falcon\trust\api\dto\TrustRelationResponse.java
 E:\Juntos\ProjectFalcon\trust-service\src\main\java\app\falcon\trust\repository\TrustRelationRepository.java

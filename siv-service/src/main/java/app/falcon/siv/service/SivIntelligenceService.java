@@ -1,6 +1,7 @@
 package app.falcon.siv.service;
 
 import app.falcon.core.domain.UserSivConfig;
+import app.falcon.siv.api.dto.IntelligenceResponse;
 import app.falcon.siv.repository.UserSivConfigRepository;
 import app.falcon.siv.vessels.SivVessel;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +19,9 @@ public class SivIntelligenceService {
     private final List<SivVessel> vessels;
     private final UserSivConfigRepository configRepository;
 
-    public Map<String, Object> fetchIntelligence(String userDid) {
+    public IntelligenceResponse fetchIntelligence(String userDid) {
         List<UserSivConfig> configs = configRepository.findByUserDid(userDid);
-        Map<String, Object> intelligence = new ConcurrentHashMap<>();
-        Map<String, List<?>> activities = new ConcurrentHashMap<>();
+        Map<String, Object> activities = new ConcurrentHashMap<>();
 
         try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
             List<CompletableFuture<Void>> futures = configs.stream()
@@ -39,10 +39,6 @@ public class SivIntelligenceService {
             CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
         }
 
-        intelligence.put("status", "success");
-        intelligence.put("activities", activities);
-        intelligence.put("timestamp", java.time.Instant.now().toString());
-
-        return intelligence;
+        return new IntelligenceResponse("success", activities, java.time.Instant.now().toString());
     }
 }

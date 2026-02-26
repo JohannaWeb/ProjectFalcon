@@ -25,3 +25,8 @@ spring:
             - GatedAccessFilter
 server:
   port: 8080
+
+falcon:
+  services:
+    trust-url: http://localhost:8081
+    siv-url: http://localhost:8082

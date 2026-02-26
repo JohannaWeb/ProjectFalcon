@@ -12,7 +12,9 @@ spring:
       ddl-auto: update
 server:
   port: 8082
-  
-# Enable Loom
-# Spring Boot 4 handles this if run on Java 25, 
-# but we can be explicit or rely on default as configured in monolith
+
+falcon:
+  security:
+    # IMPORTANT: Replace with a securely-generated 32-byte Base64 key in production
+    # Generate: openssl rand -base64 32
+    token-encryption-key: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="

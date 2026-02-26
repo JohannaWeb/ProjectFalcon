@@ -8,7 +8,6 @@ import app.falcon.trust.repository.MemberRepository;
 import app.falcon.trust.repository.TrustRelationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -19,6 +18,8 @@ import static org.mockito.Mockito.*;
 
 class MembershipServiceTest {
 
+    private static final String AUTHORITY_DID = "did:plc:authority";
+
     @Mock
     private MemberRepository memberRepository;
     @Mock
@@ -26,12 +27,15 @@ class MembershipServiceTest {
     @Mock
     private TrustRelationRepository trustRelationRepository;
 
-    @InjectMocks
+    // Use explicit constructor so @Value-injected authorityDid is provided
+    // correctly
     private MembershipService membershipService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        membershipService = new MembershipService(
+                memberRepository, channelRepository, trustRelationRepository, AUTHORITY_DID);
     }
 
     @Test
@@ -50,12 +54,12 @@ class MembershipServiceTest {
 
         // Authority trusts user with 0.9 weight
         TrustRelation relation = TrustRelation.builder()
-                .sourceDid("did:plc:authority")
+                .sourceDid(AUTHORITY_DID)
                 .targetDid("did:user")
                 .type(TrustRelation.TrustType.TRUST)
                 .weight(0.9)
                 .build();
-        when(trustRelationRepository.findBySourceDidAndTargetDid("did:plc:authority", "did:user"))
+        when(trustRelationRepository.findBySourceDidAndTargetDid(AUTHORITY_DID, "did:user"))
                 .thenReturn(Optional.of(relation));
         when(memberRepository.findByDidAndServerId("did:user", 1L)).thenReturn(Optional.empty());
 
@@ -68,7 +72,7 @@ class MembershipServiceTest {
         Channel channel = Channel.builder().id(1L).requiredTier("PRO").build();
         when(channelRepository.findById(1L)).thenReturn(Optional.of(channel));
 
-        when(trustRelationRepository.findBySourceDidAndTargetDid("did:plc:authority", "did:user"))
+        when(trustRelationRepository.findBySourceDidAndTargetDid(AUTHORITY_DID, "did:user"))
                 .thenReturn(Optional.empty());
         when(memberRepository.findByDidAndServerId("did:user", 1L)).thenReturn(Optional.empty());
 

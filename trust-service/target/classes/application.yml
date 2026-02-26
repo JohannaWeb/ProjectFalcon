@@ -12,3 +12,11 @@ spring:
       ddl-auto: update
 server:
   port: 8081
+
+falcon:
+  security:
+    # IMPORTANT: Replace with a securely-generated 32-byte Base64 key in production
+    # Generate: openssl rand -base64 32
+    token-encryption-key: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+  trust:
+    authority-did: "did:plc:authority"

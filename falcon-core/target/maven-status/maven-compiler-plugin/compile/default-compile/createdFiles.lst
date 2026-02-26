@@ -1,5 +1,6 @@
 app\falcon\core\domain\UserSivConfig.class
 app\falcon\core\domain\Server$ServerBuilder.class
+app\falcon\core\util\TokenEncryptionService.class
 app\falcon\core\domain\Message$MessageBuilder.class
 app\falcon\core\domain\Member$MemberRole.class
 app\falcon\core\domain\TrustRelation$TrustRelationBuilder.class

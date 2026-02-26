@@ -31,10 +31,7 @@ public class Channel {
 
     @OneToMany(mappedBy = "channel", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
+    @OrderBy("createdAt ASC")
     private List<Message> messages = new ArrayList<>();
 
-    @OrderBy("createdAt ASC")
-    public List<Message> getMessages() {
-        return messages;
-    }
 }

@@ -6,22 +6,30 @@ import app.falcon.core.domain.TrustRelation;
 import app.falcon.trust.repository.ChannelRepository;
 import app.falcon.trust.repository.MemberRepository;
 import app.falcon.trust.repository.TrustRelationRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class MembershipService {
 
     private final MemberRepository memberRepository;
     private final ChannelRepository channelRepository;
     private final TrustRelationRepository trustRelationRepository;
+    private final String authorityDid;
 
-    private static final String AUTHORITY_DID = "did:plc:authority"; // Sovereign Authority DID
+    public MembershipService(MemberRepository memberRepository,
+            ChannelRepository channelRepository,
+            TrustRelationRepository trustRelationRepository,
+            @Value("${falcon.trust.authority-did}") String authorityDid) {
+        this.memberRepository = memberRepository;
+        this.channelRepository = channelRepository;
+        this.trustRelationRepository = trustRelationRepository;
+        this.authorityDid = authorityDid;
+    }
 
     public boolean verifyAccess(String userDid, Long serverId, Long channelId) {
         Optional<Channel> channelOpt = channelRepository.findById(channelId);
@@ -55,7 +63,7 @@ public class MembershipService {
         }
 
         // 2. Logic: If Authority TRUSTS User with weight > 0.8 -> PRO
-        Optional<TrustRelation> relation = trustRelationRepository.findBySourceDidAndTargetDid(AUTHORITY_DID, userDid);
+        Optional<TrustRelation> relation = trustRelationRepository.findBySourceDidAndTargetDid(authorityDid, userDid);
         if (relation.isPresent() && relation.get().getType() == TrustRelation.TrustType.TRUST) {
             Double weight = relation.get().getWeight();
             if (weight != null && weight > 0.8) {

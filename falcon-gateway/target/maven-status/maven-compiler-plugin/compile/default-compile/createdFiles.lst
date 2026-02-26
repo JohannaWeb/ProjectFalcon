@@ -1,3 +1,6 @@
-app\falcon\gateway\GatewayApplication.class
+app\falcon\gateway\filter\GatedAccessFilter$Config.class
+app\falcon\gateway\filter\GatedAccessFilter.class
 app\falcon\gateway\filter\AtprotoAuthFilter$Config.class
 app\falcon\gateway\filter\AtprotoAuthFilter.class
+app\falcon\gateway\service\DidResolver.class
+app\falcon\gateway\GatewayApplication.class

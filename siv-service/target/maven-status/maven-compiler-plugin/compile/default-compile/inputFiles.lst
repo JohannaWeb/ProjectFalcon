@@ -1,6 +1,9 @@
 E:\Juntos\ProjectFalcon\siv-service\src\main\java\app\falcon\siv\SivServiceApplication.java
 E:\Juntos\ProjectFalcon\siv-service\src\main\java\app\falcon\siv\vessels\SivVessel.java
+E:\Juntos\ProjectFalcon\siv-service\src\main\java\app\falcon\siv\api\dto\IntelligenceResponse.java
+E:\Juntos\ProjectFalcon\siv-service\src\main\java\app\falcon\siv\service\JetstreamService.java
 E:\Juntos\ProjectFalcon\siv-service\src\main\java\app\falcon\siv\vessels\LinearVessel.java
+E:\Juntos\ProjectFalcon\siv-service\src\main\java\app\falcon\siv\service\JetstreamHandler.java
 E:\Juntos\ProjectFalcon\siv-service\src\main\java\app\falcon\siv\vessels\VercelVessel.java
 E:\Juntos\ProjectFalcon\siv-service\src\main\java\app\falcon\siv\service\SivIntelligenceService.java
 E:\Juntos\ProjectFalcon\siv-service\src\main\java\app\falcon\siv\vessels\GitHubVessel.java
