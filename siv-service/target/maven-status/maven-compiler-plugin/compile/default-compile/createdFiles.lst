@@ -1,0 +1,9 @@
+app\falcon\siv\vessels\SivVessel.class
+app\falcon\siv\api\SivController.class
+app\falcon\siv\SivServiceApplication.class
+app\falcon\siv\vessels\JiraVessel.class
+app\falcon\siv\service\SivIntelligenceService.class
+app\falcon\siv\vessels\GitHubVessel.class
+app\falcon\siv\vessels\LinearVessel.class
+app\falcon\siv\repository\UserSivConfigRepository.class
+app\falcon\siv\vessels\VercelVessel.class

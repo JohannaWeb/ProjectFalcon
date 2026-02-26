@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: trust-service
+  datasource:
+    url: jdbc:h2:mem:trustdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+server:
+  port: 8081

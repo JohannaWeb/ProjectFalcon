@@ -1,0 +1,16 @@
+app\falcon\core\domain\UserSivConfig.class
+app\falcon\core\domain\Server$ServerBuilder.class
+app\falcon\core\domain\Message$MessageBuilder.class
+app\falcon\core\domain\Member$MemberRole.class
+app\falcon\core\domain\TrustRelation$TrustRelationBuilder.class
+app\falcon\core\domain\TrustRelation.class
+app\falcon\core\util\JsonMapConverter$1.class
+app\falcon\core\domain\Channel.class
+app\falcon\core\domain\TrustRelation$TrustType.class
+app\falcon\core\domain\UserSivConfig$UserSivConfigBuilder.class
+app\falcon\core\domain\Member$MemberBuilder.class
+app\falcon\core\domain\Server.class
+app\falcon\core\util\JsonMapConverter.class
+app\falcon\core\domain\Message.class
+app\falcon\core\domain\Channel$ChannelBuilder.class
+app\falcon\core\domain\Member.class

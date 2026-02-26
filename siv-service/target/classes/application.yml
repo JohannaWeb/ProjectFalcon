@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: siv-service
+  datasource:
+    url: jdbc:h2:mem:sivdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+server:
+  port: 8082
+  
+# Enable Loom
+# Spring Boot 4 handles this if run on Java 25, 
+# but we can be explicit or rely on default as configured in monolith

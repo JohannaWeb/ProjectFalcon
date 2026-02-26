@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: falcon-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: trust-service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/trust/**
+          filters:
+            - AtprotoAuthFilter
+        - id: siv-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/siv/**
+          filters:
+            - AtprotoAuthFilter
+server:
+  port: 8080
