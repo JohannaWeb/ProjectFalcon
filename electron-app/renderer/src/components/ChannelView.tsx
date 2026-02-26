@@ -9,12 +9,14 @@ type Props = {
 }
 
 import { IntelligencePanel } from './IntelligencePanel'
+import { GifPicker } from './GifPicker'
 
 export function ChannelView({ channelId, channelName, session }: Props) {
   const [messages, setMessages] = useState<MessageSummary[]>([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(true)
   const [showIntelligence, setShowIntelligence] = useState(true)
+  const [showGifs, setShowGifs] = useState(false)
   const sess = { accessJwt: session.accessJwt, did: session.did, handle: session.handle }
 
   const load = () => {
@@ -62,14 +64,27 @@ export function ChannelView({ channelId, channelName, session }: Props) {
     }
   }, [channelId, session.accessJwt, session.did, session.handle])
 
-  const handleSend = (e: React.FormEvent) => {
-    e.preventDefault()
-    const text = input.trim()
+  const handleSend = (e?: React.FormEvent, contentOverride?: string) => {
+    if (e) e.preventDefault()
+    const text = contentOverride || input.trim()
     if (!text) return
     setInput('')
     backendApi.postMessage(channelId, sess, text).then((created) => {
       setMessages((prev) => (prev.some((m) => m.id === created.id) ? prev : [created, ...prev]))
     })
+  }
+
+  const renderContent = (content: string) => {
+    if (content.match(/^https?:\/\/.*\.giphy\.com\/.*$/) || content.match(/^https?:\/\/.*\.media.*\.giphy\.com\/.*$/)) {
+      return (
+        <img
+          src={content}
+          alt="GIF"
+          style={{ maxWidth: '100%', maxHeight: 300, borderRadius: 8, marginTop: 4, display: 'block' }}
+        />
+      )
+    }
+    return <p style={{ marginTop: 4, whiteSpace: 'pre-wrap' }}>{content}</p>
   }
 
   return (
@@ -89,37 +104,69 @@ export function ChannelView({ channelId, channelName, session }: Props) {
                 borderBottom: '1px solid var(--border)',
               }}
             >
-              <span style={{ fontWeight: 600, color: 'var(--text-primary)', marginRight: 8 }}>
-                {m.authorHandle || m.authorDid.slice(0, 12)}
-              </span>
-              <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>
-                {new Date(m.createdAt).toLocaleString()}
-              </span>
-              <p style={{ marginTop: 4, whiteSpace: 'pre-wrap' }}>{m.content}</p>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+                <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>
+                  {m.authorHandle || m.authorDid.slice(0, 12)}
+                </span>
+                <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+                  {new Date(m.createdAt).toLocaleString()}
+                </span>
+              </div>
+              {renderContent(m.content)}
             </div>
           ))}
         </div>
-        <form onSubmit={handleSend}>
-          <input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder={`Message #${channelName}`}
-            style={{
-              width: '100%',
-              padding: 12,
-              background: 'var(--bg-tertiary)',
-              border: '1px solid var(--border)',
-              borderRadius: 8,
-              color: 'var(--text-primary)',
-            }}
-          />
-          <button
-            type="submit"
-            style={{ marginTop: 8, padding: '8px 16px', background: 'var(--accent)', color: 'white', fontWeight: 600 }}
-          >
-            Send
-          </button>
-        </form>
+        <div style={{ position: 'relative' }}>
+          {showGifs && (
+            <GifPicker
+              onSelect={(url) => {
+                handleSend(undefined, url)
+                setShowGifs(false)
+              }}
+              onClose={() => setShowGifs(false)}
+            />
+          )}
+          <form onSubmit={handleSend} style={{ display: 'flex', gap: 8 }}>
+            <div style={{ flex: 1, position: 'relative' }}>
+              <input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder={`Message #${channelName}`}
+                style={{
+                  width: '100%',
+                  padding: 12,
+                  paddingRight: 50,
+                  background: 'var(--bg-tertiary)',
+                  border: '1px solid var(--border)',
+                  borderRadius: 8,
+                  color: 'var(--text-primary)',
+                }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowGifs(!showGifs)}
+                style={{
+                  position: 'absolute',
+                  right: 8,
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'none',
+                  fontSize: 20,
+                  cursor: 'pointer'
+                }}
+              >
+                🐱
+              </button>
+            </div>
+            <button
+              type="submit"
+              disabled={!input.trim()}
+              style={{ padding: '8px 24px', background: 'var(--accent)', color: 'white', fontWeight: 600, borderRadius: 8 }}
+            >
+              Send
+            </button>
+          </form>
+        </div>
       </div>
 
       {showIntelligence && <IntelligencePanel />}

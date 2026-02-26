@@ -26,6 +26,9 @@ public class Channel {
     @JoinColumn(name = "server_id", nullable = false)
     private Server server;
 
+    @Column(name = "required_tier")
+    private String requiredTier;
+
     @OneToMany(mappedBy = "channel", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Message> messages = new ArrayList<>();

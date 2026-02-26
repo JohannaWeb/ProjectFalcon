@@ -31,6 +31,9 @@ public class Member {
     @Builder.Default
     private MemberRole role = MemberRole.MEMBER;
 
+    @Column(name = "membership_tier")
+    private String membershipTier;
+
     public enum MemberRole {
         OWNER, MODERATOR, MEMBER
     }

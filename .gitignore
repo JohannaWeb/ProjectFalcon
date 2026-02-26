@@ -10,10 +10,10 @@ npm-debug.log*
 *.local
 
 # Java / Maven
-backend/target/
-backend/data/
-backend/.mvn/wrapper/maven-wrapper.jar
-!backend/.mvn/wrapper/maven-wrapper.properties
+**/target/
+**/data/
+**/.mvn/wrapper/maven-wrapper.jar
+!**/.mvn/wrapper/maven-wrapper.properties
 
 # IDE
 .idea/

@@ -16,5 +16,12 @@ spring:
             - Path=/api/siv/**
           filters:
             - AtprotoAuthFilter
+        - id: chat-gated
+          uri: http://localhost:8083 # Assuming chat service or similar handles this
+          predicates:
+            - Path=/api/messages/**
+          filters:
+            - AtprotoAuthFilter
+            - GatedAccessFilter
 server:
   port: 8080
