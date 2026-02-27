@@ -1,11 +1,12 @@
 app\falcon\trust\repository\ChannelRepository.class
 app\falcon\trust\api\TrustController.class
+app\falcon\trust\service\EasService.class
 app\falcon\trust\TrustServiceApplication.class
 app\falcon\trust\service\TrustGraphService.class
 app\falcon\trust\api\dto\TrustRelationResponse.class
 app\falcon\trust\repository\TrustRelationRepository.class
+app\falcon\trust\service\TrustGraphService$1.class
 app\falcon\trust\repository\MemberRepository.class
 app\falcon\trust\service\MembershipService.class
 app\falcon\trust\api\dto\TrustScoreResponse.class
 app\falcon\trust\api\MembershipController.class
-app\falcon\trust\service\TrustGraphService$1.class
