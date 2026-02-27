@@ -9,8 +9,8 @@ Where Discord owns your identity and Slack owns your data, Falcon owns neither. 
 ---
 
 ## Technical Nerding
-🟢 CI: 21s avg
-⚡ Time to feedback: <30s
+ CI: 21s avg
+ Time to feedback: <30s
 
 ## Why
 
