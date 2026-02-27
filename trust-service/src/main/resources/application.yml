@@ -39,3 +39,9 @@ falcon:
     token-encryption-key: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
   trust:
     authority-did: "did:plc:authority"
+    eas:
+      # Sepolia Testnet Defaults for Development
+      rpc-url: "https://rpc.sepolia.org"
+      private-key: ${FALCON_EAS_PRIVATE_KEY:0000000000000000000000000000000000000000000000000000000000000000}
+      contract-address: "0xC2679fBD37d54388Ce493F1DB75320D236e1815e"
+      schema-uid: "0x36481fc7cd306c529ba858850689e4c16a1253a65b827df617f6f1c4df9e6b4d"
