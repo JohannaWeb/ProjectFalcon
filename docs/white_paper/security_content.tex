@@ -1,0 +1,21 @@
+\section{Security & Adversarial Resistance}
+
+Falcon is architected for an environment where participants are assumed to be rational and potentially adversarial agents. The protocol employs three primary mechanisms to ensure the integrity of the trust score $S(u, v)$ in the face of coordinated attacks.
+
+\subsection{Non-Linear Sybil Resistance}
+The most prevalent threat to decentralized reputation is the Sybil attack, where an adversary creates a large number of identities to inflate a target's score. Falcon mitigates this through the non-linear squashing function $\sigma(x) = \tanh(\kappa x)$. 
+
+As the aggregate trust from intermediate bridges $w$ increases, the marginal gain for $S(u, v)$ follows a diminishing returns curve. An adversary attempting to "farm" trust must exponentially increase the number of high-reputation bridges to achieve a linear increase in the target's final score, significantly raising the economic cost of the attack.
+
+\subsection{Transitive Integrity and Entropy Penalties}
+Unlike static web-of-trust models, Falcon analyzes the \textit{consistency} of bridge reports. If a set of bridges $B(u, v)$ provides highly divergent scores for a target $v$, the system identifies a "Trust Conflict." 
+
+We define the conflict coefficient $C$ as the normalized variance of bridge reports. When $C$ exceeds a threshold $\theta$, the protocol applies an entropy penalty:
+\[ S_{final} = S(u, v) \cdot (1 - C) \]
+This ensures that "Controversial" entities—those who are trusted by one cluster but distrusted by another—cannot achieve a "Perfectly Trusted" status, regardless of the sheer number of trusting bridges.
+
+\subsection{Proof of Continuous Integrity (Temporal Decay)}
+Temporal decay ($e^{-\lambda \Delta t}$) serves as a dynamic security layer. It forces an adversary to maintain a "Proof of Activity." To keep a fraudulent reputation score high, an attacker must continuously forge high-integrity interactions across their bridge network. Stale relations naturally revert to a neutral state ($0.0$), ensuring that the system's "memory" is prioritized toward recent, verified cryptographic proof.
+
+\subsection{Cryptographic Hardening at the Edge}
+To prevent DID-spoofing and token replay attacks, the Falcon Gateway enforces strict ECDSA verification (Secp256k1/P-256) at the entry point. By resolving the DID document and verifying the JWT signature against the raw public key coordinates found in the user’s sovereign record, Falcon ensures that every reputation update is backed by an authentic, cryptographically-proven identity.

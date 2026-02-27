@@ -35,12 +35,7 @@ Falcon merges social identity with work identity through SIVs. These high-throug
 % Include the math section here
 \input{math_content.tex}
 
-\section{Security & Adversarial Resistance}
-Falcon is designed with the assumption of an adversarial environment.
-\begin{itemize}
-    \item \textbf{Sybil Resistance:} The non-linear $tanh$ squashing function ensures that adding thousands of low-quality "trust votes" results in diminishing returns, making large-scale reputation farming economically unviable.
-    \item \textbf{Temporal Rot:} Trust is treated as a decaying resource. Without continuous high-integrity interaction, a user's score naturally reverts to the baseline, forcing continuous proof-of-humanity.
-\end{itemize}
+\input{security_content.tex}
 
 \section{On-Chain Attestation}
 To ensure interoperability, Falcon scores are registered on the Ethereum Attestation Service (EAS). This allows external protocols to "gate" access based on Falcon reputation scores without needing direct access to the Falcon backend.
