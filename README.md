@@ -8,6 +8,10 @@ Where Discord owns your identity and Slack owns your data, Falcon owns neither. 
 
 ---
 
+## Technical Nerding
+🟢 CI: 21s avg
+⚡ Time to feedback: <30s
+
 ## Why
 
 Every collaboration platform you use today is a walled garden. Your Slack messages belong to Slack. Your Discord servers belong to Discord. Your identity is a username in someone else's database. Your AI assistants are black boxes controlled by single corporations.
