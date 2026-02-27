@@ -1,6 +1,6 @@
 // type Props = ... (imports handled)
 
-export type View = 'feed' | 'dms' | 'explore' | 'notifications' | 'search' | 'profile'
+export type View = 'feed' | 'dms' | 'explore' | 'notifications' | 'search' | 'profile' | 'protocol'
 
 const HOME_CHANNELS: { id: View; name: string; icon: string }[] = [
   { id: 'feed', name: 'Home feed', icon: '📜' },
@@ -9,6 +9,7 @@ const HOME_CHANNELS: { id: View; name: string; icon: string }[] = [
   { id: 'explore', name: 'Explore', icon: '🌐' },
   { id: 'dms', name: 'Messages', icon: '✉️' },
   { id: 'profile', name: 'My profile', icon: '👤' },
+  { id: 'protocol', name: 'Protocol', icon: '📄' },
 ]
 
 type Props =

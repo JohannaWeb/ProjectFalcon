@@ -1,0 +1,51 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{geometry}
+\geometry{margin=1in}
+
+\title{\textbf{Project Falcon: An Adversarial Algorithmic Trust Protocol for Decentralized Social Identity}}
+\author{Johanna Almeida \\ \texttt{johanna@falcon-project.io} \\ \textit{Project Falcon Maintainer}}
+\date{February 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Current digital reputation systems are centrally managed, gammable, and fail to provide high-integrity verification in adversarial environments. Project Falcon introduces an automated, zero-trust reputation framework designed for the AT Protocol ecosystem. By utilizing subjective transitive trust with temporal decay and non-linear squashing, Falcon establishes a mathematical standard for decentralized trust that is resistant to Sybil attacks and collusion. This paper outlines the architectural implementation, the mathematical foundations of the scoring engine, and the protocol's integration with on-chain attestation services.
+\end{abstract}
+
+\section{Introduction}
+As the digital landscape transitions toward decentralized protocols like AT Protocol, the fundamental problem of identity shifts from "who are you" to "why should I trust you." Centralized platforms have historically monetized this problem through opaque algorithms. Project Falcon flips this paradigm by making trust an undeniable, mathematically-derived protocol utility.
+
+\section{System Architecture}
+Project Falcon is built as a sovereign microservices suite designed for high-concurrency and cryptographic rigor.
+
+\subsection{The Edge Gateway}
+The entry point of the protocol implements a zero-trust model. Every request is verified against the AT Protocol DID (Decentralized Identifier) document. A custom Secp256k1/P-256 JWT validation engine ensures that identities are cryptographically proven before a reputation score is ever calculated.
+
+\subsection{Sovereign Integration Vessels (SIV)}
+Falcon merges social identity with work identity through SIVs. These high-throughput workers, powered by Java 21+ Virtual Threads, ingest real-time activity from platforms like GitHub, Jira, and Linear, providing an empirical baseline for the trust engine.
+
+\section{Mathematical Implementation}
+% Include the math section here
+\input{math_content.tex}
+
+\section{Security & Adversarial Resistance}
+Falcon is designed with the assumption of an adversarial environment.
+\begin{itemize}
+    \item \textbf{Sybil Resistance:} The non-linear $tanh$ squashing function ensures that adding thousands of low-quality "trust votes" results in diminishing returns, making large-scale reputation farming economically unviable.
+    \item \textbf{Temporal Rot:} Trust is treated as a decaying resource. Without continuous high-integrity interaction, a user's score naturally reverts to the baseline, forcing continuous proof-of-humanity.
+\end{itemize}
+
+\section{On-Chain Attestation}
+To ensure interoperability, Falcon scores are registered on the Ethereum Attestation Service (EAS). This allows external protocols to "gate" access based on Falcon reputation scores without needing direct access to the Falcon backend.
+
+\section{Conclusion}
+Project Falcon provides a robust, mathematically rigorous framework for solving the decentralized reputation problem. By moving trust from the realm of corporate heuristic to algorithmic standard, we enable a truly sovereign social layer for the internet.
+
+\end{document}

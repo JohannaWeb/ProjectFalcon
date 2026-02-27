@@ -1,0 +1,6 @@
+{
+    "name": "Project Falcon Trust Attestation",
+    "description": "Subjective transitive trust score derived via algorithmic decay and multi-path aggregation.",
+    "schema": "uint256 trustScore, string targetDid, string viewerDid, uint64 timestamp, string version",
+    "revocable": true
+}

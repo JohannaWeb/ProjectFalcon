@@ -1,0 +1,23 @@
+Project Falcon defines trust as a subjective, transitive, and decayable resource. The trust score $T$ between a viewer $u$ and a target $v$ is calculated using a dynamic aggregation of direct observations and transitive bridges.
+
+\subsection{The Temporal Decay Function}
+Trust is not a static attribute; its validity decreases as the observation age increases. We define the temporal weight $W_t$ of a relation established at time $t_{rel}$ as:
+
+\[ W_t(\Delta t) = e^{-\lambda \Delta t} \]
+
+where $\Delta t = t_{now} - t_{rel}$ and $\lambda$ is the decay constant. This ensure that stale identities naturally revert to a neutral state without continuous verification.
+
+\subsection{Subjective Transitive Trust (STT)}
+For a target $v$ with no direct relation to $u$, the score is derived through a set of intermediate bridges $w \in B(u, v)$. The total score $S(u, v)$ is defined as:
+
+\[ S(u, v) = \tanh \left( \frac{\sum_{w \in B(u, v)} T(u, w) \cdot T(w, v) \cdot W_t(\Delta t_w)}{\sum_{w \in B(u, v)} |T(u, w)|} \right) \]
+
+where:
+\begin{itemize}
+    \item $T(u, w)$ is the viewer's trust in the bridge (the "subjective weight").
+    \item $T(w, v)$ is the bridge's observation of the target.
+    \item $\tanh$ is the non-linear squashing function used for Sybil resistance.
+\end{itemize}
+
+\subsection{Adversarial Resistance}
+To prevent "Trust Farming" collateral, the protocol implements a non-linear penalty for conflicting bridges. Significant variance in bridge reports causes the cumulative score to normalize toward zero, flagging the target for manual review.

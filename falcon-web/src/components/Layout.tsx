@@ -8,6 +8,7 @@ import { NotificationsView } from './NotificationsView'
 import { SearchView } from './SearchView'
 import { ExploreView } from './ExploreView'
 import { ChannelView } from './ChannelView'
+import { ProtocolView } from './ProtocolView'
 import { CreateServerModal } from './CreateServerModal'
 import { CreateChannelModal } from './CreateChannelModal'
 import { InviteModal } from './InviteModal'
@@ -27,6 +28,7 @@ const VIEW_TITLES: Record<View, string> = {
   notifications: 'Notifications',
   search: 'Search',
   profile: 'Profile',
+  protocol: 'Technical Protocol',
 }
 
 export function Layout({ session, onLogout }: Props) {
@@ -203,6 +205,7 @@ export function Layout({ session, onLogout }: Props) {
               {view === 'notifications' && <NotificationsView />}
               {view === 'search' && <SearchView />}
               {view === 'profile' && <ProfileView actor={profileActor} meDid={session.did} />}
+              {view === 'protocol' && <ProtocolView />}
             </>
           )}
           {typeof selectedServerId === 'number' && selectedChannelId && (
