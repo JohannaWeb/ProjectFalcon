@@ -16,7 +16,8 @@ jobs:
       - name: Compile LaTeX White Paper
         uses: xu-cheng/latex-action@v3
         with:
-          root_file: docs/white_paper/main.tex
+          root_file: main.tex
+          working_directory: docs/white_paper
           args: -pdf -interaction=nonstopmode -halt-on-error
 
       - name: Archive Official Standard

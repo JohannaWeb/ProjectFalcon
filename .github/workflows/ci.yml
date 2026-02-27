@@ -8,7 +8,7 @@ on:
 
 jobs:
   backend-build:
-    name: Build Backend (Java 25)
+    name: Build Backend (Java 23)
     runs-on: ubuntu-latest
 
     steps:
