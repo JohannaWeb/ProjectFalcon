@@ -8,17 +8,17 @@ on:
 
 jobs:
   backend-build:
-    name: Build Backend (Java 23)
+    name: Build Backend (Java 25)
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
 
-    - name: Set up Java 23
+    - name: Set up Java 25
       uses: actions/setup-java@v4
       with:
         distribution: "temurin"
-        java-version: "23"
+        java-version: "25"
         cache: "maven"
 
     - name: Build Multi-Module Maven Project
