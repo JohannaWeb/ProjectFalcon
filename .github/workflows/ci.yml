@@ -14,18 +14,18 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Set up Java 25
+    - name: Set up Java 23
       uses: actions/setup-java@v4
       with:
         distribution: "temurin"
-        java-version: "25"
+        java-version: "23"
         cache: "maven"
 
     - name: Build Multi-Module Maven Project
       run: mvn -B -DskipTests clean package
 
   frontend-build:
-    name: Build Frontend (Electron/Vite)
+    name: Build Frontend (Vite)
     runs-on: ubuntu-latest
 
     steps:
@@ -36,12 +36,12 @@ jobs:
       with:
         node-version: "22"
         cache: "npm"
-        cache-dependency-path: electron-app/package-lock.json
+        cache-dependency-path: falcon-web/package-lock.json
 
     - name: Install Frontend Dependencies
-      working-directory: electron-app
+      working-directory: falcon-web
       run: npm install
 
-    - name: Build Electron App (Renderer)
-      working-directory: electron-app
+    - name: Build React App
+      working-directory: falcon-web
       run: npm run build
