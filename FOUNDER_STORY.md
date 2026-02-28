@@ -1,0 +1,7 @@
+-7 days, no caffeine, in recovery
+-Trans woman, rejected by own community
+-Built in silence out of pain
+-Sovereign identity, no platform lock-in
+-"Where Discord owns your identity and Slack owns your data, Falcon owns neither"
+-Technical violence
+-Turn insecurity pain hurt into code
