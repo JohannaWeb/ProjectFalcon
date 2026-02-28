@@ -1,127 +1,138 @@
 # Project Falcon
 
-**Sovereign real-time communication infrastructure built on the AT Protocol and a Decentralized AI Inference Mesh.**
+**Collaboration without platform lock-in.**
 
-Where Discord owns your identity and Slack owns your data, Falcon owns neither. Your identity is a DID. Your data lives on the protocol. Your intelligence is distributed. No platform lock-in. No permission required. No centralized model censorship.
+Slack owns your workspace.  
+Discord owns your community.  
+AI platforms own your context.
 
-> This is infrastructure, not a product. The client is a proof of concept. The protocol layer and the decentralized inference engine are the point.
+When you leave, everything stays behind.
 
----
+Project Falcon makes collaboration portable — your identity, history, and intelligence move with you instead of belonging to a platform.
 
-## Technical Nerding
- CI: 21s avg
- Time to feedback: <30s
-
-## Why
-
-Every collaboration platform you use today is a walled garden. Your Slack messages belong to Slack. Your Discord servers belong to Discord. Your identity is a username in someone else's database. Your AI assistants are black boxes controlled by single corporations.
-
-The AT Protocol and decentralized AI change that. Identity is portable. Data is portable. Intelligence is local and verifiable. Platforms become optional.
-
-Falcon is built on that premise — a communication layer where the infrastructure and the intelligence are sovereign by design, not by promise.
+Built in Porto. Shipping daily.
 
 ---
 
-## Architecture
+## The Problem
 
-A multi-layered stack designed for high throughput and zero trust.
+Modern collaboration software works by trapping users.
 
-### Zero-Trust Gateway
-Cryptographic DID/JWT verification on every request. No session store. No centralized auth. Identity is verified against the AT Protocol directly.
+Teams invest years of conversations, workflows, and knowledge into tools they cannot leave without losing context. Switching platforms means rebuilding identity, history, and trust from scratch.
 
-### Decentralized AI Mesh
-Instead of routing prompts to a central API, Falcon uses a Peer-to-Peer Model Execution layer — integrated with the SovereignTrustGraph to validate model weights and execution honesty across the network.
+AI tools make this worse: intelligence becomes centralized behind APIs that users cannot control or verify.
 
-### Sovereign Integration Vessels (SIVs)
-Real-time signal ingestion from developer ecosystems (GitHub, Vercel, ATProto). Each SIV normalizes external events into the Falcon protocol layer.
-
-### SovereignTrustGraph
-Decentralized peer-to-peer trust scoring. Trust is computed, not assigned. No platform decides who you can talk to.
-
-### Jetstream Ingestion
-Real-time connection to the AT Protocol firehose. Sub-60ms event latency. Built on Project Loom virtual threads for massive concurrency.
+The internet evolved into platforms that own participation instead of enabling it.
 
 ---
 
-## Stack
+## The Idea
 
-| Layer | Tech |
-|---|---|
-| Desktop client | Electron + TypeScript + React + Vite |
-| AT Protocol client | @atproto/api (official TS SDK) |
-| Backend | Java 25 + Spring Boot 4 + Project Loom |
-| Intelligence | Decentralized AI Mesh (P2P Model Execution) |
-| Identity | DID:PLC / DID:Web + JWT verification |
-| Real-time | AT Protocol Jetstream firehose |
-| Observability | Prometheus + Grafana + Promtail |
-| Infrastructure | Docker + Kubernetes |
+Collaboration should work like email or the web:
 
----
+- identity belongs to the user
+- data exists beyond any single app
+- tools compete on experience, not ownership
 
-## Quick Start
+Project Falcon explores a different model:
 
-### 1. Backend
+Log in once.  
+Keep your identity everywhere.  
+Bring your context with you.  
+Run intelligence as infrastructure, not a service.
 
-```bash
-cd backend
-mvn spring-boot:run
-```
-
-API runs at `http://localhost:8080`. All endpoints require `Authorization: Bearer <AT access JWT>`.
-
-### 2. Client
-
-```bash
-cd electron-app
-npm install
-npm run electron:dev
-```
-
-### 3. Sign In
-
-Use your Bluesky handle and an app password from your Bluesky settings.
+Platforms become interfaces — not gatekeepers.
 
 ---
 
-## Project Structure
+## What Falcon Is (Today)
 
-```
-backend/src/main/java/app/falcon/
-├── api/          # REST endpoint controllers
-├── atproto/      # XRPC client and DID resolver
-├── ai/           # P2P AI Mesh and inference orchestration
-├── gateway/      # Zero-Trust JWT/DID verification
-├── siv/          # Sovereign Integration Vessels
-└── trust/        # SovereignTrustGraph implementation
+Falcon starts as a real-time workspace for developers.
 
-electron-app/renderer/src/
-├── components/   # UI components and AI interface
-├── hooks/        # useAtpSession and real-time listeners
-└── lib/          # AT Protocol and backend API utilities
-```
+It connects identity, activity, and AI assistance into a single live environment where context follows the user instead of the application.
+
+You don’t join Falcon as a platform.
+
+You connect through it.
+
+The current client is intentionally minimal — a proof that portable collaboration can work in practice.
 
 ---
 
-## Status
+## Why Now
 
-Active development. Shipping daily from Porto.
+Two shifts make this possible for the first time:
 
-- [x] AT Protocol authentication + DID verification
-- [x] Zero-Trust Gateway
-- [x] Jetstream firehose ingestion
-- [x] Sovereign Integration Vessels (GitHub, Vercel, ATProto)
-- [x] SovereignTrustGraph
-- [x] Decentralized AI Mesh integration
-- [x] Project Loom virtual threads
-- [ ] Federation between Falcon instances
-- [ ] Mobile client
-- [ ] Public beta
+1. **Portable identity** — users can exist independently of platforms.
+2. **Local and distributed AI** — intelligence no longer requires centralized control.
+
+Together, they allow collaboration software to be built without ownership as a requirement.
+
+The next generation of tools will win by reducing lock-in, not increasing it.
+
+---
+
+## Approach
+
+Falcon is built around a simple principle:
+
+> Infrastructure should outlive the interface.
+
+Instead of designing a destination platform, Falcon focuses on the layer that allows many platforms to exist.
+
+Start small.
+Ship continuously.
+Let real usage shape the system.
+
+---
+
+## Current Status
+
+Active development.
+
+- Shipping daily
+- Fast iteration cycles
+- Real users testing early workflows
+- Continuous refinement of the core collaboration loop
+
+The goal is not completeness — only progress toward a portable collaboration model that works in reality.
+
+---
+
+## Vision
+
+The internet moved from:
+
+websites → platforms
+
+The next shift is:
+
+platforms → protocols.
+
+In that world:
+
+- identity travels with people
+- communities survive software changes
+- intelligence runs anywhere
+- switching tools becomes trivial
+
+Project Falcon is an early step toward that transition.
+
+---
+
+## Philosophy
+
+Falcon is built on a simple belief:
+
+Software should empower participation without demanding ownership.
+
+The best infrastructure disappears into the background — enabling people to work together without deciding where they are allowed to exist.
 
 ---
 
 ## License
 
-GNU General Public License v3.0
+MIT
 
 ---
 
