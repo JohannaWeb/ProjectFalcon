@@ -29,7 +29,8 @@ public class AutonomousVoucher {
      */
     public void evaluateVouch(AiFact fact) {
         // Condition: Confidence > 0.95 and HIGHLIGHT (positive behavioral signal)
-        if (fact.getFactType() == AiFact.FactType.HIGHLIGHT && fact.getConfidence() >= 0.95) {
+        if (fact.getFactType() == AiFact.FactType.HIGHLIGHT && fact.getConfidence() != null
+                && fact.getConfidence() >= 0.95) {
             vouchOnChain(fact.getSourceDid());
         }
     }
