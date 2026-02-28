@@ -3,9 +3,7 @@
 
 Falcon started by accident.
 
-I got removed from discord communities for being a trans woman.
-
-If a platform removes you, your history, relationships, and presence disappear with it.
+After losing access to online communities I relied on, I realized how fragile digital belonging actually is. When a platform removes you, your history, relationships, and presence disappear with it.
 
 That design assumption felt wrong.
 
