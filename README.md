@@ -2,7 +2,7 @@
 
 **Portable collaboration for developers.**
 
-Falcon is a workspace where your **identity, history, and AI context follow you across tools** instead of being locked inside platforms.
+Falcon is a workspace where your identity, history, and AI context follow you across tools instead of being locked inside platforms.
 
 *Built in Porto. Shipping daily.*
 
@@ -22,10 +22,12 @@ Platforms become interfaces — not owners.
 
 ## Example
 
-    falcon login
-    falcon connect github
-    falcon connect discord
-    falcon open
+```
+falcon login
+falcon connect github
+falcon connect discord
+falcon open
+```
 
 Open a workspace and your context is already there.
 
