@@ -1,139 +1,65 @@
 # Project Falcon
 
-**Collaboration without platform lock-in.**
+**Portable collaboration for developers.**
 
-Slack owns your workspace.  
-Discord owns your community.  
-AI platforms own your context.
+Falcon is a workspace where your **identity, history, and AI context follow you across tools** instead of being locked inside platforms.
 
-When you leave, everything stays behind.
-
-Project Falcon makes collaboration portable — your identity, history, and intelligence move with you instead of belonging to a platform.
-
-Built in Porto. Shipping daily.
-
----
-
-## The Problem
-
-Modern collaboration software works by trapping users.
-
-Teams invest years of conversations, workflows, and knowledge into tools they cannot leave without losing context. Switching platforms means rebuilding identity, history, and trust from scratch.
-
-AI tools make this worse: intelligence becomes centralized behind APIs that users cannot control or verify.
-
-The internet evolved into platforms that own participation instead of enabling it.
+*Built in Porto. Shipping daily.*
 
 ---
 
 ## The Idea
 
-Collaboration should work like email or the web:
+Login once. Keep your context everywhere.
 
-- identity belongs to the user
-- data exists beyond any single app
-- tools compete on experience, not ownership
+- persistent identity
+- shared collaboration context
+- AI assistance that follows your work
 
-Project Falcon explores a different model:
-
-Log in once.  
-Keep your identity everywhere.  
-Bring your context with you.  
-Run intelligence as infrastructure, not a service.
-
-Platforms become interfaces — not gatekeepers.
+Platforms become interfaces — not owners.
 
 ---
 
-## What Falcon Is (Today)
+## Example
 
-Falcon starts as a real-time workspace for developers.
+    falcon login
+    falcon connect github
+    falcon connect discord
+    falcon open
 
-It connects identity, activity, and AI assistance into a single live environment where context follows the user instead of the application.
+Open a workspace and your context is already there.
 
-You don’t join Falcon as a platform.
-
-You connect through it.
-
-The current client is intentionally minimal — a proof that portable collaboration can work in practice.
-
----
-
-## Why Now
-
-Two shifts make this possible for the first time:
-
-1. **Portable identity** — users can exist independently of platforms.
-2. **Local and distributed AI** — intelligence no longer requires centralized control.
-
-Together, they allow collaboration software to be built without ownership as a requirement.
-
-The next generation of tools will win by reducing lock-in, not increasing it.
+No migration. No reset.
 
 ---
 
-## Approach
+## Why
 
-Falcon is built around a simple principle:
+Developers work across many tools, but context stays trapped inside each one.
 
-> Infrastructure should outlive the interface.
+Switching platforms means rebuilding workflows, history, and AI understanding from scratch.
 
-Instead of designing a destination platform, Falcon focuses on the layer that allows many platforms to exist.
-
-Start small.
-Ship continuously.
-Let real usage shape the system.
+Falcon separates collaboration from the platform.
 
 ---
 
-## Current Status
+## Status
 
-Active development.
-
-- Shipping daily
-- Fast iteration cycles
-- Real users testing early workflows
-- Continuous refinement of the core collaboration loop
-
-The goal is not completeness — only progress toward a portable collaboration model that works in reality.
+Early development.  
+Demo starting now.  
+Shipping daily.
 
 ---
 
 ## Vision
 
-The internet moved from:
+Email separated communication from providers.  
+The web separated content from hosts.
 
-websites → platforms
-
-The next shift is:
-
-platforms → protocols.
-
-In that world:
-
-- identity travels with people
-- communities survive software changes
-- intelligence runs anywhere
-- switching tools becomes trivial
-
-Project Falcon is an early step toward that transition.
-
----
-
-## Philosophy
-
-Falcon is built on a simple belief:
-
-Software should empower participation without demanding ownership.
-
-The best infrastructure disappears into the background — enabling people to work together without deciding where they are allowed to exist.
+Falcon explores collaboration that outlives platforms.
 
 ---
 
 ## License
 
 MIT
-
----
-
-*Built in Porto. Shipping daily.*
