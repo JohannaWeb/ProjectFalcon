@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,162 +17,165 @@ import static org.mockito.Mockito.*;
 
 class TrustGraphServiceTest {
 
-    @Mock
-    private TrustRelationRepository repository;
+        @Mock
+        private TrustRelationRepository repository;
 
-    @InjectMocks
-    private TrustGraphService trustGraphService;
+        @Mock
+        private WebClient.Builder webClientBuilder;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
+        @InjectMocks
+        private TrustGraphService trustGraphService;
 
-    // ─── Self-trust ─────────────────────────────────────────────────────────────
+        @BeforeEach
+        void setUp() {
+                MockitoAnnotations.openMocks(this);
+        }
 
-    @Test
-    void selfAlwaysReturnsOne() {
-        assertEquals(1.0, trustGraphService.calculateTrustScore("did:alice", "did:alice"));
-    }
+        // ─── Self-trust ─────────────────────────────────────────────────────────────
 
-    @Test
-    void nullViewerAlwaysReturnsOne() {
-        assertEquals(1.0, trustGraphService.calculateTrustScore(null, "did:alice"));
-    }
+        @Test
+        void selfAlwaysReturnsOne() {
+                assertEquals(1.0, trustGraphService.calculateTrustScore("did:alice", "did:alice"));
+        }
 
-    // ─── Direct relations ────────────────────────────────────────────────────────
+        @Test
+        void nullViewerAlwaysReturnsOne() {
+                assertEquals(1.0, trustGraphService.calculateTrustScore(null, "did:alice"));
+        }
 
-    @Test
-    void directTrustReturnsOneFull() {
-        TrustRelation rel = TrustRelation.builder()
-                .sourceDid("did:alice").targetDid("did:bob")
-                .type(TrustRelation.TrustType.TRUST).build();
-        when(repository.findBySourceDidAndTargetDid("did:alice", "did:bob"))
-                .thenReturn(Optional.of(rel));
+        // ─── Direct relations ────────────────────────────────────────────────────────
 
-        assertEquals(1.0, trustGraphService.calculateTrustScore("did:alice", "did:bob"));
-    }
+        @Test
+        void directTrustReturnsOneFull() {
+                TrustRelation rel = TrustRelation.builder()
+                                .sourceDid("did:alice").targetDid("did:bob")
+                                .type(TrustRelation.TrustType.TRUST).build();
+                when(repository.findBySourceDidAndTargetDid("did:alice", "did:bob"))
+                                .thenReturn(Optional.of(rel));
 
-    @Test
-    void directDistrustReturnsNegativeScore() {
-        TrustRelation rel = TrustRelation.builder()
-                .sourceDid("did:alice").targetDid("did:bob")
-                .type(TrustRelation.TrustType.DISTRUST).build();
-        when(repository.findBySourceDidAndTargetDid("did:alice", "did:bob"))
-                .thenReturn(Optional.of(rel));
+                assertEquals(1.0, trustGraphService.calculateTrustScore("did:alice", "did:bob"));
+        }
 
-        assertEquals(-0.8, trustGraphService.calculateTrustScore("did:alice", "did:bob"));
-    }
+        @Test
+        void directDistrustReturnsNegativeScore() {
+                TrustRelation rel = TrustRelation.builder()
+                                .sourceDid("did:alice").targetDid("did:bob")
+                                .type(TrustRelation.TrustType.DISTRUST).build();
+                when(repository.findBySourceDidAndTargetDid("did:alice", "did:bob"))
+                                .thenReturn(Optional.of(rel));
 
-    @Test
-    void directBlockReturnsMinusOne() {
-        TrustRelation rel = TrustRelation.builder()
-                .sourceDid("did:alice").targetDid("did:bob")
-                .type(TrustRelation.TrustType.BLOCK).build();
-        when(repository.findBySourceDidAndTargetDid("did:alice", "did:bob"))
-                .thenReturn(Optional.of(rel));
+                assertEquals(-0.8, trustGraphService.calculateTrustScore("did:alice", "did:bob"));
+        }
 
-        assertEquals(-1.0, trustGraphService.calculateTrustScore("did:alice", "did:bob"));
-    }
+        @Test
+        void directBlockReturnsMinusOne() {
+                TrustRelation rel = TrustRelation.builder()
+                                .sourceDid("did:alice").targetDid("did:bob")
+                                .type(TrustRelation.TrustType.BLOCK).build();
+                when(repository.findBySourceDidAndTargetDid("did:alice", "did:bob"))
+                                .thenReturn(Optional.of(rel));
 
-    @Test
-    void directMuteReturnsNegativeLow() {
-        TrustRelation rel = TrustRelation.builder()
-                .sourceDid("did:alice").targetDid("did:bob")
-                .type(TrustRelation.TrustType.MUTE).build();
-        when(repository.findBySourceDidAndTargetDid("did:alice", "did:bob"))
-                .thenReturn(Optional.of(rel));
+                assertEquals(-1.0, trustGraphService.calculateTrustScore("did:alice", "did:bob"));
+        }
 
-        assertEquals(-0.3, trustGraphService.calculateTrustScore("did:alice", "did:bob"));
-    }
+        @Test
+        void directMuteReturnsNegativeLow() {
+                TrustRelation rel = TrustRelation.builder()
+                                .sourceDid("did:alice").targetDid("did:bob")
+                                .type(TrustRelation.TrustType.MUTE).build();
+                when(repository.findBySourceDidAndTargetDid("did:alice", "did:bob"))
+                                .thenReturn(Optional.of(rel));
 
-    // ─── Bridge (transitive) trust ───────────────────────────────────────────────
+                assertEquals(-0.3, trustGraphService.calculateTrustScore("did:alice", "did:bob"));
+        }
 
-    @Test
-    void noBridgesReturnsZero() {
-        when(repository.findBySourceDidAndTargetDid("did:alice", "did:bob"))
-                .thenReturn(Optional.empty());
-        when(repository.findBySourceDidAndType("did:alice", TrustRelation.TrustType.TRUST))
-                .thenReturn(List.of());
+        // ─── Bridge (transitive) trust ───────────────────────────────────────────────
 
-        assertEquals(0.0, trustGraphService.calculateTrustScore("did:alice", "did:bob"));
-    }
+        @Test
+        void noBridgesReturnsZero() {
+                when(repository.findBySourceDidAndTargetDid("did:alice", "did:bob"))
+                                .thenReturn(Optional.empty());
+                when(repository.findBySourceDidAndType("did:alice", TrustRelation.TrustType.TRUST))
+                                .thenReturn(List.of());
 
-    @Test
-    void singleBridgeTrustProducesHalfScore() {
-        // alice trusts carol, carol trusts bob => score = 1.0 * 0.5 / 1 = 0.5
-        TrustRelation aliceToCarol = TrustRelation.builder()
-                .sourceDid("did:alice").targetDid("did:carol")
-                .type(TrustRelation.TrustType.TRUST).build();
-        TrustRelation carolToBob = TrustRelation.builder()
-                .sourceDid("did:carol").targetDid("did:bob")
-                .type(TrustRelation.TrustType.TRUST).build();
+                assertEquals(0.0, trustGraphService.calculateTrustScore("did:alice", "did:bob"));
+        }
 
-        when(repository.findBySourceDidAndTargetDid("did:alice", "did:bob"))
-                .thenReturn(Optional.empty());
-        when(repository.findBySourceDidAndType("did:alice", TrustRelation.TrustType.TRUST))
-                .thenReturn(List.of(aliceToCarol));
-        when(repository.findBySourceDidAndTargetDid("did:carol", "did:bob"))
-                .thenReturn(Optional.of(carolToBob));
+        @Test
+        void singleBridgeTrustProducesHalfScore() {
+                // alice trusts carol, carol trusts bob => score = 1.0 * 0.5 / 1 = 0.5
+                TrustRelation aliceToCarol = TrustRelation.builder()
+                                .sourceDid("did:alice").targetDid("did:carol")
+                                .type(TrustRelation.TrustType.TRUST).build();
+                TrustRelation carolToBob = TrustRelation.builder()
+                                .sourceDid("did:carol").targetDid("did:bob")
+                                .type(TrustRelation.TrustType.TRUST).build();
 
-        assertEquals(0.5, trustGraphService.calculateTrustScore("did:alice", "did:bob"));
-    }
+                when(repository.findBySourceDidAndTargetDid("did:alice", "did:bob"))
+                                .thenReturn(Optional.empty());
+                when(repository.findBySourceDidAndType("did:alice", TrustRelation.TrustType.TRUST))
+                                .thenReturn(List.of(aliceToCarol));
+                when(repository.findBySourceDidAndTargetDid("did:carol", "did:bob"))
+                                .thenReturn(Optional.of(carolToBob));
 
-    @Test
-    void twoBridgesTrustAveragedAndClamped() {
-        // alice trusts carol and dave; both trust bob => score clamped to [-1, 1]
-        TrustRelation aliceToCarol = TrustRelation.builder()
-                .sourceDid("did:alice").targetDid("did:carol")
-                .type(TrustRelation.TrustType.TRUST).build();
-        TrustRelation aliceToDave = TrustRelation.builder()
-                .sourceDid("did:alice").targetDid("did:dave")
-                .type(TrustRelation.TrustType.TRUST).build();
-        TrustRelation carolToBob = TrustRelation.builder()
-                .sourceDid("did:carol").targetDid("did:bob")
-                .type(TrustRelation.TrustType.TRUST).build();
-        TrustRelation daveToBob = TrustRelation.builder()
-                .sourceDid("did:dave").targetDid("did:bob")
-                .type(TrustRelation.TrustType.BLOCK).build();
+                assertEquals(0.5, trustGraphService.calculateTrustScore("did:alice", "did:bob"));
+        }
 
-        when(repository.findBySourceDidAndTargetDid("did:alice", "did:bob"))
-                .thenReturn(Optional.empty());
-        when(repository.findBySourceDidAndType("did:alice", TrustRelation.TrustType.TRUST))
-                .thenReturn(List.of(aliceToCarol, aliceToDave));
-        when(repository.findBySourceDidAndTargetDid("did:carol", "did:bob"))
-                .thenReturn(Optional.of(carolToBob));
-        when(repository.findBySourceDidAndTargetDid("did:dave", "did:bob"))
-                .thenReturn(Optional.of(daveToBob));
+        @Test
+        void twoBridgesTrustAveragedAndClamped() {
+                // alice trusts carol and dave; both trust bob => score clamped to [-1, 1]
+                TrustRelation aliceToCarol = TrustRelation.builder()
+                                .sourceDid("did:alice").targetDid("did:carol")
+                                .type(TrustRelation.TrustType.TRUST).build();
+                TrustRelation aliceToDave = TrustRelation.builder()
+                                .sourceDid("did:alice").targetDid("did:dave")
+                                .type(TrustRelation.TrustType.TRUST).build();
+                TrustRelation carolToBob = TrustRelation.builder()
+                                .sourceDid("did:carol").targetDid("did:bob")
+                                .type(TrustRelation.TrustType.TRUST).build();
+                TrustRelation daveToBob = TrustRelation.builder()
+                                .sourceDid("did:dave").targetDid("did:bob")
+                                .type(TrustRelation.TrustType.BLOCK).build();
 
-        // carol -> TRUST (score 1.0 * 0.5 = 0.5), dave -> BLOCK (score -1.0 * 0.5 =
-        // -0.5)
-        // aggregate = 0.5 + (-0.5) = 0.0 / 2 bridges = 0.0
-        double score = trustGraphService.calculateTrustScore("did:alice", "did:bob");
-        assertEquals(0.0, score, 0.0001);
-    }
+                when(repository.findBySourceDidAndTargetDid("did:alice", "did:bob"))
+                                .thenReturn(Optional.empty());
+                when(repository.findBySourceDidAndType("did:alice", TrustRelation.TrustType.TRUST))
+                                .thenReturn(List.of(aliceToCarol, aliceToDave));
+                when(repository.findBySourceDidAndTargetDid("did:carol", "did:bob"))
+                                .thenReturn(Optional.of(carolToBob));
+                when(repository.findBySourceDidAndTargetDid("did:dave", "did:bob"))
+                                .thenReturn(Optional.of(daveToBob));
 
-    // ─── addRelation ─────────────────────────────────────────────────────────────
+                // carol -> TRUST (score 1.0 * 0.5 = 0.5), dave -> BLOCK (score -1.0 * 0.5 =
+                // -0.5)
+                // aggregate = 0.5 + (-0.5) = 0.0 / 2 bridges = 0.0
+                double score = trustGraphService.calculateTrustScore("did:alice", "did:bob");
+                assertEquals(0.0, score, 0.0001);
+        }
 
-    @Test
-    void addRelationCreatesNewIfNotExists() {
-        when(repository.findBySourceDidAndTargetDid("did:alice", "did:bob"))
-                .thenReturn(Optional.empty());
+        // ─── addRelation ─────────────────────────────────────────────────────────────
 
-        trustGraphService.addRelation("did:alice", "did:bob", TrustRelation.TrustType.TRUST);
+        @Test
+        void addRelationCreatesNewIfNotExists() {
+                when(repository.findBySourceDidAndTargetDid("did:alice", "did:bob"))
+                                .thenReturn(Optional.empty());
 
-        verify(repository, times(1)).save(any(TrustRelation.class));
-    }
+                trustGraphService.addRelation("did:alice", "did:bob", TrustRelation.TrustType.TRUST);
 
-    @Test
-    void addRelationUpdatesExisting() {
-        TrustRelation existing = TrustRelation.builder()
-                .sourceDid("did:alice").targetDid("did:bob")
-                .type(TrustRelation.TrustType.TRUST).build();
-        when(repository.findBySourceDidAndTargetDid("did:alice", "did:bob"))
-                .thenReturn(Optional.of(existing));
+                verify(repository, times(1)).save(any(TrustRelation.class));
+        }
 
-        trustGraphService.addRelation("did:alice", "did:bob", TrustRelation.TrustType.BLOCK);
+        @Test
+        void addRelationUpdatesExisting() {
+                TrustRelation existing = TrustRelation.builder()
+                                .sourceDid("did:alice").targetDid("did:bob")
+                                .type(TrustRelation.TrustType.TRUST).build();
+                when(repository.findBySourceDidAndTargetDid("did:alice", "did:bob"))
+                                .thenReturn(Optional.of(existing));
 
-        verify(repository, times(1)).save(existing);
-        assertEquals(TrustRelation.TrustType.BLOCK, existing.getType());
-    }
+                trustGraphService.addRelation("did:alice", "did:bob", TrustRelation.TrustType.BLOCK);
+
+                verify(repository, times(1)).save(existing);
+                assertEquals(TrustRelation.TrustType.BLOCK, existing.getType());
+        }
 }

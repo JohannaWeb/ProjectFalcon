@@ -22,7 +22,7 @@ jobs:
         cache: "maven"
 
     - name: Build Multi-Module Maven Project
-      run: mvn -B -DskipTests clean package
+      run: mvn clean package -B -DskipTests
 
   frontend-build:
     name: Build Frontend (Vite)

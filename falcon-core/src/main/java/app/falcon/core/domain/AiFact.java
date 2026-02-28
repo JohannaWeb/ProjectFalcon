@@ -50,6 +50,24 @@ public class AiFact {
     private String content;
 
     /**
+     * Machine chain-of-thought: why this fact was generated.
+     */
+    @Column(columnDefinition = "TEXT")
+    private String reasoning;
+
+    /**
+     * JSON payload for cross-service provenance or raw vessel data.
+     */
+    @Column(name = "metadata_json", columnDefinition = "TEXT")
+    private String metadataJson;
+
+    /**
+     * The ID of the triggering event (e.g., ATProto Jetstream seq).
+     */
+    @Column(name = "source_event_id")
+    private String sourceEventId;
+
+    /**
      * Confidence score [0.0, 1.0] as self-reported by the model.
      */
     @Column

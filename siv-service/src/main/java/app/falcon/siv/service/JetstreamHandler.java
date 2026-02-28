@@ -49,11 +49,12 @@ public class JetstreamHandler extends TextWebSocketHandler {
 
                 if ("app.bsky.feed.post".equals(collection) && "create".equals(operation)) {
                     String text = node.path("commit").path("record").path("text").asText();
+                    String seq = node.path("seq").asText(null);
                     log.info("🌊 Jetstream Post from {}: {}", did, text);
 
                     // Dispatch to AI context engine asynchronously (virtual thread, non-blocking)
                     Optional.ofNullable(aiContextService)
-                            .ifPresent(ai -> ai.processPost(did, text));
+                            .ifPresent(ai -> ai.processPost(did, text, seq));
                 }
             }
         } catch (Exception e) {
