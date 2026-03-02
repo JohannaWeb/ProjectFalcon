@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { getAtpAgent } from '../lib/atp'
+import { PostComposer } from './PostComposer'
 
 type FeedGen = { uri: string; cid: string; value?: { displayName?: { en?: string }; description?: { en?: string } }; avatar?: string }
 
@@ -9,6 +10,7 @@ export function ExploreView() {
   const [err, setErr] = useState<string | null>(null)
   const [selectedUri, setSelectedUri] = useState<string | null>(null)
   const [feedPosts, setFeedPosts] = useState<unknown[]>([])
+  const [showComposer, setShowComposer] = useState(false)
   const agent = getAtpAgent()
 
   useEffect(() => {
@@ -62,7 +64,36 @@ export function ExploreView() {
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
         {selectedUri ? (
-          feedPosts.length === 0 ? (
+          <>
+            {showComposer ? (
+              <div style={{ marginBottom: 16 }}>
+                <PostComposer
+                  compact
+                  placeholder="Post to this community…"
+                  onSuccess={() => {
+                    setShowComposer(false)
+                    setSelectedUri(selectedUri)
+                  }}
+                  onCancel={() => setShowComposer(false)}
+                />
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setShowComposer(true)}
+                style={{
+                  marginBottom: 16,
+                  padding: '8px 16px',
+                  background: 'var(--accent)',
+                  color: 'white',
+                  fontWeight: 600,
+                  borderRadius: 6,
+                }}
+              >
+                + Post to this community
+              </button>
+            )}
+            {feedPosts.length === 0 ? (
             <p style={{ color: 'var(--text-muted)' }}>No posts in this feed.</p>
           ) : (
             <div>
@@ -82,9 +113,10 @@ export function ExploreView() {
                 </div>
               ))}
             </div>
-          )
+          )}
+          </>
         ) : (
-          <p style={{ color: 'var(--text-muted)' }}>Select a feed to view posts.</p>
+          <p style={{ color: 'var(--text-muted)' }}>Select a community to view posts.</p>
         )}
       </div>
     </div>
