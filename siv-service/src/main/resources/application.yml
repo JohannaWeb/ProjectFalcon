@@ -59,6 +59,7 @@ falcon:
     # ─── Agent identity ──────────────────────────────────────────────────────────
     agent-did: "did:plc:falcon-ai-agent"
     agent-name: "Falcon Sovereign AI"
+    agent-dir: "agent"  # folder containing soul.md, personality.md, persistence.md
 
     # ─── Tuning ──────────────────────────────────────────────────────────────────
     context-window-size: 50      # messages kept in rolling memory per DID
