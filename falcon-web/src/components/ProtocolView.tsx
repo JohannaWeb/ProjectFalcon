@@ -32,7 +32,7 @@ export const ProtocolView: React.FC = () => {
             </section>
 
             <section className="links">
-                <a href="/ProjectFalcon_arXiv_Package.zip" className="download-btn" download>
+                <a href="/docs/ProjectFalcon_arXiv_Package.zip" className="download-btn" download>
                     Download arXiv Submission Package (.zip)
                 </a>
             </section>

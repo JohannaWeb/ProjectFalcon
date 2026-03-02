@@ -2,13 +2,13 @@
 
 export type View = 'feed' | 'dms' | 'explore' | 'notifications' | 'search' | 'profile' | 'protocol'
 
-const HOME_CHANNELS: { id: View; name: string; icon: string }[] = [
-  { id: 'feed', name: 'Home feed', icon: '📜' },
+const HOME_CHANNELS: { id: View; name: string; icon: string; primary?: boolean }[] = [
+  { id: 'feed', name: 'Feed', icon: '📜', primary: true },
+  { id: 'explore', name: 'Community', icon: '🌐', primary: true },
+  { id: 'profile', name: 'My profile', icon: '👤', primary: true },
   { id: 'notifications', name: 'Notifications', icon: '🔔' },
   { id: 'search', name: 'Search', icon: '🔍' },
-  { id: 'explore', name: 'Explore', icon: '🌐' },
   { id: 'dms', name: 'Messages', icon: '✉️' },
-  { id: 'profile', name: 'My profile', icon: '👤' },
   { id: 'protocol', name: 'Protocol', icon: '📄' },
 ]
 
@@ -53,27 +53,33 @@ export function ChannelList(props: Props) {
           Falcon
         </div>
         <nav style={{ padding: 8 }}>
-          {HOME_CHANNELS.map((ch) => (
-            <button
-              key={ch.id}
-              type="button"
-              onClick={() => onViewChange(ch.id)}
-              style={{
-                width: '100%',
-                padding: '8px 12px',
-                textAlign: 'left',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 12,
-                background: view === ch.id ? 'var(--bg-elevated)' : 'transparent',
-                color: view === ch.id ? 'var(--text-primary)' : 'var(--text-secondary)',
-                borderRadius: 4,
-                marginBottom: 2,
-              }}
-            >
-              <span>{ch.icon}</span>
-              {ch.name}
-            </button>
+          {HOME_CHANNELS.map((ch, i) => (
+            <>
+              {i > 0 && HOME_CHANNELS[i - 1].primary && !ch.primary && (
+                <div key={`sep-${ch.id}`} style={{ height: 1, background: 'var(--border)', margin: '6px 4px 8px' }} />
+              )}
+              <button
+                key={ch.id}
+                type="button"
+                onClick={() => onViewChange(ch.id)}
+                style={{
+                  width: '100%',
+                  padding: '8px 12px',
+                  textAlign: 'left',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 12,
+                  background: view === ch.id ? 'var(--bg-elevated)' : 'transparent',
+                  color: view === ch.id ? 'var(--text-primary)' : ch.primary ? 'var(--text-secondary)' : 'var(--text-muted)',
+                  borderRadius: 4,
+                  marginBottom: 2,
+                  fontWeight: ch.primary ? 500 : 400,
+                }}
+              >
+                <span>{ch.icon}</span>
+                {ch.name}
+              </button>
+            </>
           ))}
         </nav>
       </div>

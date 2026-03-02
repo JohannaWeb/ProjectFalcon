@@ -25,10 +25,7 @@
     </licenses>
 
     <modules>
-        <module>falcon-core</module>
-        <module>trust-service</module>
-        <module>siv-service</module>
-        <module>falcon-gateway</module>
+        <module>falcon-alpha</module>
     </modules>
 
     <properties>

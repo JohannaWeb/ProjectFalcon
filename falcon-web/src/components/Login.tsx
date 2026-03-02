@@ -42,8 +42,11 @@ export function Login({ onLogin, error }: Props) {
       >
         Falcon
       </h1>
-      <p style={{ color: 'var(--text-secondary)', textAlign: 'center', marginBottom: 24 }}>
-        Sign in with your Bluesky / AT Protocol account
+      <p style={{ color: 'var(--text-primary)', textAlign: 'center', marginBottom: 4, fontWeight: 500 }}>
+        Your identity. Your data. Your community.
+      </p>
+      <p style={{ color: 'var(--text-secondary)', textAlign: 'center', marginBottom: 24, fontSize: 13 }}>
+        Sign in with your Bluesky handle
       </p>
       <form onSubmit={handleSubmit}>
         <label style={{ display: 'block', marginBottom: 8, color: 'var(--text-secondary)', fontSize: 12 }}>
