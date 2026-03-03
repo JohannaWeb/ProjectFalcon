@@ -109,7 +109,7 @@ export function Layout({ session, onLogout }: Props) {
         ? `# ${channels.find((c) => c.id === selectedChannelId)?.name ?? 'channel'}`
         : currentServer
           ? currentServer.name
-          : 'ATDiscord'
+          : 'Falcon'
 
   const handleInvite = useCallback(
     async (handle: string) => {
@@ -169,17 +169,25 @@ export function Layout({ session, onLogout }: Props) {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            padding: '0 16px',
+            padding: '0 20px',
             gap: 8,
+            flexShrink: 0,
           }}
         >
-          <span style={{ fontWeight: 600, color: 'var(--text-secondary)' }}>{headerTitle}</span>
+          <span style={{ fontWeight: 600, fontSize: 14, letterSpacing: '-0.01em' }}>{headerTitle}</span>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             {typeof selectedServerId === 'number' && currentServer && (
               <button
                 type="button"
                 onClick={() => setShowInvite(true)}
-                style={{ padding: '4px 10px', background: 'var(--bg-elevated)', color: 'var(--text-secondary)', fontSize: 14 }}
+                style={{
+                  padding: '5px 12px',
+                  background: 'var(--bg-elevated)',
+                  color: 'var(--text-secondary)',
+                  fontSize: 13,
+                  fontWeight: 500,
+                  border: '1px solid var(--border)',
+                }}
               >
                 Invite
               </button>
@@ -188,9 +196,15 @@ export function Layout({ session, onLogout }: Props) {
               type="button"
               onClick={toggleTheme}
               title="Toggle theme (Ctrl+Shift+L)"
-              style={{ padding: '4px 10px', background: 'var(--bg-elevated)', color: 'var(--text-secondary)', fontSize: 14 }}
+              style={{
+                padding: '5px 12px',
+                background: 'var(--bg-elevated)',
+                color: 'var(--text-muted)',
+                fontSize: 13,
+                border: '1px solid var(--border)',
+              }}
             >
-              {theme === 'dark' ? '☀️ Light' : '🌙 Dark'}
+              {theme === 'dark' ? 'Light' : 'Dark'}
             </button>
           </div>
         </header>

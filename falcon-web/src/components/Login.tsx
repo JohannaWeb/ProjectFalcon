@@ -21,35 +21,59 @@ export function Login({ onLogin, error }: Props) {
     }
   }
 
+  const inputStyle: React.CSSProperties = {
+    width: '100%',
+    padding: '9px 12px',
+    background: 'var(--bg-tertiary)',
+    color: 'var(--text-primary)',
+    border: '1px solid var(--border)',
+    borderRadius: 8,
+    fontSize: 14,
+    transition: 'border-color 0.15s',
+  }
+
   return (
     <div
       style={{
         width: '100%',
-        maxWidth: 420,
-        padding: 32,
+        maxWidth: 380,
+        padding: '36px 32px',
         background: 'var(--bg-secondary)',
-        borderRadius: 8,
-        boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
+        borderRadius: 12,
+        border: '1px solid var(--border)',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
       }}
     >
-      <h1
-        style={{
-          fontSize: 24,
-          fontWeight: 600,
-          marginBottom: 8,
-          textAlign: 'center',
-        }}
-      >
-        Falcon
-      </h1>
-      <p style={{ color: 'var(--text-primary)', textAlign: 'center', marginBottom: 4, fontWeight: 500 }}>
-        Your identity. Your data. Your community.
-      </p>
-      <p style={{ color: 'var(--text-secondary)', textAlign: 'center', marginBottom: 24, fontSize: 13 }}>
-        Sign in with your Bluesky handle
-      </p>
+      <div style={{ marginBottom: 28, textAlign: 'center' }}>
+        <div
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: 10,
+            background: 'var(--accent)',
+            color: '#fff',
+            fontSize: 18,
+            fontWeight: 700,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: '0 auto 16px',
+          }}
+        >
+          F
+        </div>
+        <h1 style={{ fontSize: 20, fontWeight: 600, letterSpacing: '-0.02em', marginBottom: 6 }}>
+          Sign in to Falcon
+        </h1>
+        <p style={{ color: 'var(--text-muted)', fontSize: 13 }}>
+          Use your Bluesky handle and app password
+        </p>
+      </div>
+
       <form onSubmit={handleSubmit}>
-        <label style={{ display: 'block', marginBottom: 8, color: 'var(--text-secondary)', fontSize: 12 }}>
+        <label
+          style={{ display: 'block', marginBottom: 6, color: 'var(--text-secondary)', fontSize: 12, fontWeight: 500 }}
+        >
           Handle or email
         </label>
         <input
@@ -59,16 +83,12 @@ export function Login({ onLogin, error }: Props) {
           placeholder="you.bsky.social"
           autoComplete="username"
           required
-          style={{
-            width: '100%',
-            padding: '10px 12px',
-            marginBottom: 16,
-            background: 'var(--bg-tertiary)',
-            color: 'var(--text-primary)',
-            border: '1px solid var(--border)',
-          }}
+          style={{ ...inputStyle, marginBottom: 16 }}
         />
-        <label style={{ display: 'block', marginBottom: 8, color: 'var(--text-secondary)', fontSize: 12 }}>
+
+        <label
+          style={{ display: 'block', marginBottom: 6, color: 'var(--text-secondary)', fontSize: 12, fontWeight: 500 }}
+        >
           App password
         </label>
         <input
@@ -78,34 +98,33 @@ export function Login({ onLogin, error }: Props) {
           placeholder="xxxx-xxxx-xxxx-xxxx"
           autoComplete="current-password"
           required
-          style={{
-            width: '100%',
-            padding: '10px 12px',
-            marginBottom: 24,
-            background: 'var(--bg-tertiary)',
-            color: 'var(--text-primary)',
-            border: '1px solid var(--border)',
-          }}
+          style={{ ...inputStyle, marginBottom: error ? 12 : 20 }}
         />
+
         {error && (
-          <p style={{ color: 'var(--danger)', marginBottom: 16, fontSize: 14 }}>{error}</p>
+          <p style={{ color: 'var(--danger)', fontSize: 13, marginBottom: 16 }}>{error}</p>
         )}
+
         <button
           type="submit"
           disabled={submitting}
           style={{
             width: '100%',
-            padding: 12,
+            padding: '10px 0',
             background: 'var(--accent)',
-            color: 'white',
+            color: '#fff',
             fontWeight: 600,
+            fontSize: 14,
+            borderRadius: 8,
           }}
         >
           {submitting ? 'Signing in…' : 'Sign in'}
         </button>
       </form>
-      <p style={{ marginTop: 16, fontSize: 12, color: 'var(--text-muted)', textAlign: 'center' }}>
-        Use an app password from Bluesky Settings → App passwords
+
+      <p style={{ marginTop: 20, fontSize: 12, color: 'var(--text-muted)', textAlign: 'center' }}>
+        Create an app password at{' '}
+        <span style={{ color: 'var(--text-secondary)' }}>Bluesky → Settings → App passwords</span>
       </p>
     </div>
   )

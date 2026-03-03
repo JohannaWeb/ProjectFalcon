@@ -1,31 +1,32 @@
-// type Props = ... (imports handled)
-
 export type View = 'feed' | 'dms' | 'explore' | 'notifications' | 'search' | 'profile' | 'protocol'
 
-const HOME_CHANNELS: { id: View; name: string; icon: string; primary?: boolean }[] = [
-  { id: 'feed', name: 'Feed', icon: '📜', primary: true },
-  { id: 'explore', name: 'Community', icon: '🌐', primary: true },
-  { id: 'profile', name: 'My profile', icon: '👤', primary: true },
-  { id: 'notifications', name: 'Notifications', icon: '🔔' },
-  { id: 'search', name: 'Search', icon: '🔍' },
-  { id: 'dms', name: 'Messages', icon: '✉️' },
-  { id: 'protocol', name: 'Protocol', icon: '📄' },
+const PRIMARY_NAV: { id: View; name: string }[] = [
+  { id: 'feed', name: 'Feed' },
+  { id: 'explore', name: 'Explore' },
+  { id: 'profile', name: 'Profile' },
+]
+
+const SECONDARY_NAV: { id: View; name: string }[] = [
+  { id: 'notifications', name: 'Notifications' },
+  { id: 'search', name: 'Search' },
+  { id: 'dms', name: 'Messages' },
+  { id: 'protocol', name: 'Protocol' },
 ]
 
 type Props =
   | {
-    mode: 'home'
-    view: View
-    onViewChange: (v: View) => void
-  }
+      mode: 'home'
+      view: View
+      onViewChange: (v: View) => void
+    }
   | {
-    mode: 'server'
-    serverName: string
-    channels: { id: number; name: string }[]
-    selectedChannelId: number | null
-    onSelectChannel: (id: number) => void
-    onCreateChannel: () => void
-  }
+      mode: 'server'
+      serverName: string
+      channels: { id: number; name: string }[]
+      selectedChannelId: number | null
+      onSelectChannel: (id: number) => void
+      onCreateChannel: () => void
+    }
 
 export function ChannelList(props: Props) {
   if (props.mode === 'home') {
@@ -33,11 +34,12 @@ export function ChannelList(props: Props) {
     return (
       <div
         style={{
-          width: 240,
+          width: 220,
           background: 'var(--bg-secondary)',
           display: 'flex',
           flexDirection: 'column',
           borderRight: '1px solid var(--border)',
+          flexShrink: 0,
         }}
       >
         <div
@@ -48,38 +50,36 @@ export function ChannelList(props: Props) {
             alignItems: 'center',
             borderBottom: '1px solid var(--border)',
             fontWeight: 600,
+            fontSize: 15,
+            letterSpacing: '-0.01em',
+            flexShrink: 0,
           }}
         >
           Falcon
         </div>
-        <nav style={{ padding: 8 }}>
-          {HOME_CHANNELS.map((ch, i) => (
-            <>
-              {i > 0 && HOME_CHANNELS[i - 1].primary && !ch.primary && (
-                <div key={`sep-${ch.id}`} style={{ height: 1, background: 'var(--border)', margin: '6px 4px 8px' }} />
-              )}
-              <button
-                key={ch.id}
-                type="button"
-                onClick={() => onViewChange(ch.id)}
-                style={{
-                  width: '100%',
-                  padding: '8px 12px',
-                  textAlign: 'left',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 12,
-                  background: view === ch.id ? 'var(--bg-elevated)' : 'transparent',
-                  color: view === ch.id ? 'var(--text-primary)' : ch.primary ? 'var(--text-secondary)' : 'var(--text-muted)',
-                  borderRadius: 4,
-                  marginBottom: 2,
-                  fontWeight: ch.primary ? 500 : 400,
-                }}
-              >
-                <span>{ch.icon}</span>
-                {ch.name}
-              </button>
-            </>
+        <nav style={{ padding: '8px 8px', overflowY: 'auto', flex: 1 }}>
+          {PRIMARY_NAV.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              className={`nav-item${view === item.id ? ' active' : ''}`}
+              onClick={() => onViewChange(item.id)}
+            >
+              {item.name}
+            </button>
+          ))}
+
+          <div style={{ height: 1, background: 'var(--border)', margin: '8px 4px' }} />
+
+          {SECONDARY_NAV.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              className={`nav-item${view === item.id ? ' active' : ''}`}
+              onClick={() => onViewChange(item.id)}
+            >
+              {item.name}
+            </button>
           ))}
         </nav>
       </div>
@@ -90,11 +90,12 @@ export function ChannelList(props: Props) {
   return (
     <div
       style={{
-        width: 240,
+        width: 220,
         background: 'var(--bg-secondary)',
         display: 'flex',
         flexDirection: 'column',
         borderRight: '1px solid var(--border)',
+        flexShrink: 0,
       }}
     >
       <div
@@ -105,50 +106,37 @@ export function ChannelList(props: Props) {
           alignItems: 'center',
           borderBottom: '1px solid var(--border)',
           fontWeight: 600,
+          fontSize: 15,
+          letterSpacing: '-0.01em',
+          flexShrink: 0,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
         }}
       >
         {serverName}
       </div>
-      <nav style={{ padding: 8 }}>
+      <nav style={{ padding: '8px 8px', overflowY: 'auto', flex: 1 }}>
+        <div className="section-label">Channels</div>
         {channels.map((c) => (
           <button
             key={c.id}
             type="button"
+            className={`nav-item${selectedChannelId === c.id ? ' active' : ''}`}
             onClick={() => onSelectChannel(c.id)}
-            style={{
-              width: '100%',
-              padding: '8px 12px',
-              textAlign: 'left',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              background: selectedChannelId === c.id ? 'var(--bg-elevated)' : 'transparent',
-              color: selectedChannelId === c.id ? 'var(--text-primary)' : 'var(--text-secondary)',
-              borderRadius: 4,
-              marginBottom: 2,
-            }}
           >
-            <span style={{ opacity: 0.7 }}>#</span>
+            <span style={{ color: 'var(--text-muted)', fontWeight: 400, flexShrink: 0 }}>#</span>
             {c.name}
           </button>
         ))}
         <button
           type="button"
+          className="nav-item"
           onClick={onCreateChannel}
-          style={{
-            width: '100%',
-            padding: '8px 12px',
-            textAlign: 'left',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8,
-            background: 'transparent',
-            color: 'var(--text-muted)',
-            borderRadius: 4,
-            marginTop: 4,
-          }}
+          style={{ color: 'var(--text-muted)', marginTop: 4 }}
         >
-          + Create Channel
+          <span style={{ fontSize: 16, lineHeight: 1 }}>+</span>
+          New channel
         </button>
       </nav>
     </div>
