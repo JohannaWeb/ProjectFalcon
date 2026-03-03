@@ -63,7 +63,7 @@ Falcon explores collaboration that outlives platforms.
 ---
 
 ## Alpha demo (yc-alpha)
-<img width="2553" height="784" alt="image" src="https://github.com/user-attachments/assets/151565a2-9a21-4ba6-9d82-a8354223f370" />
+<img width="2540" height="1218" alt="image" src="https://github.com/user-attachments/assets/39955609-44f8-41f0-8ee3-04569c4059ba" />
 
 
 ## License
