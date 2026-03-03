@@ -1,5 +1,6 @@
 app\falcon\trust\repository\ChannelRepository.class
 app\falcon\trust\api\TrustController.class
+app\falcon\trust\service\TrustGraphService$2.class
 app\falcon\trust\service\EasService.class
 app\falcon\trust\TrustServiceApplication.class
 app\falcon\trust\service\TrustGraphService.class
