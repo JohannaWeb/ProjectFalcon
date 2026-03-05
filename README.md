@@ -1,4 +1,9 @@
 # Project Falcon
+## Disclaimer
+
+This project is a personal open-source project developed outside of my employment.
+It is created on personal equipment and does not contain any proprietary or confidential
+information from any employer.
 
 **Portable collaboration for developers.**
 
