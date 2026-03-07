@@ -1,10 +1,10 @@
-# Project Falcon: Architecture & Engineering
+# Juntos: Architecture & Engineering
 
-This document outlines the high-performance, event-driven architecture of Project Falcon. Our goal is to maintain a 32-second build-to-deploy velocity while scaling to handle the global AT Protocol firehose.
+This document outlines the high-performance, event-driven architecture of Juntos. Our goal is to maintain a 32-second build-to-deploy velocity while scaling to handle the global AT Protocol firehose.
 
 ## 1. High-Concurrency Engine (Java 25 & Project Loom)
 
-Project Falcon rejects the traditional heavy-thread-per-request model. By utilizing Java 25 and Project Loom, we leverage virtual threads to handle millions of concurrent connections without the memory overhead of traditional OS threads.
+Juntos rejects the traditional heavy-thread-per-request model. By utilizing Java 25 and Project Loom, we leverage virtual threads to handle millions of concurrent connections without the memory overhead of traditional OS threads.
 
 The Jetstream Ingestion Engine operates as a non-blocking consumer. It pipes the AT Protocol firehose directly into our internal event bus. This allows us to process real-time events—likes, posts, and follows—with sub-millisecond latency.
 
@@ -18,9 +18,9 @@ Every AI-generated response or moderation action is stored as an AiFact. These f
 
 ## 3. Zero-Trust Identity Gateway
 
-Security in Falcon is rooted in DID (Decentralized Identifier) resolution. Our gateway verifies the authenticity of every incoming request by resolving DID:PLC and DID:Web identifiers against the PLC directory.
+Security in Juntos is rooted in DID (Decentralized Identifier) resolution. Our gateway verifies the authenticity of every incoming request by resolving DID:PLC and DID:Web identifiers against the PLC directory.
 
-This ensures that identity cannot be spoofed. A user's handle is their key, and their social graph is portable. If a user moves their data, the Falcon gateway recognizes the new resolution without breaking the user's community history.
+This ensures that identity cannot be spoofed. A user's handle is their key, and their social graph is portable. If a user moves their data, the Juntos gateway recognizes the new resolution without breaking the user's community history.
 
 ## 4. Frontend & Persistence
 
@@ -34,6 +34,6 @@ We maintain a strict 32-second build-to-deploy pipeline. Every commit to the mai
 
 ---
 
-"Sovereign can also be High-Performance. Join the flight."
+"Sovereign can also be High-Performance. Join the pride."
 
-[View the Repository](https://github.com/JohannaWeb/ProjectFalcon)
+[View the Repository](https://github.com/JohannaWeb/Juntos)

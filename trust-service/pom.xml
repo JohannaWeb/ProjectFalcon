@@ -4,18 +4,18 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>app.falcon</groupId>
-        <artifactId>falcon-parent</artifactId>
+        <groupId>app.juntos</groupId>
+        <artifactId>juntos-parent</artifactId>
         <version>0.1.0</version>
     </parent>
 
     <artifactId>trust-service</artifactId>
-    <name>Falcon Trust Service</name>
+    <name>Juntos Trust Service</name>
 
     <dependencies>
         <dependency>
-            <groupId>app.falcon</groupId>
-            <artifactId>falcon-core</artifactId>
+            <groupId>app.juntos</groupId>
+            <artifactId>juntos-core</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -1,8 +1,8 @@
-# Project Falcon — Research Notes
+# Juntos — Research Notes
 
 ## Purpose
 
-Project Falcon explores architectures for **sovereign, decentralized AI communication systems** where identity, trust, and inference are not controlled by a single centralized authority.
+Juntos explores architectures for **sovereign, decentralized AI communication systems** where identity, trust, and inference are not controlled by a single centralized authority.
 
 These notes document experiments, assumptions, failures, and open research questions encountered during development.
 
@@ -23,7 +23,7 @@ Traditional AI deployments assume:
 - centralized compute
 - centralized trust decisions
 
-Project Falcon investigates whether AI systems can operate under:
+Juntos investigates whether AI systems can operate under:
 
 - decentralized identity (DID)
 - distributed inference execution
@@ -155,7 +155,7 @@ A centralized trust evaluator simplified logic but contradicted system goals.
 
 ## Philosophy
 
-Project Falcon treats software as an experimental medium.
+Juntos treats software as an experimental medium.
 
 The objective is not immediate optimization, but exploration of system designs that may become relevant as AI systems evolve toward networked intelligence.
 

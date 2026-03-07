@@ -11,11 +11,11 @@
         <relativePath/>
     </parent>
 
-    <groupId>app.falcon</groupId>
-    <artifactId>falcon-parent</artifactId>
+    <groupId>app.juntos</groupId>
+    <artifactId>juntos-parent</artifactId>
     <version>0.1.0</version>
     <packaging>pom</packaging>
-    <name>Falcon Project Parent</name>
+    <name>Juntos Project Parent</name>
     <licenses>
         <license>
             <name>MIT License</name>
@@ -25,21 +25,23 @@
     </licenses>
 
     <modules>
-        <module>falcon-alpha</module>
+        <module>juntos-alpha</module>
+        <module>siv-service</module>
+        <module>trust-service</module>
     </modules>
 
     <properties>
-        <java.version>25</java.version>
-        <maven.compiler.source>25</maven.compiler.source>
-        <maven.compiler.target>25</maven.compiler.target>
+        <java.version>21</java.version>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <lombok.version>1.18.42</lombok.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>app.falcon</groupId>
-                <artifactId>falcon-core</artifactId>
+                <groupId>app.juntos</groupId>
+                <artifactId>juntos-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

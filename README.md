@@ -1,8 +1,8 @@
-# Project Falcon
+# Juntos
 
-**Portable collaboration for developers.**
+**The LGBT decentralized community.**
 
-Falcon is a workspace where your identity, history, and AI context follow you across tools instead of being locked inside platforms.
+Juntos is a workspace where your identity, history, and AI context follow you across tools instead of being locked inside platforms—built specifically as a safe space for the LGBT community.
 
 *Built in Porto. Shipping daily.*
 
@@ -16,17 +16,28 @@ Login once. Keep your context everywhere.
 - shared collaboration context
 - AI assistance that follows your work
 
-Platforms become interfaces — not owners.
+---
+
+## Quick Start (Local Run)
+
+To run Juntos locally without Docker, use the provided PowerShell script:
+
+1. Open PowerShell in the root directory.
+2. Run the start script:
+```powershell
+.\run_juntos.ps1
+```
+The script will check for **Java 21 LTS** and **Node.js**, install dependencies, and launch the backend and frontend in separate windows.
 
 ---
 
 ## Example
 
 ```
-falcon login
-falcon connect github
-falcon connect discord
-falcon open
+juntos login
+juntos connect github
+juntos connect discord
+juntos open
 ```
 
 Open a workspace and your context is already there.
@@ -37,11 +48,11 @@ No migration. No reset.
 
 ## Why
 
-Developers work across many tools, but context stays trapped inside each one.
+The LGBT community needs digital spaces that aren't controlled by central authorities.
 
-Switching platforms means rebuilding workflows, history, and AI understanding from scratch.
+Switching platforms often means losing community ties and history.
 
-Falcon separates collaboration from the platform.
+Juntos separates collaboration from the platform.
 
 ---
 
@@ -58,7 +69,7 @@ Shipping daily.
 Email separated communication from providers.  
 The web separated content from hosts.
 
-Falcon explores collaboration that outlives platforms.
+Juntos explores collaboration that outlives platforms.
 
 ---
 

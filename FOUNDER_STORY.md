@@ -1,19 +1,19 @@
 # Founder Story — Johanna
-## Project Falcon
+## Juntos
 
-Falcon started by accident.
+Juntos started by accident.
 
-After losing access to online communities I relied on, I realized how fragile digital belonging actually is. When a platform removes you, your history, relationships, and presence disappear with it.
+After losing access to online communities I relied on, I realized how fragile digital belonging actually is—especially for those of us in the LGBT community. When a platform removes you, your history, relationships, and presence disappear with it.
 
 That design assumption felt wrong.
 
-So I opened an empty repository and began building an alternative — not another chat app, but a system where identity and trust exist independently from any single company.
+So I opened an empty repository and began building an alternative — not another chat app, but a system where identity and trust exist independently from any single company, purposefully designed as a safe haven for the LGBT community.
 
 ---
 
 ## Background
 
-I’m a self-taught engineer, coding since I was 15.
+I’m a self-taught queer engineer, coding since I was 15.
 
 I work primarily in backend and systems architecture, with a focus on practical engineering over ideology. My approach is simple: use whatever tools allow the fastest path from idea to working system.
 
@@ -23,7 +23,7 @@ Outside of software, I lift weights and play jazz guitar. Both influence how I b
 
 ---
 
-## Why Falcon
+## Why Juntos
 
 Existing platforms optimize for ownership:
 
@@ -31,21 +31,21 @@ Existing platforms optimize for ownership:
 - servers instead of protocols
 - moderation through central authority
 
-This works operationally but creates structural fragility. Communities and organizations depend entirely on platform decisions.
+This works operationally but creates structural fragility. Communities and organizations depend entirely on platform decisions. For the LGBT community, this fragility often means the loss of essential safe spaces.
 
-Falcon explores a different model:
+Juntos explores a different model:
 
 - identity as a decentralized identifier (DID)
 - trust derived from network relationships
 - data anchored to protocols rather than vendors
 
-The goal is not disruption for its own sake — it is reducing dependency on centralized control points.
+The goal is not disruption for its own sake — it is reducing dependency on centralized control points and ensuring our community's survival in the digital age.
 
 ---
 
 ## Early Build
 
-Falcon was initially built solo over seven days as a proof of architecture.
+Juntos was initially built solo over seven days as a proof of architecture.
 
 Current system components include:
 
@@ -69,15 +69,15 @@ I believe good systems come from:
 - keeping infrastructure simple enough to evolve
 - prioritizing user experience over theoretical purity
 
-Falcon is an ongoing experiment in what communication software looks like when identity is not owned by the platform itself.
+Juntos is an ongoing experiment in what communication software looks like when identity is not owned by the platform itself.
 
 ---
 
 ## Status
 
-Falcon is early-stage and evolving.
+Juntos is early-stage and evolving.
 
-Conversations with accelerators and research communities are ongoing while the core architecture continues to mature.
+Conversations with accelerators and LGBT research communities are ongoing while the core architecture continues to mature.
 
 The project remains builder-led and execution-focused.
 
@@ -85,6 +85,6 @@ The project remains builder-led and execution-focused.
 
 ## One Line
 
-I didn’t start Falcon to compete with existing platforms.
+I didn’t start Juntos to compete with existing platforms.
 
-I started it to see what collaboration looks like when users, not software companies, own identity.
+I started it to see what collaboration looks like when users, not software companies, own identity—and to build a safe, pink, permanent home for my community.

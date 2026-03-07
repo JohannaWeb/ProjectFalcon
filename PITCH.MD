@@ -1,31 +1,31 @@
-# Project Falcon: The Sovereign Successor to Slack and Discord
+# Juntos: The Sovereign Safe Space for the LGBT Community
 
-> "Communication is a human right, not a corporate asset."
+> "Identity is ours. Community is our right."
 
-## 1. The Vision: Break the Walled Gardens
-Modern collaboration lives in **"digital prisons"** (Slack, Discord). Your identity, your data, and your community are locked inside corporate silos. If the platform dies or deplatforms you, your "digital soul" is lost.
+## 1. The Vision: Break the Silos, Protect the Community
+Modern collaboration lives in **"corporate silos"** (Slack, Discord). For the LGBT community, these silos are fragile. If the platform deplatforms you or fails to protect you, your community is lost.
 
-**Project Falcon** is the breakout tool. Built on the **AT Protocol (Bluesky)**, it provides a high-fidelity, real-time communication layer where the **User remains Sovereign.**
+**Juntos** is the breakout tool. Built on the **AT Protocol (Bluesky)**, it provides a high-fidelity, real-time communication layer where the **User remains Sovereign** and the community remains safe.
 
-## 2. The Thesis: Why Falcon Wins
-We are betting on the **"Sovereign Seamless"** mantra.
+## 2. The Thesis: Why Juntos Wins
+We are betting on the **"Sovereign Safe"** mantra.
 *   **Discord** is built for gamers.
 *   **Slack** is built for legacy enterprise.
-*   **Falcon** is built for the **Decentralized Social Era.**
+*   **Juntos** is built for the **LGBT Decentralized Era.**
 
-We reject the idea that "Decentralized" means "Clunky." Our moat is **UX as the Ultimate Feature.**
+We reject the idea that "Decentralized" means "Clunky." Our moat is **Pink Pastel UX as the Ultimate Feature.**
 
 ## 3. The "Moat" (Safety & Sovereignty)
 *   **Portable Identity**: Users own their handles and relationships via DID/PLC.
-*   **Safety by Design**: Architecture-level moderation tools that prevent the "decentralized chaos" of early-gen protocols.
+*   **Safety by Design**: Architecture-level moderation tools that ensure a safe, queer-friendly environment.
 *   **Protocol-First**: We are building a *gate* to the open web, not a *wall* around a garden.
 
-## 4. The Market Opportunity: Developer-First
-We are starting with the highest-value early adopters: **Developers.**
+## 4. The Market Opportunity: Queer-First Tech
+We are starting with the highest-value early adopters: **LGBT Developers and Communities.**
 
-*   **Phase 1 — Elite Tech Networks**: Paid access to "high-signal" developer hubs.
-*   **Phase 2 — The Shippers' Layer**: A SaaS integration suite (SIV for the open web, context-aware AI tools).
-*   **Phase 3 — Platform Expansion**: Scaling the "Sovereign Seamless" experience to creators and global enterprise.
+*   **Phase 1 — Queer Tech Networks**: Paid access to "high-signal" LGBT developer hubs.
+*   **Phase 2 — The Pride Layer**: A SaaS integration suite (SIV for the open web, context-aware AI tools).
+*   **Phase 3 — Global Expansion**: Scaling the "Sovereign Safe" experience to everyone who needs a digital home.
 
 ## 5. Technical Maturity
 *   **Micro-Integrated Backend**: Java Spring Boot 4.x + WebSockets for Discord-class performance.
@@ -34,6 +34,6 @@ We are starting with the highest-value early adopters: **Developers.**
 
 ---
 
-**"Sovereign can also be Seamless. Join the flight."**
+**"Sovereign can also be Seamless. Join the pride."**
 
-[Read the Manifesto](MANIFESTO.md) | [Explore the Roadmap](README.md#roadmap)
+[Read the Manifesto](MANIFESTO.md) | [Explore the Roadmap](ROADMAP.md)
