@@ -34,7 +34,7 @@ class AiContextServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        agentService = new SovereignAgentService(AGENT_DID, "Test AI Agent");
+        agentService = new SovereignAgentService(AGENT_DID, "Test AI Agent", "agent");
         aiContextService = new AiContextService(aiClient, factRepository, agentService, autonomousVoucher,
                 50, 60, 5000);
 
