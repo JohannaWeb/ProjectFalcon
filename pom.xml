@@ -26,14 +26,13 @@
 
     <modules>
         <module>juntos-alpha</module>
-        <module>siv-service</module>
-        <module>trust-service</module>
     </modules>
 
     <properties>
-        <java.version>21</java.version>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
+        <java.version>25</java.version>
+        <maven.compiler.source>25</maven.compiler.source>
+        <maven.compiler.target>25</maven.compiler.target>
+        <maven.compiler.release>25</maven.compiler.release>
         <lombok.version>1.18.42</lombok.version>
     </properties>
 

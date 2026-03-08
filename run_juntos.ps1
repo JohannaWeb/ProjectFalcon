@@ -21,7 +21,7 @@ function Test-JavaVersion($path) {
             $versionOutput = & $path -version 2>&1 | Out-String
             $ErrorActionPreference = $oldPreference
             
-            if ($versionOutput -match "21") {
+            if ($versionOutput -match "21" -or $versionOutput -match "25") {
                 return $true
             } else {
                 $firstLine = (($versionOutput -split "`n")[0]).Trim()
@@ -36,10 +36,10 @@ function Test-JavaVersion($path) {
 
 # Try default path
 if (Test-JavaVersion "java") {
-    Write-Host "Java 21 detected in PATH." -ForegroundColor Green
+    Write-Host "Java 21/25 detected in PATH." -ForegroundColor Green
     $javaFound = $true
 } else {
-    Write-Host "Java 21 not found in PATH. Searching common locations..." -ForegroundColor Yellow
+    Write-Host "Java 21/25 not found in PATH. Searching common locations..." -ForegroundColor Yellow
     
     $commonPaths = @(
         "$env:JAVA_HOME\bin\java.exe",
@@ -53,7 +53,7 @@ if (Test-JavaVersion "java") {
     foreach ($path in ($commonPaths | Select-Object -Unique)) {
         if ($null -eq $path -or $path -eq "") { continue }
         if (Test-JavaVersion $path) {
-            Write-Host "Found Java 21 at: $path" -ForegroundColor Green
+            Write-Host "Found compatible Java at: $path" -ForegroundColor Green
             $env:JAVA_HOME = [System.IO.Path]::GetDirectoryName([System.IO.Path]::GetDirectoryName($path))
             $env:PATH = "$([System.IO.Path]::GetDirectoryName($path));$env:PATH"
             $javaFound = $true
@@ -63,7 +63,7 @@ if (Test-JavaVersion "java") {
 }
 
 if (-not $javaFound) {
-    Write-Error "Java 21 is not installed or not in PATH. Juntos requires Java 21 (LTS)."
+    Write-Error "Java 21 or 25 is not installed or not in PATH. Juntos requires Java 21+ (LTS recommended)."
     exit 1
 }
 

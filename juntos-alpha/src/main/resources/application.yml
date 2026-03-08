@@ -26,4 +26,4 @@ management:
 
 logging:
   level:
-    app.falcon: INFO
+    app.juntos: DEBUG
