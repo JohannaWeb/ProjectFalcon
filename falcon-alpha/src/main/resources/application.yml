@@ -2,14 +2,14 @@ spring:
   application:
     name: falcon-alpha
   datasource:
-    url: jdbc:h2:mem:falcondb;DB_CLOSE_DELAY=-1
-    driverClassName: org.h2.Driver
-    username: sa
-    password: password
+    url: jdbc:postgresql://localhost:5432/falcon
+    username: postgres
+    password: 
+    driverClassName: org.postgresql.Driver
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: false
 
 server:
