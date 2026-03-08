@@ -10,6 +10,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.asn1.x9.X9ECParameters;
+import org.bouncycastle.crypto.ec.CustomNamedCurves;
+import org.bouncycastle.crypto.params.ECDomainParameters;
+import org.bouncycastle.crypto.params.ECPublicKeyParameters;
+import org.bouncycastle.crypto.signers.ECDSASigner;
+import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -18,7 +24,6 @@ import java.math.BigInteger;
 import java.security.AlgorithmParameters;
 import java.security.KeyFactory;
 import java.security.Security;
-import java.security.Signature;
 import java.security.interfaces.ECPublicKey;
 import java.security.spec.*;
 import java.util.Arrays;
@@ -109,45 +114,52 @@ public class AtprotoAuthFilter extends OncePerRequestFilter {
     private void verifyEs256k(String token, ECPublicKey key) throws Exception {
         String[] parts = token.split("\\.");
         if (parts.length != 3) throw new JWTVerificationException("Invalid JWT format");
+        
         byte[] data = (parts[0] + "." + parts[1]).getBytes(java.nio.charset.StandardCharsets.UTF_8);
         byte[] rawSig = Base64.getUrlDecoder().decode(parts[2]);
-        Signature s = Signature.getInstance("SHA256withECDSA", "BC");
-        s.initVerify(key);
-        s.update(data);
-        if (!s.verify(derEncodeSignature(rawSig))) throw new JWTVerificationException("ES256K verification failed");
-    }
 
-    /** Convert JWT ECDSA signature (R || S, 64 bytes) to DER-encoded ASN.1 SEQUENCE. */
-    private byte[] derEncodeSignature(byte[] rawSig) {
         int half = rawSig.length / 2;
-        byte[] r = derInt(Arrays.copyOfRange(rawSig, 0, half));
-        byte[] s = derInt(Arrays.copyOfRange(rawSig, half, rawSig.length));
-        int seqLen = 2 + r.length + 2 + s.length;
-        byte[] der = new byte[2 + seqLen];
-        int i = 0;
-        der[i++] = 0x30;
-        der[i++] = (byte) seqLen;
-        der[i++] = 0x02;
-        der[i++] = (byte) r.length;
-        System.arraycopy(r, 0, der, i, r.length); i += r.length;
-        der[i++] = 0x02;
-        der[i++] = (byte) s.length;
-        System.arraycopy(s, 0, der, i, s.length);
-        return der;
+        BigInteger r = new BigInteger(1, Arrays.copyOfRange(rawSig, 0, half));
+        BigInteger s = new BigInteger(1, Arrays.copyOfRange(rawSig, half, rawSig.length));
+
+        // Use BouncyCastle's ECDSASigner directly for maximum reliability
+        X9ECParameters curve = CustomNamedCurves.getByName("secp256k1");
+        ECDomainParameters domainParams = new ECDomainParameters(curve.getCurve(), curve.getG(), curve.getN(), curve.getH());
+
+        // Extract the BC point from the JCA key
+        org.bouncycastle.math.ec.ECPoint q;
+        if (key instanceof BCECPublicKey bcKey) {
+            q = bcKey.getQ();
+        } else {
+            // Fallback for non-BC keys
+            org.bouncycastle.jce.spec.ECNamedCurveParameterSpec spec = org.bouncycastle.jce.ECNamedCurveTable.getParameterSpec("secp256k1");
+            q = spec.getCurve().createPoint(key.getW().getAffineX(), key.getW().getAffineY());
+        }
+
+        ECPublicKeyParameters pubKeyParams = new ECPublicKeyParameters(q, domainParams);
+        ECDSASigner signer = new ECDSASigner();
+        signer.init(false, pubKeyParams);
+
+        // Hash the data manually (SHA-256)
+        java.security.MessageDigest digest = java.security.MessageDigest.getInstance("SHA-256");
+        byte[] hash = digest.digest(data);
+
+        boolean valid = signer.verifySignature(hash, r, s);
+
+        if (!valid) {
+            // Try with Low-S normalization just in case
+            BigInteger n = curve.getN();
+            BigInteger halfN = n.shiftRight(1);
+            if (s.compareTo(halfN) > 0) {
+                valid = signer.verifySignature(hash, r, n.subtract(s));
+            }
+        }
+
+        if (!valid) {
+            throw new JWTVerificationException("ES256K verification failed");
+        }
     }
 
-    /** Trim leading zeros and prepend 0x00 if high bit is set (DER unsigned integer). */
-    private byte[] derInt(byte[] bytes) {
-        int start = 0;
-        while (start < bytes.length - 1 && bytes[start] == 0) start++;
-        bytes = Arrays.copyOfRange(bytes, start, bytes.length);
-        if ((bytes[0] & 0x80) != 0) {
-            byte[] padded = new byte[bytes.length + 1];
-            System.arraycopy(bytes, 0, padded, 1, bytes.length);
-            return padded;
-        }
-        return bytes;
-    }
 
     // Multicodec varint prefixes for compressed EC public keys
     private static final byte[] MULTICODEC_SECP256K1 = {(byte) 0xe7, 0x01};
