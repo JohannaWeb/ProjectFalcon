@@ -3,19 +3,15 @@
 **The LGBT decentralized community.**
 
 Writing this without AI using my own keyboard.
-As a trans woman i have felt discriminated and repudiated in many web communities.
-Juntos uses the AT protocol and technology i built to position itself as a safe space for queen people like me.
-
+As a trans woman I have felt discriminated and repudiated in many web communities.
+Juntos uses the AT protocol and technology I built to position itself as a safe space for queer people like me.
 
 ---
 
 ## The Idea
 
-Safe inclusive spaes for trans, non binary people and anyone in the LGBT+ rainbow.
-No centralized company governance . The AT protocol and this new communities extension will bring freedom and hope to the digital world the same way
-bluesky did.
-
----
+Safe inclusive spaces for trans, non-binary people and anyone in the LGBT+ rainbow.
+No centralized company governance. The AT protocol and this new communities extension will bring freedom and hope to the digital world the same way Bluesky did.
 
 ## Quick Start (Local Run)
 
