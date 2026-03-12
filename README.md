@@ -156,7 +156,7 @@ Falcon natively integrates with Bluesky's AT Protocol:
 * **Communities & DMs**: Full support for Bluesky Communities and direct messaging
 * **PDS Interoperability**: Works with any AT Protocol Personal Data Server
 
-### Sybil Resistance
+### Sybil Mitigation
 
 Falcon detects coordinated inauthentic behavior via link density analysis and degrades trust scores gracefully when attacks are detected.
 
