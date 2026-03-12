@@ -26,7 +26,7 @@ The features that distinguish Falcon from other decentralized platforms are:
 
 ## Architecture overview
 
-![Architecture overview](docs/images/architecture.svg)
+<img width="885" height="631" alt="image" src="https://github.com/user-attachments/assets/a0419528-408e-4c66-be48-f54c2003c4a5" />
 
 ## Install
 
