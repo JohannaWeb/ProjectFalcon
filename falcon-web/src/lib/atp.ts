@@ -48,3 +48,26 @@ export function resumeSession(data: AtpSessionData): AtpSession | null {
     did: data.did ?? '',
   } as AtpSession
 }
+export const chatApi = {
+  listConvos: async () => {
+    // We use a proxy to tell the PDS to forward this to the chat service
+    const res = await getAtpAgent().api.chat.bsky.convo.listConvos({}, { headers: { 'atproto-proxy': 'did:web:api.bsky.chat#bsky_chat' } })
+    return res.data
+  },
+  getConvo: async (convoId: string) => {
+    const res = await getAtpAgent().api.chat.bsky.convo.getConvo({ convoId }, { headers: { 'atproto-proxy': 'did:web:api.bsky.chat#bsky_chat' } })
+    return res.data
+  },
+  getMessages: async (convoId: string, limit = 50) => {
+    const res = await getAtpAgent().api.chat.bsky.convo.getMessages({ convoId, limit }, { headers: { 'atproto-proxy': 'did:web:api.bsky.chat#bsky_chat' } })
+    return res.data
+  },
+  getConvoForMembers: async (members: string[]) => {
+    const res = await getAtpAgent().api.chat.bsky.convo.getConvoForMembers({ members }, { headers: { 'atproto-proxy': 'did:web:api.bsky.chat#bsky_chat' } })
+    return res.data
+  },
+  sendMessage: async (convoId: string, text: string) => {
+    const res = await getAtpAgent().api.chat.bsky.convo.sendMessage({ convoId, message: { text } }, { headers: { 'atproto-proxy': 'did:web:api.bsky.chat#bsky_chat' }, encoding: 'application/json' })
+    return res.data
+  }
+}

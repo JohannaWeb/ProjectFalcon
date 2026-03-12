@@ -2,7 +2,8 @@
  * Falcon backend API via AT Protocol XRPC (app.falcon.* lexicons).
  * All methods require a Session (AT access JWT + did + handle).
  */
-export const BACKEND_URL = 'http://localhost:8080'
+// Use VITE_BACKEND_URL for cloud deployment (e.g. Railway), fallback to localhost for dev
+export const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080'
 
 export type Session = { accessJwt: string; did: string; handle: string }
 
@@ -10,6 +11,7 @@ export type Session = { accessJwt: string; did: string; handle: string }
 export type ServerSummary = { id: number; name: string; ownerDid: string; channels: { id: number; name: string }[] }
 export type ChannelSummary = { id: number; name: string; serverId?: number }
 export type MessageSummary = { id: number; content: string; authorDid: string; authorHandle: string; createdAt: string }
+export type ConvoSummary = { id: number; participants: string[]; createdAt: string }
 
 async function xrpcQuery<T>(
   nsid: string,
@@ -90,4 +92,16 @@ export const backendApi = {
 
   inviteToServer: (serverId: number, session: Session, handle: string) =>
     xrpcProcedure<{ did: string; handle: string }>('app.falcon.server.invite', { serverId }, { handle }, session),
+
+  listConvos: (session: Session) =>
+    xrpcQuery<{ convos: ConvoSummary[] }>('app.falcon.convo.list', undefined, session),
+
+  getConvo: (convoId: number, session: Session) =>
+    xrpcQuery<ConvoSummary>('app.falcon.convo.get', { convoId }, session),
+
+  getConvoMessages: (convoId: number, session: Session, limit = 50) =>
+    xrpcQuery<{ messages: MessageSummary[] }>('app.falcon.convo.getMessages', { convoId, limit }, session),
+
+  sendConvoMessage: (session: Session, params: { content: string; convoId?: number; members?: string[] }) =>
+    xrpcProcedure<MessageSummary>('app.falcon.convo.sendMessage', undefined, params, session),
 }

@@ -9,6 +9,8 @@ import { SearchView } from './SearchView'
 import { ExploreView } from './ExploreView'
 import { ChannelView } from './ChannelView'
 import { ProtocolView } from './ProtocolView'
+import { DMsView } from './DMsView'
+import { ConvoThread } from './ConvoThread'
 import { CreateServerModal } from './CreateServerModal'
 import { CreateChannelModal } from './CreateChannelModal'
 import { InviteModal } from './InviteModal'
@@ -40,6 +42,7 @@ export function Layout({ session, onLogout }: Props) {
   const [showCreateServer, setShowCreateServer] = useState(false)
   const [showCreateChannel, setShowCreateChannel] = useState(false)
   const [showInvite, setShowInvite] = useState(false)
+  const [selectedConvoId, setSelectedConvoId] = useState<string | null>(null)
 
   const sess = { accessJwt: session.accessJwt, did: session.did, handle: session.handle }
 
@@ -213,7 +216,18 @@ export function Layout({ session, onLogout }: Props) {
             <>
               {view === 'feed' && <FeedView />}
               {view === 'dms' && (
-                <div style={{ padding: 24, color: 'var(--text-muted)' }}>DMs on AT Protocol — coming soon</div>
+                selectedConvoId ? (
+                  <ConvoThread
+                    convoId={selectedConvoId}
+                    session={session}
+                    onBack={() => setSelectedConvoId(null)}
+                  />
+                ) : (
+                  <DMsView
+                    session={sess}
+                    onSelectConvo={setSelectedConvoId}
+                  />
+                )
               )}
               {view === 'explore' && <ExploreView />}
               {view === 'notifications' && <NotificationsView />}

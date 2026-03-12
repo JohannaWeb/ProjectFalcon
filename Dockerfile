@@ -8,6 +8,7 @@ COPY falcon-core/pom.xml falcon-core/
 COPY falcon-gateway/pom.xml falcon-gateway/
 COPY trust-service/pom.xml trust-service/
 COPY siv-service/pom.xml siv-service/
+COPY falcon-alpha/pom.xml falcon-alpha/
 
 # Cache dependencies
 RUN mvn dependency:go-offline -B
@@ -38,3 +39,10 @@ WORKDIR /app
 COPY --from=build /app/siv-service/target/*.jar app.jar
 EXPOSE 8082
 ENTRYPOINT ["java", "-jar", "app.jar"]
+
+# Final stage - Alpha (Postgres Backend)
+FROM eclipse-temurin:21-jre-alpine AS alpha
+WORKDIR /app
+COPY --from=build /app/falcon-alpha/target/*.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar", "--enable-preview"]

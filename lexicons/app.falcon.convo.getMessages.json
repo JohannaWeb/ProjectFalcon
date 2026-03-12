@@ -1,0 +1,59 @@
+{
+    "lexicon": 1,
+    "id": "app.falcon.convo.getMessages",
+    "description": "Get messages in a conversation.",
+    "defs": {
+        "main": {
+            "type": "query",
+            "parameters": {
+                "type": "params",
+                "required": [
+                    "convoId"
+                ],
+                "properties": {
+                    "convoId": {
+                        "type": "integer"
+                    },
+                    "cursor": {
+                        "type": "string"
+                    },
+                    "limit": {
+                        "type": "integer",
+                        "default": 50,
+                        "minimum": 1,
+                        "maximum": 100
+                    }
+                }
+            },
+            "output": {
+                "encoding": "application/json",
+                "schema": {
+                    "type": "object",
+                    "required": [
+                        "messages"
+                    ],
+                    "properties": {
+                        "cursor": {
+                            "type": "string"
+                        },
+                        "messages": {
+                            "type": "array",
+                            "items": {
+                                "type": "ref",
+                                "ref": "app.falcon.defs#messageView"
+                            }
+                        }
+                    }
+                }
+            },
+            "errors": [
+                {
+                    "name": "NotFound"
+                },
+                {
+                    "name": "Forbidden"
+                }
+            ]
+        }
+    }
+}

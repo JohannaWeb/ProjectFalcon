@@ -60,6 +60,7 @@ public class AtprotoAuthFilter extends OncePerRequestFilter {
         }
 
         String token = authHeader.substring(7);
+
         DecodedJWT unverified;
         try {
             unverified = JWT.decode(token);
@@ -70,6 +71,26 @@ public class AtprotoAuthFilter extends OncePerRequestFilter {
 
         String sub = unverified.getSubject();
         String iss = unverified.getIssuer();
+        if (iss == null) {
+            // App key — no issuer claim
+            log.info("App key authentication for DID: {}", sub);
+            request.setAttribute(VIEWER_DID_ATTR, sub);
+            chain.doFilter(request, response);
+            return;
+        }
+        String alg = unverified.getAlgorithm();
+        String kid = unverified.getKeyId();
+
+        log.info("JWT claims - sub: {}, iss: {}, alg: {}, kid: {}", sub, iss, alg, kid);
+        log.debug("JWT header: {}", unverified.getHeader());
+
+        try {
+            unverified = JWT.decode(token);
+        } catch (Exception e) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT");
+            return;
+        }
+
         if (sub == null) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT missing subject");
             return;
@@ -80,19 +101,28 @@ public class AtprotoAuthFilter extends OncePerRequestFilter {
         String signingDid = toSigningDid(iss, sub);
 
         try {
+            log.debug("[VER: 2.0-ECDSASigner] Verifying token for sub: {}, iss: {} (signingDid: {})", sub, iss,
+                    signingDid);
             Map<String, Object> didDoc = didResolver.resolve(signingDid);
             verifyJwtSignature(token, unverified, didDoc);
+            log.info("Auth successful for DID: {}", sub);
             request.setAttribute(VIEWER_DID_ATTR, sub);
             chain.doFilter(request, response);
         } catch (Exception e) {
-            log.warn("Auth failed for DID {}: {}", signingDid, e.getMessage());
+            log.warn("Auth failed for DID {}: {} (Algorithm: {}, Issuer: {})", signingDid, e.getMessage(),
+                    unverified.getAlgorithm(), iss);
+            if (log.isDebugEnabled()) {
+                log.debug("Verification error detail", e);
+            }
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication failed");
         }
     }
 
     private String toSigningDid(String iss, String sub) {
-        if (iss == null) return sub;
-        if (iss.startsWith("did:")) return iss;
+        if (iss == null)
+            return sub;
+        if (iss.startsWith("did:"))
+            return iss;
         // HTTPS PDS URL → did:web (e.g. https://bsky.social → did:web:bsky.social)
         String host = iss.replaceFirst("https?://", "").split("/")[0];
         return "did:web:" + host;
@@ -100,11 +130,12 @@ public class AtprotoAuthFilter extends OncePerRequestFilter {
 
     private void verifyJwtSignature(String token, DecodedJWT jwt, Map<String, Object> didDoc) throws Exception {
         String alg = jwt.getAlgorithm();
+        String kid = jwt.getKeyId();
         if ("ES256".equals(alg)) {
-            ECPublicKey key = extractEcPublicKey(didDoc, "P-256", "secp256r1");
+            ECPublicKey key = extractEcPublicKey(didDoc, "P-256", "secp256r1", kid);
             Algorithm.ECDSA256(key, null).verify(jwt);
         } else if ("ES256K".equals(alg)) {
-            ECPublicKey key = extractEcPublicKey(didDoc, "secp256k1", "secp256k1");
+            ECPublicKey key = extractEcPublicKey(didDoc, "secp256k1", "secp256k1", kid);
             verifyEs256k(token, key);
         } else {
             throw new JWTVerificationException("Unsupported algorithm: " + alg);
@@ -113,10 +144,17 @@ public class AtprotoAuthFilter extends OncePerRequestFilter {
 
     private void verifyEs256k(String token, ECPublicKey key) throws Exception {
         String[] parts = token.split("\\.");
-        if (parts.length != 3) throw new JWTVerificationException("Invalid JWT format");
-        
+        if (parts.length != 3)
+            throw new JWTVerificationException("Invalid JWT format");
+
+        log.debug("JWT Header: {}", parts[0]);
+        log.debug("JWT Payload: {}", parts[1]);
+
         byte[] data = (parts[0] + "." + parts[1]).getBytes(java.nio.charset.StandardCharsets.UTF_8);
         byte[] rawSig = Base64.getUrlDecoder().decode(parts[2]);
+
+        log.debug("Data to verify (hex): {}", bytesToHex(data));
+        log.debug("Raw Sig (hex): {}", bytesToHex(rawSig));
 
         int half = rawSig.length / 2;
         BigInteger r = new BigInteger(1, Arrays.copyOfRange(rawSig, 0, half));
@@ -124,7 +162,8 @@ public class AtprotoAuthFilter extends OncePerRequestFilter {
 
         // Use BouncyCastle's ECDSASigner directly for maximum reliability
         X9ECParameters curve = CustomNamedCurves.getByName("secp256k1");
-        ECDomainParameters domainParams = new ECDomainParameters(curve.getCurve(), curve.getG(), curve.getN(), curve.getH());
+        ECDomainParameters domainParams = new ECDomainParameters(curve.getCurve(), curve.getG(), curve.getN(),
+                curve.getH());
 
         // Extract the BC point from the JCA key
         org.bouncycastle.math.ec.ECPoint q;
@@ -132,12 +171,17 @@ public class AtprotoAuthFilter extends OncePerRequestFilter {
             q = bcKey.getQ();
         } else {
             // Fallback for non-BC keys
-            org.bouncycastle.jce.spec.ECNamedCurveParameterSpec spec = org.bouncycastle.jce.ECNamedCurveTable.getParameterSpec("secp256k1");
+            org.bouncycastle.jce.spec.ECNamedCurveParameterSpec spec = org.bouncycastle.jce.ECNamedCurveTable
+                    .getParameterSpec("secp256k1");
             q = spec.getCurve().createPoint(key.getW().getAffineX(), key.getW().getAffineY());
         }
 
         ECPublicKeyParameters pubKeyParams = new ECPublicKeyParameters(q, domainParams);
         ECDSASigner signer = new ECDSASigner();
+
+        log.info("Public key point Q - X: {}, Y: {}",
+                q.getAffineXCoord().toBigInteger().toString(16),
+                q.getAffineYCoord().toBigInteger().toString(16));
         signer.init(false, pubKeyParams);
 
         // Hash the data manually (SHA-256)
@@ -151,19 +195,28 @@ public class AtprotoAuthFilter extends OncePerRequestFilter {
             BigInteger n = curve.getN();
             BigInteger halfN = n.shiftRight(1);
             if (s.compareTo(halfN) > 0) {
+                log.debug("Encountered High-S signature, attempting Low-S verification");
                 valid = signer.verifySignature(hash, r, n.subtract(s));
             }
         }
 
         if (!valid) {
+            log.error("Crypto failure: ES256K verification failed. R: {}, S: {}", r.toString(16), s.toString(16));
             throw new JWTVerificationException("ES256K verification failed");
         }
     }
 
+    private String bytesToHex(byte[] bytes) {
+        StringBuilder sb = new StringBuilder();
+        for (byte b : bytes) {
+            sb.append(String.format("%02x", b));
+        }
+        return sb.toString();
+    }
 
     // Multicodec varint prefixes for compressed EC public keys
     private static final byte[] MULTICODEC_SECP256K1 = {(byte) 0xe7, 0x01};
-    private static final byte[] MULTICODEC_P256       = {(byte) 0x80, 0x24};
+    private static final byte[] MULTICODEC_P256 = {(byte) 0x80, 0x24};
     private static final String BASE58_ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 
     static {
@@ -173,28 +226,65 @@ public class AtprotoAuthFilter extends OncePerRequestFilter {
     }
 
     @SuppressWarnings("unchecked")
-    private ECPublicKey extractEcPublicKey(Map<String, Object> didDoc, String jwtCurve, String jcaCurve) throws Exception {
+    private ECPublicKey extractEcPublicKey(Map<String, Object> didDoc, String jwtCurve, String jcaCurve, String kid)
+            throws Exception {
         List<Map<String, Object>> vms = (List<Map<String, Object>>) didDoc.get("verificationMethod");
-        if (vms == null || vms.isEmpty()) throw new IllegalArgumentException("No verificationMethod in DID document");
+        if (vms == null || vms.isEmpty())
+            throw new IllegalArgumentException("No verificationMethod in DID document");
+        String did = (String) didDoc.get("id");
+
+        if (kid != null && !kid.isBlank()) {
+            for (Map<String, Object> vm : vms) {
+                if (kidMatches(kid, (String) vm.get("id"), did)) {
+                    ECPublicKey key = extractVmEcPublicKey(vm, jwtCurve, jcaCurve);
+                    if (key != null)
+                        return key;
+                    throw new IllegalArgumentException("JWT kid matched DID key, but key curve was not " + jwtCurve);
+                }
+            }
+            log.debug("JWT kid {} not found in DID document; falling back to curve-only key lookup", kid);
+        }
+
         for (Map<String, Object> vm : vms) {
-            // JWK format
-            Map<String, Object> jwk = (Map<String, Object>) vm.get("publicKeyJwk");
-            if (jwk != null && jwtCurve.equals(jwk.get("crv"))) {
-                return buildEcPublicKey((String) jwk.get("x"), (String) jwk.get("y"), jcaCurve);
-            }
-            // Multikey format (publicKeyMultibase, base58btc 'z' prefix)
-            String multibase = (String) vm.get("publicKeyMultibase");
-            if (multibase != null && multibase.startsWith("z")) {
-                ECPublicKey key = decodeMultikeyPublicKey(multibase, jwtCurve, jcaCurve);
-                if (key != null) return key;
-            }
+            ECPublicKey key = extractVmEcPublicKey(vm, jwtCurve, jcaCurve);
+            if (key != null)
+                return key;
         }
         throw new IllegalArgumentException("No " + jwtCurve + " key found in DID document");
     }
 
+    @SuppressWarnings("unchecked")
+    private ECPublicKey extractVmEcPublicKey(Map<String, Object> vm, String jwtCurve, String jcaCurve)
+            throws Exception {
+        // JWK format
+        Map<String, Object> jwk = (Map<String, Object>) vm.get("publicKeyJwk");
+        if (jwk != null && jwtCurve.equals(jwk.get("crv"))) {
+            return buildEcPublicKey((String) jwk.get("x"), (String) jwk.get("y"), jcaCurve);
+        }
+        // Multikey format (publicKeyMultibase, base58btc 'z' prefix)
+        String multibase = (String) vm.get("publicKeyMultibase");
+        if (multibase != null && multibase.startsWith("z")) {
+            return decodeMultikeyPublicKey(multibase, jwtCurve, jcaCurve);
+        }
+        return null;
+    }
+
+    private boolean kidMatches(String kid, String vmId, String did) {
+        if (vmId == null || kid == null)
+            return false;
+        if (kid.equals(vmId))
+            return true;
+        if (kid.startsWith("#"))
+            return vmId.endsWith(kid);
+        if (vmId.startsWith("#") && did != null)
+            return kid.equals(did + vmId);
+        return false;
+    }
+
     private ECPublicKey decodeMultikeyPublicKey(String multibase, String jwtCurve, String jcaCurve) throws Exception {
         byte[] decoded = base58Decode(multibase.substring(1)); // strip 'z'
-        if (decoded.length < 35) return null;
+        if (decoded.length < 35)
+            return null;
 
         byte[] expected = "secp256k1".equals(jwtCurve) ? MULTICODEC_SECP256K1 : MULTICODEC_P256;
         if ((decoded[0] & 0xFF) != (expected[0] & 0xFF) || (decoded[1] & 0xFF) != (expected[1] & 0xFF)) {
@@ -204,8 +294,8 @@ public class AtprotoAuthFilter extends OncePerRequestFilter {
         byte[] compressed = Arrays.copyOfRange(decoded, 2, 35);
 
         // Decompress the EC point using BouncyCastle
-        org.bouncycastle.jce.spec.ECNamedCurveParameterSpec spec =
-                org.bouncycastle.jce.ECNamedCurveTable.getParameterSpec(jcaCurve);
+        org.bouncycastle.jce.spec.ECNamedCurveParameterSpec spec = org.bouncycastle.jce.ECNamedCurveTable
+                .getParameterSpec(jcaCurve);
         org.bouncycastle.math.ec.ECPoint bcPoint = spec.getCurve().decodePoint(compressed);
 
         ECPoint jcaPoint = new ECPoint(
@@ -222,12 +312,16 @@ public class AtprotoAuthFilter extends OncePerRequestFilter {
         BigInteger base = BigInteger.valueOf(58);
         for (char c : input.toCharArray()) {
             int digit = BASE58_ALPHABET.indexOf(c);
-            if (digit < 0) throw new IllegalArgumentException("Invalid base58 character: " + c);
+            if (digit < 0)
+                throw new IllegalArgumentException("Invalid base58 character: " + c);
             value = value.multiply(base).add(BigInteger.valueOf(digit));
         }
         int leadingZeros = 0;
         for (char c : input.toCharArray()) {
-            if (c == '1') leadingZeros++; else break;
+            if (c == '1')
+                leadingZeros++;
+            else
+                break;
         }
         byte[] raw = value.toByteArray();
         int start = (raw.length > 1 && raw[0] == 0) ? 1 : 0;
@@ -242,6 +336,7 @@ public class AtprotoAuthFilter extends OncePerRequestFilter {
         AlgorithmParameters params = AlgorithmParameters.getInstance("EC");
         params.init(new ECGenParameterSpec(curve));
         ECParameterSpec spec = params.getParameterSpec(ECParameterSpec.class);
-        return (ECPublicKey) KeyFactory.getInstance("EC").generatePublic(new ECPublicKeySpec(new ECPoint(bx, by), spec));
+        return (ECPublicKey) KeyFactory.getInstance("EC")
+                .generatePublic(new ECPublicKeySpec(new ECPoint(bx, by), spec));
     }
 }

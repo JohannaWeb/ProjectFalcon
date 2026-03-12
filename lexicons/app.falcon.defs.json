@@ -57,6 +57,20 @@
         "did": { "type": "string", "format": "did" },
         "handle": { "type": "string", "format": "handle" }
       }
+    },
+    "convoView": {
+      "type": "object",
+      "description": "A DM conversation view.",
+      "required": ["id", "participants", "lastMessage", "createdAt"],
+      "properties": {
+        "id": { "type": "integer" },
+        "participants": {
+          "type": "array",
+          "items": { "type": "string", "format": "did" }
+        },
+        "lastMessage": { "type": "ref", "ref": "#messageView" },
+        "createdAt": { "type": "string", "format": "datetime" }
+      }
     }
   }
 }

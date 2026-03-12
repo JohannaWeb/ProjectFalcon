@@ -1,0 +1,36 @@
+{
+    "lexicon": 1,
+    "id": "app.falcon.convo.get",
+    "description": "Get a single conversation by ID.",
+    "defs": {
+        "main": {
+            "type": "query",
+            "parameters": {
+                "type": "params",
+                "required": [
+                    "convoId"
+                ],
+                "properties": {
+                    "convoId": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "output": {
+                "encoding": "application/json",
+                "schema": {
+                    "type": "ref",
+                    "ref": "app.falcon.defs#convoView"
+                }
+            },
+            "errors": [
+                {
+                    "name": "NotFound"
+                },
+                {
+                    "name": "Forbidden"
+                }
+            ]
+        }
+    }
+}

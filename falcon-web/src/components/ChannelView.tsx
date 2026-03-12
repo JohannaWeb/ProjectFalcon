@@ -18,7 +18,7 @@ function avatarColor(handle: string) {
   return AVATAR_COLORS[hash % AVATAR_COLORS.length]
 }
 
-function Avatar({ handle, size = 32 }: { handle: string; size?: number }) {
+export function Avatar({ handle, size = 32 }: { handle: string; size?: number }) {
   const initials = handle.replace(/\..*$/, '').slice(0, 2).toUpperCase()
   return (
     <div

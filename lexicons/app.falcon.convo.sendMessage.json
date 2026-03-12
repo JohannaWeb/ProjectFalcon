@@ -1,0 +1,51 @@
+{
+    "lexicon": 1,
+    "id": "app.falcon.convo.sendMessage",
+    "description": "Send a message to a conversation. If members are provided instead of convoId, starts a new conversation.",
+    "defs": {
+        "main": {
+            "type": "procedure",
+            "input": {
+                "encoding": "application/json",
+                "schema": {
+                    "type": "object",
+                    "required": [
+                        "content"
+                    ],
+                    "properties": {
+                        "convoId": {
+                            "type": "integer"
+                        },
+                        "members": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "format": "did"
+                            },
+                            "description": "Used to start a new convo if convoId is missing."
+                        },
+                        "content": {
+                            "type": "string",
+                            "maxLength": 4000
+                        }
+                    }
+                }
+            },
+            "output": {
+                "encoding": "application/json",
+                "schema": {
+                    "type": "ref",
+                    "ref": "app.falcon.defs#messageView"
+                }
+            },
+            "errors": [
+                {
+                    "name": "NotFound"
+                },
+                {
+                    "name": "Forbidden"
+                }
+            ]
+        }
+    }
+}

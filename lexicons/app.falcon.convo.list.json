@@ -1,0 +1,45 @@
+{
+    "lexicon": 1,
+    "id": "app.falcon.convo.list",
+    "description": "List the authenticated user's DM conversations.",
+    "defs": {
+        "main": {
+            "type": "query",
+            "parameters": {
+                "type": "params",
+                "properties": {
+                    "cursor": {
+                        "type": "string"
+                    },
+                    "limit": {
+                        "type": "integer",
+                        "default": 50,
+                        "minimum": 1,
+                        "maximum": 100
+                    }
+                }
+            },
+            "output": {
+                "encoding": "application/json",
+                "schema": {
+                    "type": "object",
+                    "required": [
+                        "convos"
+                    ],
+                    "properties": {
+                        "cursor": {
+                            "type": "string"
+                        },
+                        "convos": {
+                            "type": "array",
+                            "items": {
+                                "type": "ref",
+                                "ref": "app.falcon.defs#convoView"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
