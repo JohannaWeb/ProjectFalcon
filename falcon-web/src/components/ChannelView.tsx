@@ -10,7 +10,7 @@ type Props = {
   session: AtpSession
 }
 
-const AVATAR_COLORS = ['#6366f1', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#3b82f6', '#ef4444', '#14b8a6']
+const AVATAR_COLORS = ['#2563eb', '#1d4ed8', '#0369a1', '#0f766e', '#334155', '#1e3a5f', '#374151', '#1e40af']
 
 function avatarColor(handle: string) {
   let hash = 0

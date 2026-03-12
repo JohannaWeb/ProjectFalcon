@@ -49,7 +49,7 @@ export function AiSivCard({ facts = [] }: AiSivCardProps) {
         <div style={{
             background: 'var(--bg-elevated, #111827)',
             borderRadius: 12,
-            border: '1px solid rgba(96,165,250,0.15)',
+            border: '1px solid rgba(37,99,235,0.2)',
             overflow: 'hidden',
         }}>
             {/* Header */}
@@ -63,7 +63,7 @@ export function AiSivCard({ facts = [] }: AiSivCardProps) {
             >
                 <div style={{
                     width: 28, height: 28, borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
+                    background: 'linear-gradient(135deg, #1d4ed8, #2563eb)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontSize: 13, flexShrink: 0
                 }}>🤖</div>

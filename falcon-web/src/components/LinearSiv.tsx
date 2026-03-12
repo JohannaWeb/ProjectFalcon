@@ -19,13 +19,13 @@ export const LinearSiv: React.FC<{ issues: LinearIssue[] }> = ({ issues }) => {
     return (
         <div className="flex flex-col gap-2 p-2 border-t border-gray-800">
             <div className="px-2 py-1 flex items-center gap-2">
-                <span className="text-purple-400 font-bold">SIV-02</span>
+                <span className="text-blue-400 font-bold">SIV-02</span>
                 <span className="text-[10px] text-gray-500 uppercase tracking-widest font-semibold text-center italic">Linear</span>
             </div>
             {issues.map(issue => (
-                <div key={issue.id} className="p-3 bg-gray-800/30 rounded-lg hover:bg-gray-800/50 transition-colors border border-transparent hover:border-purple-500/30 group">
+                <div key={issue.id} className="p-3 bg-gray-800/30 rounded-lg hover:bg-gray-800/50 transition-colors border border-transparent hover:border-blue-600/30 group">
                     <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs font-medium text-purple-300">{issue.state.name}</span>
+                        <span className="text-xs font-medium text-blue-300">{issue.state.name}</span>
                         <span className="text-[10px] text-gray-500">
                             {new Date(issue.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </span>

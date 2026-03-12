@@ -1,0 +1,84 @@
+<svg viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="900" height="500" fill="#f8f9fa"/>
+  
+  <!-- Title -->
+  <text x="450" y="30" font-size="22" font-weight="bold" text-anchor="middle" fill="#333">
+    Falcon Architecture
+  </text>
+  
+  <!-- CLIENTS SECTION -->
+  <text x="450" y="65" font-size="12" font-weight="bold" text-anchor="middle" fill="#666">Clients</text>
+  
+  <rect x="50" y="75" width="90" height="55" fill="#bbdefb" stroke="#1976D2" stroke-width="2" rx="3"/>
+  <text x="95" y="100" font-size="10" font-weight="bold" text-anchor="middle" fill="#1565C0">Web UI</text>
+  <text x="95" y="115" font-size="8" text-anchor="middle" fill="#555">React/Vite</text>
+  
+  <rect x="160" y="75" width="90" height="55" fill="#bbdefb" stroke="#1976D2" stroke-width="2" rx="3"/>
+  <text x="205" y="100" font-size="10" font-weight="bold" text-anchor="middle" fill="#1565C0">Mobile</text>
+  <text x="205" y="115" font-size="8" text-anchor="middle" fill="#555">Electron</text>
+  
+  <rect x="270" y="75" width="90" height="55" fill="#bbdefb" stroke="#1976D2" stroke-width="2" rx="3"/>
+  <text x="315" y="100" font-size="10" font-weight="bold" text-anchor="middle" fill="#1565C0">AT Relays</text>
+  <text x="315" y="115" font-size="8" text-anchor="middle" fill="#555">PDS</text>
+  
+  <!-- GATEWAY SECTION -->
+  <text x="450" y="155" font-size="12" font-weight="bold" text-anchor="middle" fill="#666">API Gateway</text>
+  
+  <rect x="150" y="165" width="600" height="50" fill="#ffe0b2" stroke="#FF9800" stroke-width="2" rx="3"/>
+  <text x="450" y="190" font-size="11" font-weight="bold" text-anchor="middle" fill="#E65100">falcon-gateway (Port 8080)</text>
+  <text x="450" y="205" font-size="8" text-anchor="middle" fill="#555">Rate Limiting • Authentication • Request Validation</text>
+  
+  <!-- SERVICES SECTION -->
+  <text x="450" y="250" font-size="12" font-weight="bold" text-anchor="middle" fill="#666">Microservices</text>
+  
+  <rect x="20" y="260" width="100" height="70" fill="#c8e6c9" stroke="#4CAF50" stroke-width="2" rx="3"/>
+  <text x="70" y="285" font-size="10" font-weight="bold" text-anchor="middle" fill="#2E7D32">falcon-core</text>
+  <text x="70" y="300" font-size="8" text-anchor="middle" fill="#555">AT Protocol</text>
+  <text x="70" y="310" font-size="8" text-anchor="middle" fill="#555">Bridge</text>
+  
+  <rect x="135" y="260" width="100" height="70" fill="#f8bbd0" stroke="#E91E63" stroke-width="2" rx="3"/>
+  <text x="185" y="285" font-size="10" font-weight="bold" text-anchor="middle" fill="#C2185B">trust-service</text>
+  <text x="185" y="300" font-size="8" text-anchor="middle" fill="#555">Transitive</text>
+  <text x="185" y="310" font-size="8" text-anchor="middle" fill="#555">Trust</text>
+  
+  <rect x="250" y="260" width="100" height="70" fill="#f0f4c3" stroke="#9CCC65" stroke-width="2" rx="3"/>
+  <text x="300" y="285" font-size="10" font-weight="bold" text-anchor="middle" fill="#558B2F">siv-service</text>
+  <text x="300" y="300" font-size="8" text-anchor="middle" fill="#555">Semantic</text>
+  <text x="300" y="310" font-size="8" text-anchor="middle" fill="#555">Intent</text>
+  
+  <rect x="365" y="260" width="100" height="70" fill="#b2dfdb" stroke="#009688" stroke-width="2" rx="3"/>
+  <text x="415" y="285" font-size="10" font-weight="bold" text-anchor="middle" fill="#00695C">agent-mesh</text>
+  <text x="415" y="300" font-size="8" text-anchor="middle" fill="#555">AI Agent</text>
+  <text x="415" y="310" font-size="8" text-anchor="middle" fill="#555">Lifecycle</text>
+  
+  <!-- DATA LAYER SECTION -->
+  <text x="450" y="360" font-size="12" font-weight="bold" text-anchor="middle" fill="#666">Data & Secrets</text>
+  
+  <rect x="80" y="370" width="90" height="60" fill="#ede7f6" stroke="#673AB7" stroke-width="2" rx="3"/>
+  <text x="125" y="395" font-size="10" font-weight="bold" text-anchor="middle" fill="#512DA8">PostgreSQL</text>
+  <text x="125" y="410" font-size="8" text-anchor="middle" fill="#555">State</text>
+  
+  <rect x="190" y="370" width="90" height="60" fill="#ffccbc" stroke="#FF5722" stroke-width="2" rx="3"/>
+  <text x="235" y="395" font-size="10" font-weight="bold" text-anchor="middle" fill="#D84315">Vault</text>
+  <text x="235" y="410" font-size="8" text-anchor="middle" fill="#555">Secrets</text>
+  
+  <!-- OBSERVABILITY SECTION (Right) -->
+  <text x="650" y="250" font-size="12" font-weight="bold" text-anchor="middle" fill="#666">Observability</text>
+  
+  <rect x="570" y="260" width="85" height="70" fill="#fff9c4" stroke="#FBC02D" stroke-width="2" rx="3"/>
+  <text x="612" y="285" font-size="10" font-weight="bold" text-anchor="middle" fill="#F57F17">Prometheus</text>
+  <text x="612" y="300" font-size="8" text-anchor="middle" fill="#555">Metrics</text>
+  
+  <rect x="670" y="260" width="85" height="70" fill="#f1f8e9" stroke="#689F38" stroke-width="2" rx="3"/>
+  <text x="712" y="285" font-size="10" font-weight="bold" text-anchor="middle" fill="#558B2F">Grafana</text>
+  <text x="712" y="300" font-size="8" text-anchor="middle" fill="#555">Dash</text>
+  
+  <rect x="770" y="260" width="85" height="70" fill="#ede7f6" stroke="#673AB7" stroke-width="2" rx="3"/>
+  <text x="812" y="285" font-size="10" font-weight="bold" text-anchor="middle" fill="#512DA8">Loki</text>
+  <text x="812" y="300" font-size="8" text-anchor="middle" fill="#555">Logs</text>
+  
+  <!-- EXTERNAL SERVICES BOX -->
+  <rect x="20" y="450" width="860" height="40" fill="#e1f5fe" stroke="#0288D1" stroke-width="2" rx="3"/>
+  <text x="450" y="475" font-size="10" font-weight="bold" text-anchor="middle" fill="#01579B">AT Protocol: Bluesky Relays • PDS • DID Resolution • Communities • Direct Messages</text>
+</svg>
