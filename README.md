@@ -9,8 +9,6 @@
 
 **A distributed microservice platform for human-AI collaboration on AT Protocol.**
 
-Visit [falcon.bigmoat.io](https://falcon.bigmoat.io) for the full documentation, examples and guides.
-
 Falcon, a decentralized systems platform, is a cryptographic trust and identity system for building applications with human-AI collaboration. It collects relationships from configured identity sources at given intervals, evaluates trust expressions, verifies cryptographic proofs, and can trigger alerts when adversarial conditions are observed.
 
 The features that distinguish Falcon from other decentralized platforms are:
