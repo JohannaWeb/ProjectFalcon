@@ -1,6 +1,6 @@
 {
   "lexicon": 1,
-  "id": "app.falcon.defs",
+  "id": "app.juntos.defs",
   "description": "Shared type definitions for Falcon (Discord-style servers/channels).",
   "defs": {
     "serverView": {
@@ -24,7 +24,8 @@
       "required": ["id", "name"],
       "properties": {
         "id": { "type": "integer", "description": "Channel id." },
-        "name": { "type": "string", "description": "Channel name." }
+        "name": { "type": "string", "description": "Channel name." },
+        "atUri": { "type": "string", "description": "AT Protocol URI for this channel record (at://did/app.juntos.channel/rkey)." }
       }
     },
     "channelView": {
@@ -34,7 +35,8 @@
       "properties": {
         "id": { "type": "integer", "description": "Channel id." },
         "name": { "type": "string", "description": "Channel name." },
-        "serverId": { "type": "integer", "description": "Server this channel belongs to." }
+        "serverId": { "type": "integer", "description": "Server this channel belongs to." },
+        "atUri": { "type": "string", "description": "AT Protocol URI for this channel record (at://did/app.juntos.channel/rkey)." }
       }
     },
     "messageView": {

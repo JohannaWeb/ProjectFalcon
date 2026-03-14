@@ -1,0 +1,22 @@
+{
+  "lexicon": 1,
+  "id": "app.juntos.channel",
+  "description": "A channel record stored in a user's AT Protocol repo.",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "Channel record written to the creator's PDS repo.",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": ["name", "serverId", "createdAt"],
+        "properties": {
+          "name": { "type": "string", "maxLength": 256, "description": "Channel name." },
+          "serverId": { "type": "integer", "description": "Local server id this channel belongs to." },
+          "localId": { "type": "integer", "description": "Local database id of the channel." },
+          "createdAt": { "type": "string", "format": "datetime", "description": "When the channel was created." }
+        }
+      }
+    }
+  }
+}

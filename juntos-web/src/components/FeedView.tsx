@@ -9,32 +9,20 @@ type FeedPost = AppBskyFeedDefs.FeedViewPost
 
 type Props = { session: Session }
 
-const CACHE_KEY = 'juntos:feed:v1'
-
-function readCache(): FeedPost[] {
-  try { return JSON.parse(localStorage.getItem(CACHE_KEY) ?? '[]') } catch { return [] }
-}
-
-function writeCache(posts: FeedPost[]) {
-  try { localStorage.setItem(CACHE_KEY, JSON.stringify(posts.slice(0, 30))) } catch { }
-}
-
 export function FeedView({ session }: Props) {
-  const cached = readCache()
-  const [posts, setPosts] = useState<FeedPost[]>(cached)
-  const [loading, setLoading] = useState(cached.length === 0)
+  const [posts, setPosts] = useState<FeedPost[]>([])
+  const [loading, setLoading] = useState(true)
   const [err, setErr] = useState<string | null>(null)
   const [threadUri, setThreadUri] = useState<string | null>(null)
   const [threadReplyTo, setThreadReplyTo] = useState<{ uri: string; cid: string } | null>(null)
   const [showComposer, setShowComposer] = useState(false)
 
   const load = useCallback(() => {
-    if (cached.length === 0) setLoading(true)
+    setLoading(true)
     backendApi.getTimeline(session, 30).then(
       (res) => {
         const feed = (res.feed ?? []) as FeedPost[]
         setPosts(feed)
-        writeCache(feed)
         setErr(null)
       },
       (e) => setErr(e instanceof Error ? e.message : 'Failed to load feed')

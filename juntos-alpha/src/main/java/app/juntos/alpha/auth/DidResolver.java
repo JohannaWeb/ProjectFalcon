@@ -1,12 +1,10 @@
 package app.juntos.alpha.auth;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.Duration;
+import java.net.InetAddress;
 import java.util.Map;
 
 @Service
@@ -14,24 +12,36 @@ import java.util.Map;
 public class DidResolver {
 
     private final RestTemplate restTemplate = new RestTemplate();
-    private final Cache<String, Map<String, Object>> cache = Caffeine.newBuilder()
-            .expireAfterWrite(Duration.ofHours(1))
-            .maximumSize(10_000)
-            .build();
 
     @SuppressWarnings("unchecked")
     public Map<String, Object> resolve(String did) {
-        return cache.get(did, k -> {
-            String url;
-            if (k.startsWith("did:plc:")) {
-                url = "https://plc.directory/" + k;
-            } else if (k.startsWith("did:web:")) {
-                url = "https://" + k.substring(8) + "/.well-known/did.json";
-            } else {
-                throw new IllegalArgumentException("Unsupported DID method: " + k);
+        String url;
+        if (did.startsWith("did:plc:")) {
+            url = "https://plc.directory/" + did;
+        } else if (did.startsWith("did:web:")) {
+            String host = did.substring(8).split("/")[0];
+            validateHostNotInternal(host);
+            url = "https://" + did.substring(8) + "/.well-known/did.json";
+        } else {
+            throw new IllegalArgumentException("Unsupported DID method: " + did);
+        }
+        log.info("[DID] Resolving {} → GET {}", did, url);
+        Map<String, Object> doc = (Map<String, Object>) restTemplate.getForObject(url, Map.class);
+        log.info("[DID] Resolved {} — keys: {}", did, doc != null ? doc.keySet() : "null");
+        return doc;
+    }
+
+    private void validateHostNotInternal(String host) {
+        try {
+            InetAddress[] addresses = InetAddress.getAllByName(host);
+            for (InetAddress addr : addresses) {
+                if (addr.isLoopbackAddress() || addr.isSiteLocalAddress()
+                        || addr.isLinkLocalAddress() || addr.isAnyLocalAddress()) {
+                    throw new IllegalArgumentException("DID host resolves to internal network address: " + host);
+                }
             }
-            log.debug("Resolving DID document: {}", url);
-            return (Map<String, Object>) restTemplate.getForObject(url, Map.class);
-        });
+        } catch (java.net.UnknownHostException e) {
+            throw new IllegalArgumentException("Cannot resolve DID host: " + host);
+        }
     }
 }

@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +31,7 @@ public class ServerController {
 
     @GetMapping("/app.juntos.server.get")
     public ResponseEntity<Map<String, Object>> getServer(@RequestParam Long serverId, HttpServletRequest req) {
-        return serverRepo.findById(serverId)
+        return serverRepo.findByIdWithChannels(serverId)
                 .map(s -> ResponseEntity.ok(toSummary(s)))
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -92,7 +93,13 @@ public class ServerController {
 
     private Map<String, Object> toSummary(Server s) {
         List<Map<String, Object>> channels = s.getChannels().stream()
-                .map(c -> Map.<String, Object>of("id", c.getId(), "name", c.getName()))
+                .map(c -> {
+                    Map<String, Object> m = new HashMap<>();
+                    m.put("id", c.getId());
+                    m.put("name", c.getName());
+                    if (c.getAtUri() != null) m.put("atUri", c.getAtUri());
+                    return m;
+                })
                 .toList();
         return Map.of(
                 "id", s.getId(),

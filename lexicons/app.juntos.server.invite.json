@@ -1,6 +1,6 @@
 {
   "lexicon": 1,
-  "id": "app.falcon.server.invite",
+  "id": "app.juntos.server.invite",
   "description": "Invite a user to a server by Bluesky handle. Resolves handle to DID via AT Protocol.",
   "defs": {
     "main": {
@@ -25,7 +25,7 @@
       },
       "output": {
         "encoding": "application/json",
-        "schema": { "type": "ref", "ref": "app.falcon.defs#inviteResult" }
+        "schema": { "type": "ref", "ref": "app.juntos.defs#inviteResult" }
       },
       "errors": [{ "name": "InvalidRequest" }, { "name": "NotFound" }, { "name": "Forbidden" }, { "name": "CouldNotResolveHandle" }, { "name": "AlreadyMember" }]
     }

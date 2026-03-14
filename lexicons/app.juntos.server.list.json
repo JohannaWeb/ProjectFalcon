@@ -1,6 +1,6 @@
 {
   "lexicon": 1,
-  "id": "app.falcon.server.list",
+  "id": "app.juntos.server.list",
   "description": "List servers the authenticated user is a member of.",
   "defs": {
     "main": {
@@ -10,7 +10,7 @@
         "encoding": "application/json",
         "schema": {
           "type": "array",
-          "items": { "type": "ref", "ref": "app.falcon.defs#serverView" }
+          "items": { "type": "ref", "ref": "app.juntos.defs#serverView" }
         }
       }
     }

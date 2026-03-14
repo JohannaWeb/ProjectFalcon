@@ -1,6 +1,6 @@
 {
   "lexicon": 1,
-  "id": "app.falcon.channel.getMessages",
+  "id": "app.juntos.channel.getMessages",
   "description": "Get messages in a channel. Caller must be a member. Ordered by createdAt desc.",
   "defs": {
     "main": {
@@ -18,7 +18,7 @@
         "encoding": "application/json",
         "schema": {
           "type": "array",
-          "items": { "type": "ref", "ref": "app.falcon.defs#messageView" }
+          "items": { "type": "ref", "ref": "app.juntos.defs#messageView" }
         }
       },
       "errors": [{ "name": "NotFound" }, { "name": "Forbidden" }]

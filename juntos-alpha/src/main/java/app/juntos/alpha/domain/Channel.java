@@ -15,6 +15,14 @@ public class Channel {
     @Column(nullable = false)
     private String name;
 
+    /** AT Protocol URI: at://did/app.juntos.channel/rkey — set after successful PDS write. */
+    @Column(unique = true)
+    private String atUri;
+
+    /** The TID rkey portion of the AT URI, for direct record lookup. */
+    @Column
+    private String atRkey;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "server_id", nullable = false)
     private Server server;

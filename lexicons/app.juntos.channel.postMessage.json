@@ -1,6 +1,6 @@
 {
   "lexicon": 1,
-  "id": "app.falcon.channel.postMessage",
+  "id": "app.juntos.channel.postMessage",
   "description": "Post a message to a channel. Caller must be a member.",
   "defs": {
     "main": {
@@ -25,7 +25,7 @@
       },
       "output": {
         "encoding": "application/json",
-        "schema": { "type": "ref", "ref": "app.falcon.defs#messageView" }
+        "schema": { "type": "ref", "ref": "app.juntos.defs#messageView" }
       },
       "errors": [{ "name": "InvalidRequest" }, { "name": "NotFound" }, { "name": "Forbidden" }]
     }

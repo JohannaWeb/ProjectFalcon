@@ -1,8 +1,6 @@
 package app.juntos.alpha.api;
 
 import app.juntos.alpha.auth.AtprotoAuthFilter;
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.time.Duration;
 
 @RestController
 @RequestMapping("/xrpc")
@@ -22,12 +19,6 @@ public class FeedController {
 
     private final RestTemplate http = new RestTemplate();
 
-    // Raw bytes — avoids any charset or JSON serialization issues
-    private final Cache<String, byte[]> cache = Caffeine.newBuilder()
-            .expireAfterWrite(Duration.ofSeconds(30))
-            .maximumSize(10_000)
-            .build();
-
     @GetMapping("/app.juntos.feed.getTimeline")
     public void getTimeline(
             @RequestParam(defaultValue = "30") int limit,
@@ -36,16 +27,6 @@ public class FeedController {
             HttpServletResponse resp) throws IOException {
 
         String did = (String) req.getAttribute(AtprotoAuthFilter.VIEWER_DID_ATTR);
-        String cacheKey = did + ":" + limit + ":" + (cursor != null ? cursor : "");
-
-        byte[] cached = cache.getIfPresent(cacheKey);
-        if (cached != null) {
-            log.debug("Feed cache HIT for {}", did);
-            write(resp, cached);
-            return;
-        }
-
-        log.debug("Feed cache MISS for {}", did);
         String url = BSKY + "/xrpc/app.bsky.feed.getTimeline?limit=" + limit;
         if (cursor != null) url += "&cursor=" + cursor;
 
@@ -56,7 +37,6 @@ public class FeedController {
                     url, HttpMethod.GET, new HttpEntity<>(headers), byte[].class);
             byte[] body = upstream.getBody();
             if (body != null) {
-                cache.put(cacheKey, body);
                 write(resp, body);
             } else {
                 resp.sendError(HttpServletResponse.SC_BAD_GATEWAY);

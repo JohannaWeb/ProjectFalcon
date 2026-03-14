@@ -1,6 +1,6 @@
 {
   "lexicon": 1,
-  "id": "app.falcon.server.create",
+  "id": "app.juntos.server.create",
   "description": "Create a new server. Caller becomes owner and a default #general channel is created.",
   "defs": {
     "main": {
