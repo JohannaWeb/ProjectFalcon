@@ -1,6 +1,8 @@
 # Juntos
 
 **The LGBT decentralized community.**
+
+
 ![alt text](https://cdn.bsky.app/img/feed_fullsize/plain/did:plc:xdhw5xehrc7eog7umjkek5in/bafkreigehdo5e7x7fldowma43iohjk3qkrkyx6mb5gasf5imssn5czcoiy)
 https://project-falcon-91n9.vercel.app/
 
