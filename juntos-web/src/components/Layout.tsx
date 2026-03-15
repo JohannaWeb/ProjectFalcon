@@ -219,7 +219,7 @@ export function Layout({ session, onLogout }: Props) {
               )}
               {view === 'notifications' && <NotificationsView />}
               {view === 'search' && <SearchView />}
-              {view === 'profile' && <ProfileView actor={profileActor} meDid={session.did} />}
+              {view === 'profile' && <ProfileView actor={profileActor} meDid={session.did} session={sess} />}
               {view === 'protocol' && <ProtocolView />}
             </>
           )}

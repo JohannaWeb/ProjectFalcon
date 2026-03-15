@@ -89,6 +89,7 @@ export function FeedView({ session }: Props) {
           onOpenThread={(uri) => { setThreadUri(uri); setThreadReplyTo(null) }}
           onReply={(uri, cid) => { setThreadUri(uri); setThreadReplyTo({ uri, cid }) }}
           onRefresh={load}
+          session={session}
         />
       ))}
       {threadUri && (

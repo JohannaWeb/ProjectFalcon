@@ -1,6 +1,11 @@
 import React, { useState } from 'react'
+import { BACKEND_URL, type Session } from '../../lib/backendApi'
 
-export function LinearSivCard() {
+interface Props {
+    session: Session;
+}
+
+export function LinearSivCard({ session }: Props) {
     const [loading, setLoading] = useState(false)
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -11,11 +16,11 @@ export function LinearSivCard() {
         const team = formData.get('team')
 
         try {
-            const res = await fetch('/api/siv/configs', {
+            const res = await fetch(`${BACKEND_URL}/api/siv/configs`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    'Authorization': `Bearer ${session.accessJwt}`
                 },
                 body: JSON.stringify({ vesselType: 'linear', token, config: { team } })
             })

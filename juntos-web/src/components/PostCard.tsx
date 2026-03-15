@@ -1,5 +1,7 @@
 import type { AppBskyFeedDefs } from '@atproto/api'
 import { getAtpAgent } from '../lib/atp'
+import { TrustIndicator } from './TrustIndicator'
+import type { Session } from '../lib/backendApi'
 
 type FeedPost = AppBskyFeedDefs.FeedViewPost
 
@@ -8,9 +10,10 @@ type Props = {
   onOpenThread: (uri: string) => void
   onReply: (uri: string, cid: string) => void
   onRefresh: () => void
+  session: Session
 }
 
-export function PostCard({ fp, onOpenThread, onReply, onRefresh }: Props) {
+export function PostCard({ fp, onOpenThread, onReply, onRefresh, session }: Props) {
   const post = fp.post
   const author = post.author
   const record = post.record as { text?: string }
@@ -83,8 +86,11 @@ export function PostCard({ fp, onOpenThread, onReply, onRefresh }: Props) {
             )}
           </div>
           <div>
-            <strong style={{ display: 'block' }}>{author.displayName ?? author.handle}</strong>
-              <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>@{author.handle}</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <strong style={{ display: 'block' }}>{author.displayName ?? author.handle}</strong>
+              <TrustIndicator targetDid={author.did} session={session} />
+            </div>
+            <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>@{author.handle}</span>
           </div>
         </a>
       </div>

@@ -1,6 +1,11 @@
 import React, { useState } from 'react'
+import { BACKEND_URL, type Session } from '../../lib/backendApi'
 
-export function JiraSivCard() {
+interface Props {
+    session: Session;
+}
+
+export function JiraSivCard({ session }: Props) {
     const [loading, setLoading] = useState(false)
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -12,11 +17,11 @@ export function JiraSivCard() {
         const project = formData.get('project')
 
         try {
-            const res = await fetch('/api/siv/configs', {
+            const res = await fetch(`${BACKEND_URL}/api/siv/configs`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    'Authorization': `Bearer ${session.accessJwt}`
                 },
                 body: JSON.stringify({ vesselType: 'jira', token, config: { host, project } })
             })

@@ -1,6 +1,11 @@
 import React, { useState } from 'react'
+import { BACKEND_URL, type Session } from '../../lib/backendApi'
 
-export function VercelSivCard() {
+interface Props {
+    session: Session;
+}
+
+export function VercelSivCard({ session }: Props) {
     const [loading, setLoading] = useState(false)
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -12,11 +17,11 @@ export function VercelSivCard() {
         const teamId = formData.get('teamId')
 
         try {
-            const res = await fetch('/api/siv/configs', {
+            const res = await fetch(`${BACKEND_URL}/api/siv/configs`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    'Authorization': `Bearer ${session.accessJwt}`
                 },
                 body: JSON.stringify({ vesselType: 'vercel', token, config: { projectId, teamId } })
             })

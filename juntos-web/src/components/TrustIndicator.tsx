@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from 'react';
+import { BACKEND_URL, type Session } from '../lib/backendApi';
 
 interface Props {
     targetDid: string;
+    session: Session;
 }
 
-export const TrustIndicator: React.FC<Props> = ({ targetDid }) => {
+export const TrustIndicator: React.FC<Props> = ({ targetDid, session }) => {
     const [score, setScore] = useState<number | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchScore = async () => {
             try {
-                const res = await fetch(`/api/trust/score/${targetDid}`, {
+                const res = await fetch(`${BACKEND_URL}/api/trust/score/${targetDid}`, {
                     headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        'Authorization': `Bearer ${session.accessJwt}`
                     }
                 });
                 if (res.ok) {

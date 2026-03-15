@@ -6,10 +6,11 @@ import { GitHubSivCard } from './siv/GitHubSivCard'
 import { LinearSivCard } from './siv/LinearSivCard'
 import { JiraSivCard } from './siv/JiraSivCard'
 import { VercelSivCard } from './siv/VercelSivCard'
+import type { Session } from '../lib/backendApi'
 
-type Props = { actor: string; meDid?: string }
+type Props = { actor: string; meDid?: string; session: Session }
 
-export function ProfileView({ actor, meDid }: Props) {
+export function ProfileView({ actor, meDid, session }: Props) {
   const [profile, setProfile] = useState<AppBskyActorDefs.ProfileViewDetailed | null>(null)
   const [loading, setLoading] = useState(true)
   const [err, setErr] = useState<string | null>(null)
@@ -67,10 +68,10 @@ export function ProfileView({ actor, meDid }: Props) {
         <div style={{ marginTop: 40, borderTop: '1px solid var(--border)', paddingTop: 24 }}>
           <h2 style={{ fontSize: 20, marginBottom: 16 }}>Sovereign Integration Vessels (SIV)</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 20 }}>
-            <GitHubSivCard />
-            <LinearSivCard />
-            <JiraSivCard />
-            <VercelSivCard />
+            <GitHubSivCard session={session} />
+            <LinearSivCard session={session} />
+            <JiraSivCard session={session} />
+            <VercelSivCard session={session} />
           </div>
         </div>
       )}

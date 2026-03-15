@@ -225,7 +225,7 @@ export function ChannelView({ channelId, channelName, session }: Props) {
         </div>
       </div>
 
-      {showIntelligence && <IntelligencePanel />}
+      {showIntelligence && <IntelligencePanel session={sess} />}
     </div>
   )
 }

@@ -1,19 +1,24 @@
 import React, { useEffect, useState } from 'react';
+import { BACKEND_URL, type Session } from '../lib/backendApi';
 import { GitHubSiv } from './GitHubSiv';
 import { LinearSiv } from './LinearSiv';
 import { JiraSiv } from './JiraSiv';
 import { VercelSiv } from './VercelSiv';
 
-export const IntelligencePanel: React.FC = () => {
+interface Props {
+    session: Session;
+}
+
+export const IntelligencePanel: React.FC<Props> = ({ session }) => {
     const [intelligence, setIntelligence] = useState<any>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchIntelligence = async () => {
             try {
-                const res = await fetch('/api/siv/intelligence', {
+                const res = await fetch(`${BACKEND_URL}/api/siv/intelligence`, {
                     headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        'Authorization': `Bearer ${session.accessJwt}`
                     }
                 });
                 if (res.ok) {
