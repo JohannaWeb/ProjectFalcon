@@ -2,8 +2,12 @@
  * Falcon backend API via AT Protocol XRPC (app.juntos.* lexicons).
  * All methods require a Session (AT access JWT + did + handle).
  */
-export const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://projectfalcon-production.up.railway.app'
-console.log('[DEBUG] BACKEND_URL resolved to:', BACKEND_URL);
+const isLocal = typeof window !== 'undefined' && window.location.hostname === 'localhost'
+export const BACKEND_URL =
+  import.meta.env.VITE_BACKEND_URL ||
+  (isLocal ? '' : 'https://projectfalcon-production.up.railway.app')
+
+console.log('[DEBUG] BACKEND_URL resolved to:', BACKEND_URL || '(relative/proxy)')
 
 export type Session = { accessJwt: string; did: string; handle: string }
 
@@ -17,7 +21,7 @@ async function xrpcQuery<T>(
   params: Record<string, string | number> | undefined,
   session: Session
 ): Promise<T> {
-  const url = new URL(`${BACKEND_URL}/xrpc/${nsid}`)
+  const url = new URL(`${BACKEND_URL}/xrpc/${nsid}`, window.location.origin)
   if (params) {
     Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, String(v)))
   }
@@ -37,7 +41,7 @@ async function xrpcProcedure<T>(
   body: unknown,
   session: Session
 ): Promise<T> {
-  const url = new URL(`${BACKEND_URL}/xrpc/${nsid}`)
+  const url = new URL(`${BACKEND_URL}/xrpc/${nsid}`, window.location.origin)
   if (params) {
     Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, String(v)))
   }
@@ -54,8 +58,7 @@ async function xrpcProcedure<T>(
 }
 
 export function getRealtimeWsUrl(session: Session): string {
-  const wsUrl = new URL(BACKEND_URL)
-  wsUrl.protocol = wsUrl.protocol === 'https:' ? 'wss:' : 'ws:'
+  const wsUrl = new URL(BACKEND_URL || window.location.origin, window.location.origin)
   wsUrl.pathname = '/ws'
   wsUrl.search = ''
   wsUrl.searchParams.set('token', session.accessJwt)

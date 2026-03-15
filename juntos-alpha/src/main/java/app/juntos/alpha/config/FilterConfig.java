@@ -29,10 +29,9 @@ public class FilterConfig {
     public FilterRegistrationBean<CorsFilter> corsFilterRegistration() {
         CorsConfiguration config = new CorsConfiguration();
         
-        // Explicitly include the current Vercel deployment origin
-        config.addAllowedOrigin("https://project-falcon-91n9-git-juntos-project-falcon.vercel.app");
-        
-        // Use allowedOriginPatterns for general subdomains
+        // All origins expressed as patterns (required when allowCredentials=true —
+        // mixing addAllowedOrigin() and addAllowedOriginPattern() is forbidden by Spring)
+        config.addAllowedOriginPattern("https://project-falcon-91n9-git-juntos-project-falcon.vercel.app");
         config.addAllowedOriginPattern("https://*.vercel.app");
         config.addAllowedOriginPattern("https://*.railway.app");
         config.addAllowedOriginPattern("http://localhost:*");
@@ -52,6 +51,7 @@ public class FilterConfig {
         ));
         
         config.addExposedHeader("Authorization");
+        config.addExposedHeader("Content-Type");
         config.setAllowCredentials(true);
         config.setMaxAge(3600L);
 
