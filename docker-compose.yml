@@ -6,11 +6,11 @@ networks:
 
 services:
   # ─── Falcon Alpha Backend ────────────────────────────────────────────────────
- juntos-backend:
-  build:
-    context: .
-    target: gateway
-  container_name: juntos-backend
+  juntos-backend:
+    build:
+      context: .
+      target: gateway
+    container_name: juntos-backend
     ports:
       - "8080:8080"
     environment:
@@ -21,6 +21,8 @@ services:
   juntos-web:
     build:
       context: ./juntos-web
+      args:
+        - VITE_BACKEND_URL=https://projectfalcon-production.up.railway.app
     container_name: juntos-web
     ports:
       - "3000:80"
