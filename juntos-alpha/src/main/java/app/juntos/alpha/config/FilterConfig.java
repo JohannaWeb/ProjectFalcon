@@ -29,17 +29,28 @@ public class FilterConfig {
     public FilterRegistrationBean<CorsFilter> corsFilterRegistration() {
         CorsConfiguration config = new CorsConfiguration();
         
-        // Use allowedOriginPatterns instead of allowedOrigins when allowCredentials is true
-        // This allows all subdomains of vercel.app, railway.app, and localhost
+        // Explicitly include the current Vercel deployment origin
+        config.addAllowedOrigin("https://project-falcon-91n9-git-juntos-project-falcon.vercel.app");
+        
+        // Use allowedOriginPatterns for general subdomains
         config.addAllowedOriginPattern("https://*.vercel.app");
         config.addAllowedOriginPattern("https://*.railway.app");
         config.addAllowedOriginPattern("http://localhost:*");
-        config.addAllowedOriginPattern("https://project-falcon-*.vercel.app");
-        // For debugging production blocking:
-        config.addAllowedOriginPattern("*"); 
-
+        
+        // Allowed methods
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-        config.addAllowedHeader("*");
+        
+        // Explicitly list required headers for preflight compatibility
+        config.setAllowedHeaders(Arrays.asList(
+            "Authorization",
+            "Content-Type",
+            "Accept",
+            "Origin",
+            "X-Requested-With",
+            "Access-Control-Request-Method",
+            "Access-Control-Request-Headers"
+        ));
+        
         config.addExposedHeader("Authorization");
         config.setAllowCredentials(true);
         config.setMaxAge(3600L);
