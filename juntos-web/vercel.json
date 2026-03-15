@@ -1,6 +1,14 @@
 {
   "rewrites": [
     {
+      "source": "/xrpc/:path*",
+      "destination": "https://projectfalcon-production.up.railway.app/xrpc/:path*"
+    },
+    {
+      "source": "/ws/:path*",
+      "destination": "https://projectfalcon-production.up.railway.app/ws/:path*"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

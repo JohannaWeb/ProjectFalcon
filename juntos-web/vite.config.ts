@@ -13,11 +13,11 @@ export default defineConfig({
   server: {
     proxy: {
       '/xrpc': {
-        target: 'http://localhost:8080',
+        target: 'https://projectfalcon-production.up.railway.app',
         changeOrigin: true,
       },
       '/ws': {
-        target: 'ws://localhost:8080',
+        target: 'https://projectfalcon-production.up.railway.app',
         ws: true,
         changeOrigin: true,
       },
