@@ -1,14 +1,16 @@
 import type { AppBskyActorDefs } from '@atproto/api'
 import { TrustIndicator } from './TrustIndicator'
+import type { Session } from '../lib/backendApi'
 
 type Props = {
     profile: AppBskyActorDefs.ProfileViewDetailed
     isMe: boolean
     following: boolean
     handleFollow: () => void
+    session: Session
 }
 
-export function ProfileHeader({ profile, isMe, following, handleFollow }: Props) {
+export function ProfileHeader({ profile, isMe, following, handleFollow, session }: Props) {
     return (
         <div style={{ display: 'flex', alignItems: 'center', gap: 24, marginBottom: 24 }}>
             <div
@@ -32,7 +34,7 @@ export function ProfileHeader({ profile, isMe, following, handleFollow }: Props)
             <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 4 }}>
                     <h1 style={{ fontSize: 24, margin: 0 }}>{profile.displayName ?? profile.handle}</h1>
-                    <TrustIndicator targetDid={profile.did} />
+                    <TrustIndicator targetDid={profile.did} session={session} />
                 </div>
                 <p style={{ color: 'var(--text-muted)', marginBottom: 8 }}>@{profile.handle}</p>
                 {profile.description && (

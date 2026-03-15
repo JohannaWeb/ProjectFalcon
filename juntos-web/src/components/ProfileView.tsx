@@ -62,6 +62,7 @@ export function ProfileView({ actor, meDid, session }: Props) {
         isMe={isMe}
         following={following}
         handleFollow={handleFollow}
+        session={session}
       />
 
       {isMe && (

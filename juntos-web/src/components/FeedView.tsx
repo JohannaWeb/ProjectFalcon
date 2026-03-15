@@ -97,6 +97,7 @@ export function FeedView({ session }: Props) {
           uri={threadUri}
           onClose={() => { setThreadUri(null); setThreadReplyTo(null) }}
           initialReplyTo={threadReplyTo ?? undefined}
+          session={session}
         />
       )}
     </div>

@@ -3,6 +3,7 @@ import { getAtpAgent } from '../lib/atp'
 import type { AppBskyFeedDefs } from '@atproto/api'
 import { PostCard } from './PostCard'
 import { PostComposer } from './PostComposer'
+import type { Session } from '../lib/backendApi'
 
 type ThreadNode = AppBskyFeedDefs.ThreadViewPost
 
@@ -10,13 +11,15 @@ type Props = {
   uri: string
   onClose: () => void
   initialReplyTo?: { uri: string; cid: string }
+  session: Session
 }
 
-function ThreadPost({ node, onOpenThread, onReply, onRefresh }: {
+function ThreadPost({ node, onOpenThread, onReply, onRefresh, session }: {
   node: ThreadNode
   onOpenThread: (uri: string) => void
   onReply: (uri: string, cid: string) => void
   onRefresh: () => void
+  session: Session
 }) {
   if (!node || node.$type !== 'app.bsky.feed.defs#threadViewPost') return null
   const post = node.post
@@ -62,6 +65,7 @@ function ThreadPost({ node, onOpenThread, onReply, onRefresh }: {
               onOpenThread={onOpenThread}
               onReply={onReply}
               onRefresh={onRefresh}
+              session={session}
             />
           ))}
         </div>
@@ -70,7 +74,7 @@ function ThreadPost({ node, onOpenThread, onReply, onRefresh }: {
   )
 }
 
-export function ThreadView({ uri: initialUri, onClose, initialReplyTo }: Props) {
+export function ThreadView({ uri: initialUri, onClose, initialReplyTo, session }: Props) {
   const [threadUri, setThreadUri] = useState(initialUri)
   const [thread, setThread] = useState<ThreadNode | null>(null)
   const [loading, setLoading] = useState(true)
@@ -141,6 +145,7 @@ export function ThreadView({ uri: initialUri, onClose, initialReplyTo }: Props) 
                 onOpenThread={(u) => { if (u !== threadUri) setThreadUri(u); load(u) }}
                 onReply={(uri, cid) => setReplyTo({ uri, cid })}
                 onRefresh={() => load()}
+                session={session}
               />
             )}
             {replyTo && (
@@ -161,6 +166,7 @@ export function ThreadView({ uri: initialUri, onClose, initialReplyTo }: Props) 
                 onOpenThread={(u) => { setThreadUri(u); load(u) }}
                 onReply={(uri, cid) => setReplyTo({ uri, cid })}
                 onRefresh={() => load()}
+                session={session}
               />
             ))}
           </>
