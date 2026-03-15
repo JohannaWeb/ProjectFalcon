@@ -2,7 +2,7 @@
  * Falcon backend API via AT Protocol XRPC (app.juntos.* lexicons).
  * All methods require a Session (AT access JWT + did + handle).
  */
-export const BACKEND_URL = 'http://localhost:8080'
+export const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080'
 
 export type Session = { accessJwt: string; did: string; handle: string }
 
