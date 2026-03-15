@@ -16,7 +16,12 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class FilterConfig {
 
-    private final AtprotoAuthFilter atprotoAuthFilter;
+    private final app.juntos.alpha.auth.DidResolver didResolver;
+
+    @Bean
+    public AtprotoAuthFilter atprotoAuthFilter() {
+        return new AtprotoAuthFilter(didResolver);
+    }
 
     @Bean
     public FilterRegistrationBean<CorsFilter> corsFilterRegistration() {
@@ -47,7 +52,7 @@ public class FilterConfig {
 
     @Bean
     public FilterRegistrationBean<AtprotoAuthFilter> atprotoAuthFilterRegistration() {
-        FilterRegistrationBean<AtprotoAuthFilter> bean = new FilterRegistrationBean<>(atprotoAuthFilter);
+        FilterRegistrationBean<AtprotoAuthFilter> bean = new FilterRegistrationBean<>(atprotoAuthFilter());
         // Order must be AFTER CorsFilter
         bean.setOrder(Ordered.HIGHEST_PRECEDENCE + 1);
         return bean;
