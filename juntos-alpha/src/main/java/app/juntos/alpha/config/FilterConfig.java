@@ -30,11 +30,13 @@ public class FilterConfig {
         CorsConfiguration config = new CorsConfiguration();
         
         // Use allowedOriginPatterns instead of allowedOrigins when allowCredentials is true
-        // and allow all subdomains of vercel.app and railway.app
+        // This allows all subdomains of vercel.app, railway.app, and localhost
         config.addAllowedOriginPattern("https://*.vercel.app");
         config.addAllowedOriginPattern("https://*.railway.app");
         config.addAllowedOriginPattern("http://localhost:*");
-        config.addAllowedOriginPattern("https://**"); // Very permissive for debugging
+        config.addAllowedOriginPattern("https://project-falcon-*.vercel.app");
+        // For debugging production blocking:
+        config.addAllowedOriginPattern("*"); 
 
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         config.addAllowedHeader("*");
