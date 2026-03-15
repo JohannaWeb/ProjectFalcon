@@ -2,6 +2,7 @@
 
 **The LGBT decentralized community.**
 
+
 Writing this without AI using my own keyboard.
 As a trans woman I have felt discriminated and repudiated in many web communities.
 Juntos uses the AT protocol and technology I built to position itself as a safe space for queer people like me.
