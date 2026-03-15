@@ -13,7 +13,7 @@ spring:
     show-sql: false
 
 server:
-  port: 8080
+  port: ${PORT:8080}
 
 management:
   endpoints:

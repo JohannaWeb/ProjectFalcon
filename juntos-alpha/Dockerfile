@@ -19,5 +19,4 @@ RUN mvn clean package -DskipTests -f juntos-alpha/pom.xml
 FROM eclipse-temurin:25-jre-alpine
 WORKDIR /app
 COPY --from=build /app/juntos-alpha/target/*.jar app.jar
-EXPOSE 8080
 ENTRYPOINT ["java", "--enable-preview", "-jar", "app.jar"]
