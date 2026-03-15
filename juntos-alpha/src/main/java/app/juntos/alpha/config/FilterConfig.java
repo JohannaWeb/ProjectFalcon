@@ -1,6 +1,7 @@
 package app.juntos.alpha.config;
 
 import app.juntos.alpha.auth.AtprotoAuthFilter;
+import jakarta.servlet.DispatcherType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +12,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
+import java.util.EnumSet;
 
 @Configuration
 @RequiredArgsConstructor
@@ -27,18 +29,16 @@ public class FilterConfig {
     public FilterRegistrationBean<CorsFilter> corsFilterRegistration() {
         CorsConfiguration config = new CorsConfiguration();
         
-        // Allowed Origins
-        config.setAllowedOriginPatterns(Arrays.asList(
-            "https://*.vercel.app",
-            "https://*.railway.app",
-            "http://localhost:*",
-            "https://*.github.dev",
-            "https://project-falcon-91n9-git-juntos-project-falcon.vercel.app" // Specific origin from error
-        ));
+        // Use allowedOriginPatterns instead of allowedOrigins when allowCredentials is true
+        // and allow all subdomains of vercel.app and railway.app
+        config.addAllowedOriginPattern("https://*.vercel.app");
+        config.addAllowedOriginPattern("https://*.railway.app");
+        config.addAllowedOriginPattern("http://localhost:*");
+        config.addAllowedOriginPattern("https://**"); // Very permissive for debugging
 
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-        config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept", "X-Requested-With", "Origin"));
-        config.setExposedHeaders(Arrays.asList("Authorization"));
+        config.addAllowedHeader("*");
+        config.addExposedHeader("Authorization");
         config.setAllowCredentials(true);
         config.setMaxAge(3600L);
 
@@ -47,14 +47,17 @@ public class FilterConfig {
 
         FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(new CorsFilter(source));
         bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        // CRITICAL: Ensure CORS headers are added even during ERROR dispatches (e.g. 401/500 responses)
+        bean.setDispatcherTypes(EnumSet.of(DispatcherType.REQUEST, DispatcherType.ASYNC, DispatcherType.ERROR));
         return bean;
     }
 
     @Bean
     public FilterRegistrationBean<AtprotoAuthFilter> atprotoAuthFilterRegistration() {
+        // We use the atprotoAuthFilter() bean method
         FilterRegistrationBean<AtprotoAuthFilter> bean = new FilterRegistrationBean<>(atprotoAuthFilter());
-        // Order must be AFTER CorsFilter
         bean.setOrder(Ordered.HIGHEST_PRECEDENCE + 1);
+        bean.setDispatcherTypes(EnumSet.of(DispatcherType.REQUEST, DispatcherType.ASYNC));
         return bean;
     }
 }
