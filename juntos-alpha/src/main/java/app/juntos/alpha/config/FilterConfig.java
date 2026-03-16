@@ -31,9 +31,8 @@ public class FilterConfig {
         
         // All origins expressed as patterns (required when allowCredentials=true —
         // mixing addAllowedOrigin() and addAllowedOriginPattern() is forbidden by Spring)
-        config.addAllowedOriginPattern("https://project-falcon-91n9-git-juntos-project-falcon.vercel.app");
-        config.addAllowedOriginPattern("https://project-falcon-91n9-ox1t5pcrc-project-falcon.vercel.app");
-        config.addAllowedOriginPattern("https://*.vercel.app");
+        // Vercel preview deployments have random subdomains — use ** to match any depth
+        config.addAllowedOriginPattern("https://**.vercel.app");
         config.addAllowedOriginPattern("https://*.railway.app");
         config.addAllowedOriginPattern("http://localhost:*");
         
