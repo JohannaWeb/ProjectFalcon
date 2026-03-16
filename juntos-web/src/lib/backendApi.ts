@@ -3,8 +3,10 @@
  * All methods require a Session (AT access JWT + did + handle).
  */
 const isLocal = typeof window !== 'undefined' && window.location.hostname === 'localhost'
+const envUrl = import.meta.env.VITE_BACKEND_URL
+// Ignore localhost:8080 in production builds (Vercel/Railway)
 export const BACKEND_URL =
-  import.meta.env.VITE_BACKEND_URL ||
+  (envUrl && !envUrl.includes('localhost:8080')) ? envUrl :
   (isLocal ? '' : 'https://projectfalcon-production.up.railway.app')
 
 console.log('[DEBUG] BACKEND_URL resolved to:', BACKEND_URL || '(relative/proxy)')
