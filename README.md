@@ -2,9 +2,10 @@
 
 **The LGBT decentralized community.**
 
-![Juntos Community](https://cdn.bsky.app/img/feed_fullsize/plain/did:plc:xdhw5xehrc7eog7umjkek5in/bafkreigehdo5e7x7fldowma43iohjk3qkrkyx6mb5gasf5imssn5czcoiy)
+![Juntos Community](https://cdn.bsky.app/img/feed_fullsize/plain/did<img width="1957" height="1357" alt="image" src="https://github.com/user-attachments/assets/0e0dfd7e-d888-4c71-807a-cdf58d4634dc" />
+:plc:xdhw5xehrc7eog7umjkek5in/bafkreigehdo5e7x7fldowma43iohjk3qkrkyx6mb5gasf5imssn5czcoiy)
 
-**[Live Demo](https://project-falcon-91n9.vercel.app/)**
+**[Live Demo](https://project-falcon-91n9.vercel.app//)**
 
 Writing this without AI using my own keyboard.
 
