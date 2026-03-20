@@ -2,105 +2,149 @@
  * Falcon backend API via AT Protocol XRPC (app.juntos.* lexicons).
  * All methods require a Session (AT access JWT + did + handle).
  */
-const isLocal = typeof window !== 'undefined' && window.location.hostname === 'localhost'
-const envUrl = import.meta.env.VITE_BACKEND_URL
-// Ignore localhost:8080 in production builds (Vercel/Railway)
+const isLocal =
+  typeof window !== "undefined" && window.location.hostname === "localhost";
+const envUrl = import.meta.env.VITE_BACKEND_URL;
+// Use proxies for both local (Vite) and production (Vercel) to avoid CORS
 export const BACKEND_URL =
-  (envUrl && !envUrl.includes('localhost:8080')) ? envUrl :
-  (isLocal ? '' : 'https://projectfalcon-production.up.railway.app')
+  envUrl && !envUrl.includes("localhost:8080") ? envUrl : "";
 
-console.log('[DEBUG] BACKEND_URL resolved to:', BACKEND_URL || '(relative/proxy)')
+console.log(
+  "[DEBUG] BACKEND_URL resolved to:",
+  BACKEND_URL || "(relative/proxy)",
+);
 
-export type Session = { accessJwt: string; did: string; handle: string }
+export type Session = { accessJwt: string; did: string; handle: string };
 
 /** Lexicon-shaped types (app.juntos.defs) */
-export type ServerSummary = { id: number; name: string; ownerDid: string; channels: { id: number; name: string }[] }
-export type ChannelSummary = { id: number; name: string; serverId?: number }
-export type MessageSummary = { id: number; content: string; authorDid: string; authorHandle: string; createdAt: string }
+export type ServerSummary = {
+  id: number;
+  name: string;
+  ownerDid: string;
+  channels: { id: number; name: string }[];
+};
+export type ChannelSummary = { id: number; name: string; serverId?: number };
+export type MessageSummary = {
+  id: number;
+  content: string;
+  authorDid: string;
+  authorHandle: string;
+  createdAt: string;
+};
 
 async function xrpcQuery<T>(
   nsid: string,
   params: Record<string, string | number> | undefined,
-  session: Session
+  session: Session,
 ): Promise<T> {
-  const url = new URL(`${BACKEND_URL}/xrpc/${nsid}`, window.location.origin)
+  const url = new URL(`${BACKEND_URL}/xrpc/${nsid}`, window.location.origin);
   if (params) {
-    Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, String(v)))
+    Object.entries(params).forEach(([k, v]) =>
+      url.searchParams.set(k, String(v)),
+    );
   }
   const res = await fetch(url.toString(), {
-    method: 'GET',
+    method: "GET",
     headers: {
       Authorization: `Bearer ${session.accessJwt}`,
     },
-  })
-  if (!res.ok) throw new Error(await res.text().catch(() => res.statusText))
-  return res.json()
+  });
+  if (!res.ok) throw new Error(await res.text().catch(() => res.statusText));
+  return res.json();
 }
 
 async function xrpcProcedure<T>(
   nsid: string,
   params: Record<string, string | number> | undefined,
   body: unknown,
-  session: Session
+  session: Session,
 ): Promise<T> {
-  const url = new URL(`${BACKEND_URL}/xrpc/${nsid}`, window.location.origin)
+  const url = new URL(`${BACKEND_URL}/xrpc/${nsid}`, window.location.origin);
   if (params) {
-    Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, String(v)))
+    Object.entries(params).forEach(([k, v]) =>
+      url.searchParams.set(k, String(v)),
+    );
   }
   const res = await fetch(url.toString(), {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       Authorization: `Bearer ${session.accessJwt}`,
     },
     body: body != null ? JSON.stringify(body) : undefined,
-  })
-  if (!res.ok) throw new Error(await res.text().catch(() => res.statusText))
-  return res.json()
+  });
+  if (!res.ok) throw new Error(await res.text().catch(() => res.statusText));
+  return res.json();
 }
 
 export function getRealtimeWsUrl(session: Session): string {
-  const wsUrl = new URL(BACKEND_URL || window.location.origin, window.location.origin)
-  wsUrl.pathname = '/ws'
-  wsUrl.search = ''
-  wsUrl.searchParams.set('token', session.accessJwt)
-  return wsUrl.toString()
+  const wsUrl = new URL(
+    BACKEND_URL || window.location.origin,
+    window.location.origin,
+  );
+  wsUrl.pathname = "/ws";
+  wsUrl.search = "";
+  wsUrl.searchParams.set("token", session.accessJwt);
+  return wsUrl.toString();
 }
 
 export const backendApi = {
   listServers: (session: Session) =>
-    xrpcQuery<ServerSummary[]>('app.juntos.server.list', undefined, session),
+    xrpcQuery<ServerSummary[]>("app.juntos.server.list", undefined, session),
 
   getServer: (serverId: number, session: Session) =>
-    xrpcQuery<ServerSummary>('app.juntos.server.get', { serverId }, session),
+    xrpcQuery<ServerSummary>("app.juntos.server.get", { serverId }, session),
 
   createServer: (session: Session, name: string) =>
-    xrpcProcedure<{ id: number; name: string; ownerDid: string; channelId: number }>(
-      'app.juntos.server.create',
-      undefined,
-      { name },
-      session
-    ),
+    xrpcProcedure<{
+      id: number;
+      name: string;
+      ownerDid: string;
+      channelId: number;
+    }>("app.juntos.server.create", undefined, { name }, session),
 
   listChannels: (serverId: number, session: Session) =>
-    xrpcQuery<ChannelSummary[]>('app.juntos.channel.list', { serverId }, session),
+    xrpcQuery<ChannelSummary[]>(
+      "app.juntos.channel.list",
+      { serverId },
+      session,
+    ),
 
   createChannel: (serverId: number, session: Session, name: string) =>
-    xrpcProcedure<ChannelSummary>('app.juntos.channel.create', { serverId }, { name }, session),
+    xrpcProcedure<ChannelSummary>(
+      "app.juntos.channel.create",
+      { serverId },
+      { name },
+      session,
+    ),
 
   getMessages: (channelId: number, session: Session, limit = 50) =>
-    xrpcQuery<MessageSummary[]>('app.juntos.channel.getMessages', { channelId, limit }, session),
+    xrpcQuery<MessageSummary[]>(
+      "app.juntos.channel.getMessages",
+      { channelId, limit },
+      session,
+    ),
 
   postMessage: (channelId: number, session: Session, content: string) =>
-    xrpcProcedure<MessageSummary>('app.juntos.channel.postMessage', { channelId }, { content }, session),
+    xrpcProcedure<MessageSummary>(
+      "app.juntos.channel.postMessage",
+      { channelId },
+      { content },
+      session,
+    ),
 
   inviteToServer: (serverId: number, session: Session, handle: string) =>
-    xrpcProcedure<{ did: string; handle: string }>('app.juntos.server.invite', { serverId }, { handle }, session),
+    xrpcProcedure<{ did: string; handle: string }>(
+      "app.juntos.server.invite",
+      { serverId },
+      { handle },
+      session,
+    ),
 
   getTimeline: (session: Session, limit = 30, cursor?: string) =>
     xrpcQuery<{ feed: unknown[]; cursor?: string }>(
-      'app.juntos.feed.getTimeline',
+      "app.juntos.feed.getTimeline",
       cursor ? { limit, cursor } : { limit },
-      session
+      session,
     ),
-}
+};
