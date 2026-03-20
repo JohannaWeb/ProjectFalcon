@@ -2,8 +2,6 @@
  * Falcon backend API via AT Protocol XRPC (app.juntos.* lexicons).
  * All methods require a Session (AT access JWT + did + handle).
  */
-const isLocal =
-  typeof window !== "undefined" && window.location.hostname === "localhost";
 const envUrl = import.meta.env.VITE_BACKEND_URL;
 // Use proxies for both local (Vite) and production (Vercel) to avoid CORS
 export const BACKEND_URL =
