@@ -1,0 +1,39 @@
+steps:
+  # Build the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/juntos-alpha:$SHORT_SHA'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/juntos-alpha:latest'
+      - '-f'
+      - 'juntos-alpha/Dockerfile'
+      - '.'
+
+  # Push to GCR
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/juntos-alpha:$SHORT_SHA'
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/juntos-alpha:latest'
+
+  # Deploy to GKE
+  - name: 'gcr.io/cloud-builders/kubectl'
+    args:
+      - 'set'
+      - 'image'
+      - 'deployment/juntos-alpha'
+      - 'app=gcr.io/$PROJECT_ID/juntos-alpha:$SHORT_SHA'
+      - '--record'
+    env:
+      - 'CLOUDSDK_COMPUTE_ZONE=us-central1'  # UPDATE THIS
+      - 'CLOUDSDK_CONTAINER_CLUSTER=your-cluster-name'  # UPDATE THIS
+
+images:
+  - 'gcr.io/$PROJECT_ID/juntos-alpha:$SHORT_SHA'
+  - 'gcr.io/$PROJECT_ID/juntos-alpha:latest'
