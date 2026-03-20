@@ -7,3 +7,4 @@ startCommand = "java --enable-preview -jar app.jar"
 healthcheckPath = "/actuator/health"
 healthcheckTimeout = 120
 restartPolicyType = "ON_FAILURE"
+numReplicas = 1
