@@ -9,6 +9,10 @@
       "destination": "https://projectfalcon-production.up.railway.app/ws/:path*"
     },
     {
+      "source": "/api/:path*",
+      "destination": "https://projectfalcon-production.up.railway.app/api/:path*"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
