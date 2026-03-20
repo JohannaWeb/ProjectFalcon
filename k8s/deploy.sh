@@ -7,21 +7,21 @@ CLUSTER_NAME="${1:-falcon-cluster}"
 ZONE="${2:-us-central1-a}"
 PROJECT_ID="project-falcon-490804"
 
-echo "🚀 Deploying Juntos Alpha to GKE..."
+echo "Deploying Juntos Alpha to GKE..."
 echo "Cluster: $CLUSTER_NAME"
 echo "Zone: $ZONE"
 echo "Project: $PROJECT_ID"
 
 # Get cluster credentials
-echo "📝 Getting cluster credentials..."
+echo "Getting cluster credentials..."
 gcloud container clusters get-credentials "$CLUSTER_NAME" --zone "$ZONE" --project "$PROJECT_ID"
 
 # Check if kustomize is available
 if command -v kustomize &> /dev/null; then
-    echo "📦 Using kustomize to deploy..."
+    echo "Using kustomize to deploy..."
     kustomize build . | kubectl apply -f -
 else
-    echo "📦 Using kubectl to deploy manifests in order..."
+    echo "Using kubectl to deploy manifests in order..."
     kubectl apply -f namespace.yaml
     kubectl apply -f configmap.yaml
     kubectl apply -f secret.yaml
@@ -36,27 +36,27 @@ else
 fi
 
 echo ""
-echo "✅ Deployment applied!"
+echo "Deployment applied!"
 echo ""
-echo "📊 Checking deployment status..."
+echo "Checking deployment status..."
 kubectl rollout status deployment/juntos-alpha -n juntos --timeout=5m
 
 echo ""
-echo "🔍 Getting service details..."
+echo "Getting service details..."
 kubectl get svc -n juntos
 
 echo ""
-echo "🌐 Checking ingress..."
+echo "Checking ingress..."
 kubectl get ingress -n juntos
 
 echo ""
-echo "📋 Checking pod status..."
+echo "Checking pod status..."
 kubectl get pods -n juntos
 
 echo ""
-echo "✨ Deployment complete! Access your app at https://juntos.chat"
+echo "Deployment complete! Access your app at https://juntos.chat"
 echo ""
-echo "💡 Useful commands:"
+echo "Useful commands:"
 echo "   kubectl logs -f deployment/juntos-alpha -n juntos"
 echo "   kubectl port-forward svc/juntos-alpha 8080:80 -n juntos"
 echo "   kubectl get hpa -n juntos"
