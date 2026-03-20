@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: juntos-alpha
+  namespace: juntos
+  labels:
+    app: juntos-alpha
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: juntos-alpha
+subjects:
+- kind: ServiceAccount
+  name: juntos-alpha
+  namespace: juntos

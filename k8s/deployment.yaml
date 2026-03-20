@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: juntos-alpha
+  namespace: juntos
   labels:
     app: juntos-alpha
 spec:
@@ -14,6 +15,10 @@ spec:
       labels:
         app: juntos-alpha
     spec:
+      serviceAccountName: juntos-alpha
+      securityContext:
+        runAsNonRoot: false
+        runAsUser: 0
       containers:
       - name: app
         image: gcr.io/PROJECT_ID/juntos-alpha:latest
@@ -26,6 +31,17 @@ spec:
           value: "8080"
         - name: SERVER_ADDRESS
           value: "0.0.0.0"
+        envFrom:
+        - configMapRef:
+            name: juntos-alpha-config
+        - secretRef:
+            name: juntos-alpha-secrets
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
+          capabilities:
+            drop:
+            - ALL
         livenessProbe:
           httpGet:
             path: /actuator/health/liveness

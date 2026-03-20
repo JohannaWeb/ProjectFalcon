@@ -2,16 +2,20 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: juntos-alpha
+  namespace: juntos
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
     kubernetes.io/ingress.class: "gce"
+    # GCE health check configuration
+    cloud.google.com/neg: '{"ingress": true}'
+    cloud.google.com/backend-config: '{"ports": {"80":"juntos-backend-config"}}'
 spec:
   tls:
   - hosts:
-    - projectfalcon.example.com  # UPDATE THIS
+    - juntos.chat
     secretName: juntos-alpha-tls
   rules:
-  - host: projectfalcon.example.com  # UPDATE THIS
+  - host: juntos.chat
     http:
       paths:
       - path: /

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: juntos-alpha-config
+  namespace: juntos
+  labels:
+    app: juntos-alpha
+data:
+  SPRING_PROFILES_ACTIVE: "kubernetes"
+  LOGGING_LEVEL_APP_JUNTOS: "INFO"
+  MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: "health,info,prometheus,metrics,loggers"
+  MANAGEMENT_ENDPOINT_HEALTH_SHOW_DETAILS: "always"
+  MANAGEMENT_METRICS_TAGS_APPLICATION: "falcon-alpha"
+  MANAGEMENT_METRICS_TAGS_ENVIRONMENT: "kubernetes"

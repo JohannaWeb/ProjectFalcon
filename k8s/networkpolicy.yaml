@@ -1,0 +1,61 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: juntos-alpha
+  namespace: juntos
+  labels:
+    app: juntos-alpha
+spec:
+  podSelector:
+    matchLabels:
+      app: juntos-alpha
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  # Allow traffic from Ingress controller
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: ingress-nginx
+    ports:
+    - protocol: TCP
+      port: 8080
+  # Allow traffic from kube-prometheus (monitoring)
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: kube-prometheus
+    ports:
+    - protocol: TCP
+      port: 8080
+  # Allow traffic within the same namespace
+  - from:
+    - podSelector:
+        matchLabels:
+          app: juntos-alpha
+    ports:
+    - protocol: TCP
+      port: 8080
+  egress:
+  # Allow DNS
+  - to:
+    - namespaceSelector: {}
+      podSelector:
+        matchLabels:
+          k8s-app: kube-dns
+    ports:
+    - protocol: UDP
+      port: 53
+  # Allow outbound HTTPS (for external APIs)
+  - to:
+    - namespaceSelector: {}
+    ports:
+    - protocol: TCP
+      port: 443
+  # Allow outbound HTTP (for external APIs)
+  - to:
+    - namespaceSelector: {}
+    ports:
+    - protocol: TCP
+      port: 80

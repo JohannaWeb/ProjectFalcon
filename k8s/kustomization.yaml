@@ -1,0 +1,34 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: juntos
+
+resources:
+- namespace.yaml
+- configmap.yaml
+- secret.yaml
+- serviceaccount.yaml
+- role.yaml
+- rolebinding.yaml
+- deployment.yaml
+- service.yaml
+- ingress.yaml
+- hpa.yaml
+- networkpolicy.yaml
+
+commonLabels:
+  app: juntos-alpha
+  project: falcon
+
+commonAnnotations:
+  managed-by: "kustomize"
+  version: "1.0"
+
+replicas:
+- name: juntos-alpha
+  count: 2
+
+images:
+- name: gcr.io/PROJECT_ID/juntos-alpha
+  newName: gcr.io/project-falcon-490804/juntos-alpha
+  newTag: latest
