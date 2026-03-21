@@ -35,6 +35,8 @@ public class FilterConfig {
         config.addAllowedOriginPattern("https://**.vercel.app");
         config.addAllowedOriginPattern("https://*.railway.app");
         config.addAllowedOriginPattern("http://localhost:*");
+        config.addAllowedOriginPattern("https://juntos.chat");
+        config.addAllowedOriginPattern("https://www.juntos.chat");
         
         // Allowed methods
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
