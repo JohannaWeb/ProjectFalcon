@@ -22,7 +22,7 @@ services:
     build:
       context: ./juntos-web
       args:
-        - VITE_BACKEND_URL=https://projectfalcon-production.up.railway.app
+        - VITE_BACKEND_URL=https://juntos.io
     container_name: juntos-web
     ports:
       - "3000:80"

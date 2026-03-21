@@ -12,10 +12,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - juntos.chat
+    - juntos.io
     secretName: juntos-alpha-tls
   rules:
-  - host: juntos.chat
+  - host: juntos.io
     http:
       paths:
       - path: /
