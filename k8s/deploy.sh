@@ -54,7 +54,7 @@ echo "Checking pod status..."
 kubectl get pods -n juntos
 
 echo ""
-echo "Deployment complete! Access your app at https://juntos.io"
+echo "Deployment complete! Access your app at https://juntos.prod.chat"
 echo ""
 echo "Useful commands:"
 echo "   kubectl logs -f deployment/juntos-alpha -n juntos"

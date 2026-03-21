@@ -6,7 +6,7 @@ metadata:
   labels:
     app: juntos-alpha
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: juntos-alpha
@@ -21,7 +21,7 @@ spec:
         runAsUser: 0
       containers:
       - name: app
-        image: gcr.io/PROJECT_ID/juntos-alpha:latest
+        image: gcr.io/project-falcon-490804/juntos-alpha:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -46,7 +46,7 @@ spec:
           httpGet:
             path: /actuator/health/liveness
             port: 8080
-          initialDelaySeconds: 30
+          initialDelaySeconds: 60
           periodSeconds: 10
           timeoutSeconds: 5
           failureThreshold: 3
@@ -54,14 +54,14 @@ spec:
           httpGet:
             path: /actuator/health/readiness
             port: 8080
-          initialDelaySeconds: 20
+          initialDelaySeconds: 60
           periodSeconds: 5
           timeoutSeconds: 5
           failureThreshold: 3
         resources:
           requests:
             memory: "512Mi"
-            cpu: "250m"
+            cpu: "100m"
           limits:
             memory: "1Gi"
             cpu: "500m"
