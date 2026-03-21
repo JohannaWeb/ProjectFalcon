@@ -3,15 +3,15 @@
   "rewrites": [
     {
       "source": "/xrpc/:path*",
-      "destination": "https://juntos.io/xrpc/:path*"
+      "destination": "https://projectfalcon-production.up.railway.app/xrpc/:path*"
     },
     {
       "source": "/ws/:path*",
-      "destination": "https://juntos.io/ws/:path*"
+      "destination": "https://projectfalcon-production.up.railway.app/ws/:path*"
     },
     {
       "source": "/api/:path*",
-      "destination": "https://juntos.io/api/:path*"
+      "destination": "https://projectfalcon-production.up.railway.app/api/:path*"
     },
     {
       "source": "/(.*)",

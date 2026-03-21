@@ -16,16 +16,16 @@ export default defineConfig({
   server: {
     proxy: {
       "/xrpc": {
-        target: "https://juntos.io",
+        target: "https://projectfalcon-production.up.railway.app",
         changeOrigin: true,
       },
       "/ws": {
-        target: "https://juntos.io",
+        target: "https://projectfalcon-production.up.railway.app",
         ws: true,
         changeOrigin: true,
       },
       "/api": {
-        target: "https://juntos.io",
+        target: "https://projectfalcon-production.up.railway.app",
         changeOrigin: true,
       },
     },
