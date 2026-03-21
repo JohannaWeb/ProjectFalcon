@@ -19,6 +19,4 @@ WORKDIR /app
 
 COPY --from=build /app/juntos-alpha/target/*.jar app.jar
 
-EXPOSE 8080
-
 ENTRYPOINT ["java", "--enable-preview", "-jar", "app.jar"]
