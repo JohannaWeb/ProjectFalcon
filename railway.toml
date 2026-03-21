@@ -11,5 +11,4 @@ restartPolicyType = "ON_FAILURE"
 numReplicas = 1
 
 [deploy.environment]
-PORT = 8080
 SERVER_ADDRESS = "0.0.0.0"
