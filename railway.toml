@@ -5,11 +5,7 @@ builder = "nixpacks"
 NIXPACKS_JDK_VERSION = "21"
 
 [deploy]
-startCommand = "java -Dserver.port=${PORT:-8080} -Dserver.address=0.0.0.0 -jar juntos-alpha/target/juntos-alpha-0.1.0.jar"
+startCommand = "java -Dserver.port=$PORT -Dserver.address=0.0.0.0 -jar juntos-alpha/target/juntos-alpha-0.1.0.jar"
 healthcheckPath = "/actuator/health"
 restartPolicyType = "ON_FAILURE"
 numReplicas = 1
-
-[deploy.environment]
-PORT = "8080"
-SERVER_PORT = "8080"
