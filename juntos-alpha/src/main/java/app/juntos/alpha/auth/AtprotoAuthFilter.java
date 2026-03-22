@@ -44,6 +44,8 @@ public class AtprotoAuthFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
         boolean skip = "OPTIONS".equalsIgnoreCase(request.getMethod())
                 || "websocket".equalsIgnoreCase(upgrade)
+                || path.equals("/")
+                || path.equals("/ping")
                 || path.startsWith("/actuator");
         if (skip) {
             log.debug("[AUTH] Skipping filter for {} {} (upgrade={}, path={})",
