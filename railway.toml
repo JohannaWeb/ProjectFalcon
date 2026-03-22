@@ -5,7 +5,3 @@ dockerfilePath = "juntos-alpha/Dockerfile"
 [deploy]
 restartPolicyType = "ON_FAILURE"
 numReplicas = 1
-
-[deploy.environment]
-PORT = "8080"
-SERVER_PORT = "8080"
