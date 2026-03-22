@@ -4,16 +4,12 @@ metadata:
   name: juntos-alpha
   namespace: juntos
   annotations:
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
     kubernetes.io/ingress.class: "gce"
+    networking.gke.io/managed-certificates: "juntos-nip-cert"
     # GCE health check configuration
     cloud.google.com/neg: '{"ingress": true}'
     cloud.google.com/backend-config: '{"ports": {"80":"juntos-backend-config"}}'
 spec:
-  tls:
-  - hosts:
-    - 34.160.170.172.nip.io
-    secretName: juntos-alpha-tls
   rules:
   - host: 34.160.170.172.nip.io
     http:
