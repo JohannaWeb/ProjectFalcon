@@ -6,3 +6,6 @@ context = "."
 startCommand = "java -jar app.jar"
 restartPolicyType = "ON_FAILURE"
 numReplicas = 1
+
+[deploy.environment]
+PORT = "8080"
