@@ -4,9 +4,6 @@ context = "."
 
 [deploy]
 startCommand = "java -jar app.jar"
-healthcheckPath = "/actuator/health"
-healthcheckTimeout = 120
-healthcheckInterval = 10
 restartPolicyType = "ON_FAILURE"
 numReplicas = 1
 
