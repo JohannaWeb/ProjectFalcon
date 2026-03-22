@@ -1,10 +1,11 @@
 [build]
-builder = "nixpacks"
-
-[build.environment]
-NIXPACKS_JDK_VERSION = "21"
+builder = "docker"
+dockerfilePath = "juntos-alpha/Dockerfile"
 
 [deploy]
-startCommand = "java -Dserver.port=$PORT -jar juntos-alpha/target/juntos-alpha-0.1.0.jar"
 restartPolicyType = "ON_FAILURE"
 numReplicas = 1
+
+[deploy.environment]
+PORT = "8080"
+SERVER_PORT = "8080"
