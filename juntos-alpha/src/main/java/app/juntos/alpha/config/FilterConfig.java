@@ -37,8 +37,7 @@ public class FilterConfig {
         config.addAllowedOriginPattern("http://localhost:*");
         config.addAllowedOriginPattern("https://juntos.chat");
         config.addAllowedOriginPattern("https://www.juntos.chat");
-        config.addAllowedOriginPattern("https://juntos.prod.chat");
-        config.addAllowedOriginPattern("https://www.juntos.prod.chat");
+        config.addAllowedOriginPattern("https://34.160.170.172.nip.io");
         
         // Allowed methods
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));

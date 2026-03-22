@@ -3,15 +3,15 @@
   "rewrites": [
     {
       "source": "/xrpc/:path*",
-      "destination": "https://projectfalcon-production.up.railway.app/xrpc/:path*"
+      "destination": "https://34.160.170.172.nip.io/xrpc/:path*"
     },
     {
       "source": "/ws/:path*",
-      "destination": "https://projectfalcon-production.up.railway.app/ws/:path*"
+      "destination": "https://34.160.170.172.nip.io/ws/:path*"
     },
     {
       "source": "/api/:path*",
-      "destination": "https://projectfalcon-production.up.railway.app/api/:path*"
+      "destination": "https://34.160.170.172.nip.io/api/:path*"
     },
     {
       "source": "/(.*)",

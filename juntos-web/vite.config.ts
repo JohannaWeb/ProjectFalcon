@@ -16,16 +16,16 @@ export default defineConfig({
   server: {
     proxy: {
       "/xrpc": {
-        target: "https://projectfalcon-production.up.railway.app",
+        target: "https://34.160.170.172.nip.io",
         changeOrigin: true,
       },
       "/ws": {
-        target: "https://projectfalcon-production.up.railway.app",
+        target: "https://34.160.170.172.nip.io",
         ws: true,
         changeOrigin: true,
       },
       "/api": {
-        target: "https://projectfalcon-production.up.railway.app",
+        target: "https://34.160.170.172.nip.io",
         changeOrigin: true,
       },
     },
