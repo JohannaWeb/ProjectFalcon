@@ -1,46 +1,91 @@
 # Juntos
 
-**The LGBT decentralized community.**
+**The decentralized LGBT+ community.**
 
-![Juntos Community]<img width="1957" height="1357" alt="image" src="https://github.com/user-attachments/assets/0e0dfd7e-d888-4c71-807a-cdf58d4634dc" />
+![Juntos Community](https://github.com/user-attachments/assets/0e0dfd7e-d888-4c71-807a-cdf58d4634dc)
 
-**[Live Demo] https://juntos.chat/
+👉 **Live Demo:** https://juntos.chat/
 
-Writing this without AI using my own keyboard.
+---
 
-As a trans woman I have felt discriminated and repudiated in many web communities. Juntos uses the AT protocol and technology I built to position itself as a safe space for queer people like me.
+## About
+
+Juntos is a decentralized real-time community platform built on the AT Protocol.
+
+I built this without AI — just me and my keyboard.
+
+As a trans woman, I’ve experienced discrimination and exclusion in many online spaces. Juntos exists to create something different: a place where queer people can exist, connect, and build community safely.
 
 ---
 
 ## The Idea
 
-Safe inclusive spaces for trans, non-binary people and anyone in the LGBT+ rainbow.
+- Safe and inclusive spaces for trans, non-binary, and LGBT+ people  
+- Real-time communities (not just posts or feeds)  
+- No centralized ownership of user identity or data  
+- Built on the AT Protocol  
 
-No centralized company governance. The AT protocol and this new communities extension will bring freedom and hope to the digital world the same way Bluesky did.
+Juntos aims to bring freedom and ownership back to online communities — similar to what Bluesky started, but extended into live interaction.
 
-## Quick Start (Local Run)
+---
 
-To run Juntos locally without Docker, use the provided PowerShell script:
+## Why
 
-1. Open PowerShell in the root directory.
-2. Run the start script:
+Most platforms control:
+- your identity  
+- your data  
+- your community  
+
+If you leave, you lose everything.
+
+Juntos separates:
+
+> **community ≠ platform**
+
+Your identity lives outside the app. Your community isn’t owned by a company.
+
+---
+
+## Features (Current)
+
+- Real-time chat  
+- Channels  
+- AT Protocol authentication (Bluesky handle + app password)  
+- Decentralized identity  
+
+---
+
+## Quick Start (Local Development)
+
+Run Juntos locally without Docker:
+
+1. Open PowerShell in the root directory  
+2. Run:
+
 ```powershell
 .\run_juntos.ps1
 ```
 
-The script will check for **Java 21 LTS** and **Node.js**, install dependencies, and launch the backend and frontend in separate windows.
+This script will:
+- Check for **Java 21 LTS**  
+- Check for **Node.js**  
+- Install dependencies  
+- Start backend and frontend in separate windows  
 
-## Why
-
-The LGBT community needs digital spaces that aren't controlled by central authorities. Switching platforms often means losing community ties and history. Juntos separates collaboration from the platform.
+---
 
 ## Status
 
-Working on it daily.
+Actively developed.
+
+---
 
 ## Vision
 
-Being the future of web 4 made by a trans woman in her bedroom.
+Building the future of the web —  
+from a trans woman’s bedroom.
+
+---
 
 ## License
 
