@@ -3,7 +3,7 @@ dockerfilePath = "juntos-alpha/Dockerfile"
 context = "."
 
 [deploy]
-startCommand = "java --enable-preview -jar app.jar"
+startCommand = "java -jar app.jar"
 healthcheckPath = "/actuator/health"
 healthcheckTimeout = 120
 healthcheckInterval = 10
