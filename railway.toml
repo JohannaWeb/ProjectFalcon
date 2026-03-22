@@ -3,5 +3,6 @@ builder = "docker"
 dockerfilePath = "juntos-alpha/Dockerfile"
 
 [deploy]
+healthcheckPath = "/actuator/health"
 restartPolicyType = "ON_FAILURE"
 numReplicas = 1
