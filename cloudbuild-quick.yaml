@@ -1,0 +1,5 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/project-falcon-490804/juntos-alpha:latest', '-f', 'juntos-alpha/Dockerfile', '.']
+images:
+- 'gcr.io/project-falcon-490804/juntos-alpha:latest'

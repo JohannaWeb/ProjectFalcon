@@ -1,0 +1,8 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: juntos-nip-cert
+  namespace: juntos
+spec:
+  domains:
+    - 34.160.170.172.nip.io
