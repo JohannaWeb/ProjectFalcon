@@ -1,6 +1,9 @@
 [build]
 builder = "nixpacks"
 
+[build.environment]
+NIXPACKS_JDK_VERSION = "21"
+
 [deploy]
 startCommand = "sh -c 'java -jar juntos-alpha/target/*.jar'"
 restartPolicyType = "ON_FAILURE"
