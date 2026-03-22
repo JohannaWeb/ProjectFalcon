@@ -2,7 +2,7 @@
 
 **The decentralized LGBT+ community.**
 
-![Juntos Community](https://github.com/user-attachments/assets/0e0dfd7e-d888-4c71-807a-cdf58d4634dc)
+<img width="1000" height="524" alt="image" src="https://github.com/user-attachments/assets/c97eb84e-fbcb-4f2c-b07d-b9edf6a90ea1" />
 
 👉 **Live Demo:** https://juntos.chat/
 
