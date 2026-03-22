@@ -1,0 +1,11 @@
+.git
+.github
+.idea
+.vercel
+node_modules
+**/node_modules
+**/target
+juntos-web/dist
+juntos-web/build_output.txt
+.env.local
+data

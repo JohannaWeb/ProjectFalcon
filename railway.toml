@@ -1,11 +1,8 @@
 [build]
-builder = "nixpacks"
-
-[build.environment]
-NIXPACKS_JDK_VERSION = "21"
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
 
 [deploy]
-startCommand = "java -Dserver.port=$PORT -Dserver.address=0.0.0.0 -jar juntos-alpha/target/juntos-alpha-0.1.0.jar"
-healthcheckPath = "/actuator/health"
+healthcheckPath = "/ping"
 restartPolicyType = "ON_FAILURE"
 numReplicas = 1
