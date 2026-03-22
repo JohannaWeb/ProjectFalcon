@@ -17,7 +17,8 @@ FROM eclipse-temurin:21-jre
 
 WORKDIR /app
 
-COPY --from=build /app/juntos-alpha/target/*.jar app.jar
+# Safely copy only the compiled FAT jar, ignoring '.original' or '-plain' artifacts per Gemini recommendations
+COPY --from=build /app/juntos-alpha/target/juntos-alpha-0.1.0.jar app.jar
 
 EXPOSE 8080
 
