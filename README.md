@@ -8,7 +8,7 @@
 
 ---
 ## Support
-“Running Juntos costs money — support if you want 💖”
+Running Juntos costs money — support if you want 💖
 https://buymeacoffee.com/johannaweb
 
 ## About
