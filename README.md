@@ -7,6 +7,9 @@
 👉 **Live Demo:** https://juntos.chat/
 
 ---
+## Support
+“Running Juntos costs money — support if you want 💖”
+https://buymeacoffee.com/johannaweb
 
 ## About
 
