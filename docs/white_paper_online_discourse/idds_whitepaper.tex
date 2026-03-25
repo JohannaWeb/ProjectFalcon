@@ -10,8 +10,8 @@
 
 \geometry{margin=1in}
 
-\title{\textbf{Identity-Driven Discourse Systems (IDDS) 2.0: \\ A Framework for Automated Conflict Modeling and Sovereign Moderation}}
-\author{Johanna \\ \textit{Project Falcon Maintainer}}
+\title{\textbf{Identity-Driven Discourse Systems (IDDS) 2.1: \\ A Framework for Automated Conflict Modeling and Sovereign Moderation}}
+\author{Johanna Almeida \\ \textit{Project Falcon Maintainer}}
 \date{March 2026}
 
 \begin{document}
@@ -19,7 +19,7 @@
 \maketitle
 
 \begin{abstract}
-The Identity-Driven Discourse System (IDDS) provides a formal taxonomy and transition model for online communication, mapping the degradation from rational exchange to non-recoverable conflict. By identifying three compounding layers of identity—Personal, Ideological, and Group—this framework quantifies the "threat surface" of digital interactions. We define a discourse state transition model that tracks escalation through six distinct phases, culminating in terminal states such as "Dogpiling." This paper outlines the implementation of IDDS within AI-driven "Sovereign Moderation" tools designed to identify and mitigate adversarial escalation before it reaches a terminal state.
+The Identity-Driven Discourse System (IDDS) provides a formal taxonomy and transition model for online communication, mapping the degradation from rational exchange to non-recoverable conflict. Version 2.1 introduces the $D_{flag}$ (Disagreement) modifier, identifying Identity Activation as a context-dependent floating multiplier rather than a fixed state. This paper details new findings on Moral Protective Framing (MPF), Adversarial Seeding, and the "Silence Bypass" phenomenon. We outline the implementation of IDDS within AI-driven "Sovereign Moderation" tools designed to identify and mitigate adversarial escalation before it reaches a terminal state.
 \end{abstract}
 
 \section{Introduction}
@@ -35,44 +35,50 @@ At the core of IDDS is the realization that conflict intensity is directly relat
 \end{itemize}
 
 \section{The Escalation Model}
-Conflict intensity $I$ is modeled as a product of identity activation and environmental multipliers. We propose a preliminary escalation probability formula:
+Conflict intensity $I$ is modeled as a product of identity activation, active disagreement, and environmental multipliers. We propose the revised IDDS 2.1 escalation probability formula:
 
 \begin{equation}
-    P(E) = \sigma \left( \sum_{i \in \{P, I, G\}} \omega_i \cdot A_i + S \cdot \text{TopicMultiplier} \right)
+    P(E) = \sigma \left( \sum_{i \in \{P, I, G\}} \omega_i \cdot A_i \cdot D_{flag} + S \cdot \text{TopicMultiplier} \right)
 \end{equation}
 
 where:
 \begin{itemize}
     \item $A_i$ represents the activation state of the Personal ($P$), Ideological ($I$), and Group ($G$) layers.
+    \item $D_{flag}$ is the Disagreement flag ($1$ if active conflict is present, $0$ otherwise). Identity activation only accelerates escalation when disagreement is established.
     \item $\omega_i$ are weights assigned to each layer's sensitivity.
-    \item $S$ is the inherent sensitivity of the topic (e.g., high-stakes politics).
+    \item $S$ is the inherent sensitivity of the topic multiplier.
     \item $\sigma$ is a squashing function representing the threshold of discourse collapse.
 \end{itemize}
 
-Simultaneous activation of all three layers ($A_P, A_I, A_G > \theta$) marks a critical transition point where discourse is highly likely to fail.
+Simultaneous activation of all three layers in an adversarial context ($D_{flag} = 1$) marks a critical transition point where discourse is highly likely to fail. We distinguish between \textbf{Voluntary Disclosure} (neutral context, $D_{flag} = 0$) and \textbf{Forced Exposure} (adversarial context, $D_{flag} = 1$). 
 
 \section{Discourse State Transition Model}
-IDDS identifies six distinct states of online interaction, each representing a step toward terminal conflict:
+IDDS identifies six distinct states of online interaction. Version 2.1 refines \textbf{Identity Activation} as a floating modifier:
 
 \begin{enumerate}
     \item \textbf{Neutral}: Fact-based inquiry, information sharing, or benign social bonding.
-    \item \textbf{Disagreement}: Divergent viewpoints expressed without personal or ideological friction.
-    \item \textbf{Identity Activation}: The pivot from the objective topic toward the self. Participants begin to feel "attacked" at an ideological or personal level.
+    \item \textbf{Disagreement}: Divergent viewpoints expressed without personal or ideological friction. Sets $D_{flag} = 1$.
+    \item \textbf{Identity Activation (Floating Modifier)}: The pivot from the objective topic toward the self. 
+    \begin{itemize}
+        \item If $D_{flag} = 1$: Identity activation triggers rapid escalation.
+        \item If $D_{flag} = 0$: Identity activation remains a neutral social disclosure.
+    \end{itemize}
     \item \textbf{Personalization}: The focus shifts entirely to the individual's character or perceived flaws.
     \item \textbf{Ad Hominem}: Rational engagement is replaced by direct, often vitriolic attacks.
-    \item \textbf{Dogpile (Non-recoverable)}: A collective state of hostility where multi-party coordination occurs to silence or exclude the participant, making the thread unsalvageable.
+    \item \textbf{Dogpile (Non-recoverable)}: A collective state of hostility. Note that while terminal for a thread, \textbf{Transient Dogpile Groups} often persist across multiple threads.
 \end{enumerate}
 
 \section{Defensive Mechanisms and Systemic Amplifiers}
-Participants under "Identity Threat" employ several documented defensive mechanisms:
+Participants under "Identity Threat" employ documented defensive mechanisms, including the newly identified \textbf{Moral Protective Framing (MPF)}:
 \begin{itemize}
     \item \textbf{Victim Labeling \& Minimization}: Reframing power dynamics to invalidate opposing stances.
     \item \textbf{National Defense}: Leveraging Group Identity to shield against valid ideological critique.
     \item \textbf{Competence Attacks}: Targeting the perceived authority or intelligence of the opponent.
     \item \textbf{Whataboutism}: Deflecting challenges through perceived hypocrisy in the opponent's "out-group."
+    \item \textbf{Moral Protective Framing (MPF)}: Invoking a third-party vulnerability (children, family, nation) to justify escalatory or violent behavior. MPF acts as a \textbf{transition accelerator} that masks state.
 \end{itemize}
 
-These mechanisms are amplified by platform design choices, specifically \textbf{Anonymity} (reducing social cost), \textbf{Performance Incentives} (rewarding "clout" through aggression), and \textbf{Feedback Latency} (the absence of non-verbal cues).
+These mechanisms are amplified by platform design: \textbf{Anonymity}, \textbf{Performance Incentives}, and the \textbf{Silence Bypass} (where users redirect conflicts to their own timelines to circumvent local thread moderation/blocking).
 
 \section{Implementation in AI-Driven Moderation}
 The IDDS framework enables high-fidelity "Sovereign Moderation":
@@ -80,7 +86,8 @@ The IDDS framework enables high-fidelity "Sovereign Moderation":
     \item \textbf{Escalation Detection}: Machine learning models trained on the IDDS states can classify comments in real-time.
     \item \textbf{Transition Mapping}: Identifying the "pivot" point where a user shifts from disagreement to identity activation allows for early-warning interventions.
     \item \textbf{Targeted Intervention}: Rather than simple bans, AI can flag specific mechanisms (like Whataboutism or Dogpiling) for nuanced community feedback or automated "cool-down" periods.
-\end{enumerate\section{Identity-Driven Discourse System (IDDS) — Extended Findings}
+\end{enumerate}
+\section{Identity-Driven Discourse System (IDDS) --- Extended Findings}
 This section captures empirical observations derived from naturalistic probing of online discourse systems (specifically Reddit), focusing on escalation dynamics, internal drivers, and control mechanisms.
 
 \subsection{Core Escalation Triggers}
@@ -112,46 +119,41 @@ This section captures empirical observations derived from naturalistic probing o
     \item \textbf{Emotional Overflow}: Cognitive overload converted into attack or dismissal.
 \end{itemize}
 
-\subsection{Cognitive Threat (Competence Defense)}
-\textbf{Definition}: Analytical discussion triggers perceived threat to competence.
-\begin{itemize}
-    \item \textbf{Effects}: Rejection of framework, simplification of discussion, and aggression toward speaker.
     \item \textbf{Mechanism}: Threat to self-concept (“I am competent”) and control restoration behavior.
 \end{itemize}
 
-\section{Control Mechanisms: The Power of Silence}
-\textbf{Definition}: Withdrawal of engagement disrupts escalation loops.
+\section{IDDS 2.1 --- New Addendums and Findings}
 
-\subsection{Feedback Loop Disruption}
-Before: provocation $\rightarrow$ response $\rightarrow$ escalation $\rightarrow$ response \\
-After silence: provocation $\rightarrow$ no response $\rightarrow$ decay $\rightarrow$ termination
+\subsection{Adversarial Seeding}
+Adversarial seeding occurs when a post is structurally designed to provoke Identity Activation in replies. In such cases, the thread is "born escalated" ($D_{flag} = 1$ at $T=0$). Detection signals include high-identity-load content paired with open engagement prompts ("what do you think?") in a new thread context.
+
+\subsection{De-escalation Artifacts and Positive Reinforcement}
 \begin{itemize}
-    \item \textbf{System Effect}: Removes reinforcement, prevents loop continuation, and reduces visibility/momentum.
+    \item \textbf{De-escalation Artifacts}: Humor and non-sequiturs function as local state resets, breaking reinforcement loops by introducing non-threatening stimuli.
+    \item \textbf{Positive Reinforcement}: Direct validation of a participant's identity or argument can resolve the underlying threat. However, insincerity triggers the \textbf{Competence Defense}, accelerating escalation.
 \end{itemize}
 
-\subsection{Extinction Burst (Silence Response Dynamics)}
-\textbf{Definition}: Temporary spike in aggression after silence before decay.
-\begin{itemize}
-    \item \textbf{Observed Pattern}: Silence introduced $\rightarrow$ Aggression spike (last attempt to provoke) $\rightarrow$ No response $\rightarrow$ Rapid decay.
-    \item \textbf{Insight}: Silence destabilizes before it stabilizes.
-\end{itemize}
+\subsection{Transient Dogpile Groups}
+Dogpile state is often not a terminal state for the group, only for the thread. Persistent groups cycle through targets, maintaining "escalation momentum." Detection requires cross-thread actor clustering.
 
-\subsection{Platform Amplification Effects (Reddit)}
-\begin{itemize}
-    \item \textbf{Structural Properties}: Anonymity (reduced accountability), Upvote system (reward for aggression), and Threaded replies (dogpile enablement).
-    \item \textbf{System Behavior}: Reddit acts as a high-amplification environment for identity-driven conflict.
-\end{itemize}
+\section{Dataset and Labeling Schema}
+Empirical validation was conducted across 16 labeled screenshots from Threads, Reddit, and WhatsApp (Portuguese/English). The automated scraper utilizes the following schema:
 
-\section{System-Level Summary}
+\begin{verbatim}
+post_id, anon_user_id, text, local_state, global_state, 
+d_flag, mpf_flag, topic_multiplier, language, thread_id
+\end{verbatim}
+
+\section{Open Questions for 2.1}
 \begin{itemize}
-    \item \textbf{Core Insight}: Escalation is not random — it is a predictable outcome of identity activation, perceived threat, and reinforcement loops.
-    \item \textbf{Meta Insight}: The intensity of discourse is proportional to the number of identity layers activated.
-    \item \textbf{Research Methodology}: Interactive probing (stimulus-based interaction), naturalistic observation (unmoderated environment), and qualitative pattern extraction.
-    \item \textbf{Key Principle}: Engagement fuels escalation. Non-engagement starves it.
+    \item Formalize $\omega_i$ weight learning from labeled data.
+    \item Cross-thread propagation detection at scale.
+    \item Formal conditions for de-escalation transitions (Reversibility).
+    \item MPF detection model vs. standard sentiment analysis.
+    \item Integration into Juntos/Falcon Sovereign Moderation layers.
 \end{itemize}
 
 \section{Conclusion}
-lusion}
-By formalizing the relationship between identity and discourse, IDDS 2.0 provides a roadmap for building more resilient digital communication platforms. Integrating these models into protocol-level moderation (e.g., within the Falcon ecosystem) ensures that trust and safety are derived from mathematical rigor rather than centralized whim.
+By formalizing the relationship between identity and discourse, IDDS 2.1 provides a roadmap for building resilient digital communication platforms. The addition of the $D_{flag}$ modifier and MPF detection ensures that moderation systems can distinguish between sincere identity disclosure and weaponized identity exposure, moving closer to a truly "Sovereign" moderation layer for the AT Protocol ecosystem.
 
 \end{document}
