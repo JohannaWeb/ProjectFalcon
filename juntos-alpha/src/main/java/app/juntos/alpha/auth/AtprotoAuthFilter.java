@@ -4,11 +4,11 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerRequestFilter;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.Provider;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.asn1.x9.X9ECParameters;
 import org.bouncycastle.crypto.ec.CustomNamedCurves;
@@ -16,8 +16,6 @@ import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.signers.ECDSASigner;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
-import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -30,50 +28,41 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
-@RequiredArgsConstructor
+@Provider
 @Slf4j
-public class AtprotoAuthFilter extends OncePerRequestFilter {
+public class AtprotoAuthFilter implements ContainerRequestFilter {
 
-    public static final String VIEWER_DID_ATTR = "viewerDid";
+    public static final String VIEWER_DID_HEADER = "X-Viewer-DID";
 
-    private final DidResolver didResolver;
-
-    @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) {
-        String upgrade = request.getHeader("Upgrade");
-        String path = request.getRequestURI();
-        boolean skip = "OPTIONS".equalsIgnoreCase(request.getMethod())
-                || "websocket".equalsIgnoreCase(upgrade)
-                || path.equals("/")
-                || path.equals("/ping")
-                || path.startsWith("/actuator");
-        if (skip) {
-            log.debug("[AUTH] Skipping filter for {} {} (upgrade={}, path={})",
-                    request.getMethod(), path, upgrade, path);
-        }
-        return skip;
-    }
+    @Inject
+    DidResolver didResolver;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-            throws ServletException, IOException {
-
-        String method = request.getMethod();
-        String path = request.getRequestURI();
+    public void filter(ContainerRequestContext context) throws IOException {
+        String method = context.getRequest().getMethod();
+        String path = context.getUriInfo().getPath();
         log.info("[AUTH] ══════════════════════════════════════════════════════");
         log.info("[AUTH] Incoming request: {} {}", method, path);
-        log.info("[AUTH] Remote addr: {}", request.getRemoteAddr());
 
-        String authHeader = request.getHeader("Authorization");
+        if (shouldSkip(method, path)) {
+            log.debug("[AUTH] Skipping filter for {} {}", method, path);
+            return;
+        }
+
+        String authHeader = context.getHeaderString("Authorization");
         if (authHeader == null) {
             log.warn("[AUTH] REJECTED — No Authorization header on {} {}", method, path);
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Missing Authorization header");
+            context.abortWith(Response.status(Response.Status.UNAUTHORIZED)
+                    .entity(Map.of("error", "MissingAuthHeader", "message", "Missing Authorization header"))
+                    .build());
             return;
         }
         if (!authHeader.startsWith("Bearer ")) {
             log.warn("[AUTH] REJECTED — Authorization header does not start with 'Bearer ': [{}]",
                     authHeader.substring(0, Math.min(authHeader.length(), 20)));
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Missing Authorization header");
+            context.abortWith(Response.status(Response.Status.UNAUTHORIZED)
+                    .entity(Map.of("error", "InvalidAuthHeader", "message", "Missing Authorization header"))
+                    .build());
             return;
         }
 
@@ -92,7 +81,9 @@ public class AtprotoAuthFilter extends OncePerRequestFilter {
             log.debug("[AUTH]   Decoded payload JSON: {}", unverified.getPayload());
         } catch (Exception e) {
             log.error("[AUTH] REJECTED — JWT.decode() threw: {} — raw token: {}", e.getMessage(), token);
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT");
+            context.abortWith(Response.status(Response.Status.UNAUTHORIZED)
+                    .entity(Map.of("error", "InvalidJWT", "message", "Invalid JWT"))
+                    .build());
             return;
         }
 
@@ -126,13 +117,17 @@ public class AtprotoAuthFilter extends OncePerRequestFilter {
 
         if (sub == null) {
             log.error("[AUTH] REJECTED — JWT has no 'sub' claim. Full payload: {}", unverified.getPayload());
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT missing subject");
+            context.abortWith(Response.status(Response.Status.UNAUTHORIZED)
+                    .entity(Map.of("error", "MissingSubject", "message", "JWT missing subject"))
+                    .build());
             return;
         }
         if (iss == null && aud == null) {
             log.error("[AUTH] REJECTED — JWT has neither 'iss' nor 'aud' — cannot identify signing party. Payload: {}",
                     unverified.getPayload());
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT missing issuer and audience");
+            context.abortWith(Response.status(Response.Status.UNAUTHORIZED)
+                    .entity(Map.of("error", "MissingIdentity", "message", "JWT missing issuer and audience"))
+                    .build());
             return;
         }
 
@@ -190,11 +185,12 @@ public class AtprotoAuthFilter extends OncePerRequestFilter {
         }
 
         if (verified) {
-            request.setAttribute(VIEWER_DID_ATTR, sub);
-            chain.doFilter(request, response);
+            context.getHeaders().putSingle(VIEWER_DID_HEADER, sub);
         } else {
             log.error("[AUTH] ✗ SIGNATURE INVALID — could not verify with any potential DID. sub={} iss={} aud={}", sub, iss, aud);
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication failed");
+            context.abortWith(Response.status(Response.Status.UNAUTHORIZED)
+                    .entity(Map.of("error", "AuthenticationFailed", "message", "Authentication failed"))
+                    .build());
         }
         log.info("[AUTH] ══════════════════════════════════════════════════════");
     }
@@ -647,5 +643,13 @@ public class AtprotoAuthFilter extends OncePerRequestFilter {
         StringBuilder sb = new StringBuilder(bytes.length * 2);
         for (byte b : bytes) sb.append(String.format("%02x", b));
         return sb.toString();
+    }
+
+    private boolean shouldSkip(String method, String path) {
+        return "OPTIONS".equalsIgnoreCase(method)
+                || path.equals("/")
+                || path.equals("/ping")
+                || path.startsWith("/health")
+                || path.startsWith("/metrics");
     }
 }

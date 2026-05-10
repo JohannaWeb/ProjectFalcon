@@ -6,45 +6,51 @@ import app.juntos.alpha.domain.Member;
 import app.juntos.alpha.domain.Server;
 import app.juntos.alpha.repository.MemberRepository;
 import app.juntos.alpha.repository.ServerRepository;
-import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@RestController
-@RequestMapping("/xrpc")
-@RequiredArgsConstructor
+@Path("/xrpc")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class ServerController {
 
-    private final ServerRepository serverRepo;
-    private final MemberRepository memberRepo;
+    @Inject
+    ServerRepository serverRepo;
 
-    @GetMapping("/app.juntos.server.list")
-    public List<Map<String, Object>> listServers(HttpServletRequest req) {
-        String did = (String) req.getAttribute(AtprotoAuthFilter.VIEWER_DID_ATTR);
+    @Inject
+    MemberRepository memberRepo;
+
+    @GET
+    @Path("/app.juntos.server.list")
+    public List<Map<String, Object>> listServers(@HeaderParam(AtprotoAuthFilter.VIEWER_DID_HEADER) String did) {
         return serverRepo.findByMembersDid(did).stream().map(this::toSummary).toList();
     }
 
-    @GetMapping("/app.juntos.server.get")
-    public ResponseEntity<Map<String, Object>> getServer(@RequestParam Long serverId, HttpServletRequest req) {
+    @GET
+    @Path("/app.juntos.server.get")
+    public Response getServer(@QueryParam("serverId") Long serverId) {
         return serverRepo.findByIdWithChannels(serverId)
-                .map(s -> ResponseEntity.ok(toSummary(s)))
-                .orElse(ResponseEntity.notFound().build());
+                .map(s -> Response.ok(toSummary(s)).build())
+                .orElse(Response.status(Response.Status.NOT_FOUND).build());
     }
 
-    @PostMapping("/app.juntos.server.create")
-    public Map<String, Object> createServer(@RequestBody Map<String, String> body, HttpServletRequest req) {
-        String did = (String) req.getAttribute(AtprotoAuthFilter.VIEWER_DID_ATTR);
-        String handle = did; // handle not available here, use DID as fallback
+    @POST
+    @Path("/app.juntos.server.create")
+    public Map<String, Object> createServer(
+            Map<String, String> body,
+            @HeaderParam(AtprotoAuthFilter.VIEWER_DID_HEADER) String did) {
+        String handle = did;
 
         Server server = new Server();
         server.setName(body.get("name"));
         server.setOwnerDid(did);
-        server = serverRepo.save(server);
+        serverRepo.persist(server);
 
         // Default channel
         Channel channel = new Channel();
@@ -59,7 +65,7 @@ public class ServerController {
         member.setServer(server);
         server.getMembers().add(member);
 
-        server = serverRepo.save(server);
+        serverRepo.flush();
         long channelId = server.getChannels().getFirst().getId();
 
         return Map.of(
@@ -70,25 +76,30 @@ public class ServerController {
         );
     }
 
-    @PostMapping("/app.juntos.server.invite")
-    public ResponseEntity<Map<String, Object>> inviteToServer(
-            @RequestParam Long serverId,
-            @RequestBody Map<String, String> body,
-            HttpServletRequest req) {
+    @POST
+    @Path("/app.juntos.server.invite")
+    public Response inviteToServer(
+            @QueryParam("serverId") Long serverId,
+            Map<String, String> body,
+            @HeaderParam(AtprotoAuthFilter.VIEWER_DID_HEADER) String did) {
 
-        return serverRepo.findById(serverId).map(server -> {
-            String handle = body.getOrDefault("handle", "");
-            String inviteeDid = "did:plc:" + handle.replace(".", "-"); // placeholder
+        var serverOpt = serverRepo.find("id", serverId).firstResultOptional();
+        if (serverOpt.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
 
-            if (!memberRepo.existsByDidAndServerId(inviteeDid, serverId)) {
-                Member m = new Member();
-                m.setDid(inviteeDid);
-                m.setHandle(handle);
-                m.setServer(server);
-                memberRepo.save(m);
-            }
-            return ResponseEntity.ok(Map.<String, Object>of("did", inviteeDid, "handle", handle));
-        }).orElse(ResponseEntity.notFound().build());
+        Server server = serverOpt.get();
+        String handle = body.getOrDefault("handle", "");
+        String inviteeDid = "did:plc:" + handle.replace(".", "-");
+
+        if (!memberRepo.existsByDidAndServerId(inviteeDid, serverId)) {
+            Member m = new Member();
+            m.setDid(inviteeDid);
+            m.setHandle(handle);
+            m.setServer(server);
+            memberRepo.persist(m);
+        }
+        return Response.ok(Map.<String, Object>of("did", inviteeDid, "handle", handle)).build();
     }
 
     private Map<String, Object> toSummary(Server s) {

@@ -1,11 +1,19 @@
 package app.juntos.alpha;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import io.quarkus.runtime.Quarkus;
+import io.quarkus.runtime.QuarkusApplication;
+import io.quarkus.runtime.annotations.QuarkusMain;
 
-@SpringBootApplication
-public class JuntosAlphaApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(JuntosAlphaApplication.class, args);
+@QuarkusMain
+public class JuntosAlphaApplication implements QuarkusApplication {
+
+    public static void main(String... args) {
+        Quarkus.run(JuntosAlphaApplication.class, args);
+    }
+
+    @Override
+    public int run(String... args) {
+        Quarkus.waitForExit();
+        return 0;
     }
 }

@@ -1,17 +1,17 @@
 package app.juntos.alpha.auth;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.core.MediaType;
 
 import java.net.InetAddress;
 import java.util.Map;
 
-@Service
+@ApplicationScoped
 @Slf4j
 public class DidResolver {
-
-    private final RestTemplate restTemplate = new RestTemplate();
 
     @SuppressWarnings("unchecked")
     public Map<String, Object> resolve(String did) {
@@ -26,9 +26,16 @@ public class DidResolver {
             throw new IllegalArgumentException("Unsupported DID method: " + did);
         }
         log.info("[DID] Resolving {} → GET {}", did, url);
-        Map<String, Object> doc = (Map<String, Object>) restTemplate.getForObject(url, Map.class);
-        log.info("[DID] Resolved {} — keys: {}", did, doc != null ? doc.keySet() : "null");
-        return doc;
+        Client client = ClientBuilder.newClient();
+        try {
+            Map<String, Object> doc = client.target(url)
+                    .request(MediaType.APPLICATION_JSON_TYPE)
+                    .get(Map.class);
+            log.info("[DID] Resolved {} — keys: {}", did, doc != null ? doc.keySet() : "null");
+            return doc;
+        } finally {
+            client.close();
+        }
     }
 
     private void validateHostNotInternal(String host) {
