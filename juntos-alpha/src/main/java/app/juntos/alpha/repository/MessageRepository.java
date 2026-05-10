@@ -1,11 +1,14 @@
 package app.juntos.alpha.repository;
 
 import app.juntos.alpha.domain.Message;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.List;
 
-public interface MessageRepository extends JpaRepository<Message, Long> {
-    List<Message> findByChannelIdOrderByCreatedAtAsc(Long channelId, Pageable pageable);
+@ApplicationScoped
+public class MessageRepository implements PanacheRepository<Message> {
+    public List<Message> findByChannelIdOrderByCreatedAtAsc(Long channelId) {
+        return find("channelId", channelId).stream().sorted((a, b) -> a.getCreatedAt().compareTo(b.getCreatedAt())).toList();
+    }
 }

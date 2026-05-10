@@ -1,56 +1,51 @@
 package app.juntos.alpha.api;
 
 import app.juntos.alpha.auth.AtprotoAuthFilter;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.*;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
-
-@RestController
-@RequestMapping("/xrpc")
+@Path("/xrpc")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 @Slf4j
 public class FeedController {
 
     private static final String BSKY = "https://bsky.social";
 
-    private final RestTemplate http = new RestTemplate();
+    @GET
+    @Path("/app.juntos.feed.getTimeline")
+    public Response getTimeline(
+            @QueryParam("limit") @DefaultValue("30") int limit,
+            @QueryParam("cursor") String cursor,
+            @HeaderParam("Authorization") String authHeader,
+            @HeaderParam(AtprotoAuthFilter.VIEWER_DID_HEADER) String did) {
 
-    @GetMapping("/app.juntos.feed.getTimeline")
-    public void getTimeline(
-            @RequestParam(defaultValue = "30") int limit,
-            @RequestParam(required = false) String cursor,
-            HttpServletRequest req,
-            HttpServletResponse resp) throws IOException {
-
-        String did = (String) req.getAttribute(AtprotoAuthFilter.VIEWER_DID_ATTR);
         String url = BSKY + "/xrpc/app.bsky.feed.getTimeline?limit=" + limit;
         if (cursor != null) url += "&cursor=" + cursor;
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", req.getHeader("Authorization"));
+        Client client = ClientBuilder.newClient();
         try {
-            ResponseEntity<byte[]> upstream = http.exchange(
-                    url, HttpMethod.GET, new HttpEntity<>(headers), byte[].class);
-            byte[] body = upstream.getBody();
-            if (body != null) {
-                write(resp, body);
+            Response upstream = client.target(url)
+                    .request(MediaType.APPLICATION_JSON_TYPE)
+                    .header("Authorization", authHeader)
+                    .get();
+
+            if (upstream.getStatus() == 200) {
+                byte[] body = upstream.readEntity(byte[].class);
+                return Response.ok(body).type(MediaType.APPLICATION_JSON).build();
             } else {
-                resp.sendError(HttpServletResponse.SC_BAD_GATEWAY);
+                log.warn("Timeline proxy returned status {} for {}", upstream.getStatus(), did);
+                return Response.status(Response.Status.BAD_GATEWAY).build();
             }
         } catch (Exception e) {
             log.warn("Timeline proxy failed for {}: {}", did, e.getMessage());
-            resp.sendError(HttpServletResponse.SC_BAD_GATEWAY);
+            return Response.status(Response.Status.BAD_GATEWAY).build();
+        } finally {
+            client.close();
         }
-    }
-
-    private void write(HttpServletResponse resp, byte[] body) throws IOException {
-        resp.setContentType("application/json");
-        resp.setCharacterEncoding("UTF-8");
-        resp.setContentLength(body.length);
-        resp.getOutputStream().write(body);
     }
 }

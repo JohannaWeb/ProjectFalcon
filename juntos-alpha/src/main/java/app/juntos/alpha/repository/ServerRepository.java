@@ -1,19 +1,34 @@
 package app.juntos.alpha.repository;
 
 import app.juntos.alpha.domain.Server;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.persistence.EntityManager;
+import jakarta.inject.Inject;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface ServerRepository extends JpaRepository<Server, Long> {
+@ApplicationScoped
+public class ServerRepository implements PanacheRepository<Server> {
 
-    @Query("SELECT DISTINCT s FROM Server s LEFT JOIN FETCH s.channels WHERE s IN (SELECT m.server FROM Member m WHERE m.did = :did)")
-    List<Server> findByMembersDid(@Param("did") String did);
+    @Inject
+    EntityManager em;
 
-    /** Eagerly fetches channels to avoid LazyInitializationException outside a transaction. */
-    @Query("SELECT s FROM Server s LEFT JOIN FETCH s.channels WHERE s.id = :id")
-    Optional<Server> findByIdWithChannels(@Param("id") Long id);
+    public List<Server> findByMembersDid(String did) {
+        return em.createQuery(
+                "SELECT DISTINCT s FROM Server s LEFT JOIN FETCH s.channels WHERE s IN (SELECT m.server FROM Member m WHERE m.did = :did)",
+                Server.class)
+                .setParameter("did", did)
+                .getResultList();
+    }
+
+    public Optional<Server> findByIdWithChannels(Long id) {
+        List<Server> results = em.createQuery(
+                "SELECT s FROM Server s LEFT JOIN FETCH s.channels WHERE s.id = :id",
+                Server.class)
+                .setParameter("id", id)
+                .getResultList();
+        return results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
+    }
 }

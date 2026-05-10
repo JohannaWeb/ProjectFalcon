@@ -8,38 +8,48 @@ import app.juntos.alpha.repository.ChannelRepository;
 import app.juntos.alpha.repository.MemberRepository;
 import app.juntos.alpha.repository.MessageRepository;
 import app.juntos.alpha.repository.ServerRepository;
-import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.http.*;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
+import java.net.URI;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-@RestController
-@RequestMapping("/xrpc")
-@RequiredArgsConstructor
+@Path("/xrpc")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 @Slf4j
 public class ChannelController {
 
-    // 2-32 chars, lowercase alphanumeric + hyphens, no leading/trailing hyphens
     private static final Pattern CHANNEL_NAME = Pattern.compile("^[a-z0-9]([a-z0-9-]{0,30}[a-z0-9])?$");
 
-    private final ChannelRepository channelRepo;
-    private final MessageRepository messageRepo;
-    private final ServerRepository serverRepo;
-    private final MemberRepository memberRepo;
-    private final DidResolver didResolver;
-    private final RestTemplate http = new RestTemplate();
+    @Inject
+    ChannelRepository channelRepo;
 
-    @GetMapping("/app.juntos.channel.list")
-    public List<Map<String, Object>> listChannels(@RequestParam Long serverId) {
+    @Inject
+    MessageRepository messageRepo;
+
+    @Inject
+    ServerRepository serverRepo;
+
+    @Inject
+    MemberRepository memberRepo;
+
+    @Inject
+    DidResolver didResolver;
+
+    @GET
+    @Path("/app.juntos.channel.list")
+    public List<Map<String, Object>> listChannels(@QueryParam("serverId") Long serverId) {
         return channelRepo.findByServerId(serverId).stream()
                 .map(c -> {
                     Map<String, Object> m = new HashMap<>();
@@ -52,59 +62,55 @@ public class ChannelController {
                 .toList();
     }
 
-    @PostMapping("/app.juntos.channel.create")
-    public ResponseEntity<Map<String, Object>> createChannel(
-            @RequestParam Long serverId,
-            @RequestBody Map<String, String> body,
-            HttpServletRequest req) {
+    @POST
+    @Path("/app.juntos.channel.create")
+    public Response createChannel(
+            @QueryParam("serverId") Long serverId,
+            Map<String, String> body,
+            @HeaderParam("Authorization") String authHeader,
+            @HeaderParam(AtprotoAuthFilter.VIEWER_DID_HEADER) String did) {
 
-        String did = (String) req.getAttribute(AtprotoAuthFilter.VIEWER_DID_ATTR);
-
-        // Validate name before any DB/network calls
         String name = body.get("name");
         if (name == null || name.isBlank()) {
-            return ResponseEntity.badRequest().body(Map.of(
+            return Response.status(400).entity(Map.of(
                     "error", "InvalidRequest",
-                    "message", "Channel name is required"));
+                    "message", "Channel name is required")).build();
         }
         name = name.trim().toLowerCase();
         if (!CHANNEL_NAME.matcher(name).matches()) {
-            return ResponseEntity.badRequest().body(Map.of(
+            return Response.status(400).entity(Map.of(
                     "error", "InvalidRequest",
-                    "message", "Channel name must be 2-32 characters, lowercase alphanumeric and hyphens only, no leading or trailing hyphens"));
+                    "message", "Channel name must be 2-32 characters, lowercase alphanumeric and hyphens only")).build();
         }
 
-        // Check server exists (404) before membership (403)
-        var serverOpt = serverRepo.findById(serverId);
+        var serverOpt = serverRepo.findByIdOptional(serverId);
         if (serverOpt.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            return Response.status(404).build();
         }
         if (!memberRepo.existsByDidAndServerId(did, serverId)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            return Response.status(403).build();
         }
 
-        // Write to AT Protocol repo first — this is the source of truth.
-        // If the PDS write fails the channel is not created locally either.
         String atUri;
         try {
-            atUri = writeAtRecord(did, name, serverId, req.getHeader("Authorization"));
+            atUri = writeAtRecord(did, name, serverId, authHeader);
         } catch (Exception e) {
             log.error("AT Protocol write failed for channel '{}' by {}: {}", name, did, e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(Map.of(
+            return Response.status(502).entity(Map.of(
                     "error", "ATProtoWriteFailed",
-                    "message", "Could not write channel record to AT Protocol repository"));
+                    "message", "Could not write channel record to AT Protocol repository")).build();
         }
 
         Channel channel = new Channel();
         channel.setName(name);
         channel.setServer(serverOpt.get());
         channel.setAtUri(atUri);
-        // Extract rkey from at://did/collection/rkey
         String[] uriParts = atUri.split("/");
         if (uriParts.length >= 1) {
             channel.setAtRkey(uriParts[uriParts.length - 1]);
         }
-        Channel saved = channelRepo.save(channel);
+        channelRepo.persist(channel);
+        Channel saved = channel;
 
         log.info("Channel '{}' created by {} — atUri: {}", name, did, atUri);
         Map<String, Object> result = new HashMap<>();
@@ -112,37 +118,41 @@ public class ChannelController {
         result.put("name", saved.getName());
         result.put("serverId", serverId);
         result.put("atUri", atUri);
-        return ResponseEntity.ok(result);
+        return Response.ok(result).build();
     }
 
-    @GetMapping("/app.juntos.channel.getMessages")
-    public ResponseEntity<List<Map<String, Object>>> getMessages(
-            @RequestParam Long channelId,
-            @RequestParam(defaultValue = "50") int limit) {
+    @GET
+    @Path("/app.juntos.channel.getMessages")
+    public Response getMessages(
+            @QueryParam("channelId") Long channelId,
+            @QueryParam("limit") @DefaultValue("50") int limit) {
 
-        if (!channelRepo.existsById(channelId)) return ResponseEntity.notFound().build();
+        if (!channelRepo.existsById(channelId)) return Response.status(404).build();
         List<Map<String, Object>> messages = messageRepo
-                .findByChannelIdOrderByCreatedAtAsc(channelId, PageRequest.of(0, limit))
-                .stream().map(this::toSummary).toList();
-        return ResponseEntity.ok(messages);
+                .findByChannelIdOrderByCreatedAtAsc(channelId)
+                .stream().limit(limit).map(this::toSummary).toList();
+        return Response.ok(messages).build();
     }
 
-    @PostMapping("/app.juntos.channel.postMessage")
-    public ResponseEntity<Map<String, Object>> postMessage(
-            @RequestParam Long channelId,
-            @RequestBody Map<String, String> body,
-            HttpServletRequest req) {
+    @POST
+    @Path("/app.juntos.channel.postMessage")
+    public Response postMessage(
+            @QueryParam("channelId") Long channelId,
+            Map<String, String> body,
+            @HeaderParam(AtprotoAuthFilter.VIEWER_DID_HEADER) String did) {
 
-        return channelRepo.findById(channelId).map(channel -> {
-            String did = (String) req.getAttribute(AtprotoAuthFilter.VIEWER_DID_ATTR);
-            Message msg = new Message();
-            msg.setContent(body.get("content"));
-            msg.setAuthorDid(did);
-            msg.setAuthorHandle(did);
-            msg.setChannel(channel);
-            Message saved = messageRepo.save(msg);
-            return ResponseEntity.ok(toSummary(saved));
-        }).orElse(ResponseEntity.notFound().build());
+        var channelOpt = channelRepo.findByIdOptional(channelId);
+        if (channelOpt.isEmpty()) return Response.status(404).build();
+
+        Channel channel = channelOpt.get();
+        Message msg = new Message();
+        msg.setContent(body.get("content"));
+        msg.setAuthorDid(did);
+        msg.setAuthorHandle(did);
+        msg.setChannel(channel);
+        messageRepo.persist(msg);
+        Message saved = msg;
+        return Response.ok(toSummary(saved)).build();
     }
 
     /**
@@ -166,22 +176,22 @@ public class ChannelController {
                 "createdAt", Instant.now().toString()
         );
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", authHeader);
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        ResponseEntity<Map> response = http.exchange(
-                pdsUrl + "/xrpc/com.atproto.repo.createRecord",
-                HttpMethod.POST,
-                new HttpEntity<>(Map.of(
+        Client client = ClientBuilder.newBuilder().build();
+        Response response = client.target(pdsUrl)
+                .path("/xrpc/com.atproto.repo.createRecord")
+                .request(MediaType.APPLICATION_JSON_TYPE)
+                .header("Authorization", authHeader)
+                .post(Entity.json(Map.of(
                         "repo", did,
                         "collection", "app.juntos.channel",
                         "record", record
-                ), headers),
-                Map.class
-        );
+                )));
 
-        Map<String, Object> responseBody = response.getBody();
+        if (response.getStatus() != 200) {
+            throw new IllegalStateException("PDS returned status " + response.getStatus());
+        }
+
+        Map<String, Object> responseBody = response.readEntity(Map.class);
         if (responseBody == null || !responseBody.containsKey("uri")) {
             throw new IllegalStateException("createRecord response missing 'uri' field");
         }
