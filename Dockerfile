@@ -9,7 +9,7 @@ RUN mvn -pl juntos-alpha -am package -DskipTests
 FROM eclipse-temurin:21-jre
 
 WORKDIR /app
-COPY --from=build /app/juntos-alpha/target/juntos-alpha-0.1.0.jar app.jar
+COPY --from=build /app/juntos-alpha/target/quarkus-app/ quarkus-app/
 EXPOSE 8080
 
-CMD ["sh", "-c", "java -Dserver.port=${PORT:-8080} -Dserver.address=0.0.0.0 -jar app.jar"]
+CMD ["java", "-jar", "quarkus-app/quarkus-run.jar"]

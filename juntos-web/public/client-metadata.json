@@ -1,0 +1,12 @@
+{
+  "client_id": "https://juntos.chat/client-metadata.json",
+  "client_name": "Juntos",
+  "client_uri": "https://juntos.chat",
+  "redirect_uris": ["https://juntos.chat/"],
+  "scope": "atproto transition:generic",
+  "grant_types": ["authorization_code", "refresh_token"],
+  "response_types": ["code"],
+  "application_type": "web",
+  "dpop_bound_access_tokens": true,
+  "token_endpoint_auth_method": "none"
+}
